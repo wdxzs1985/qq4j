@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context.xsd">
+        
+    <bean id="login" class="org.qq4j.core.QQLogin"></bean>
+    
+    <bean id="unknow_message_handler" class="org.qq4j.core.handler.message.QQUnknowMessageHandler"></bean>
+    <bean id="system_message_handler" class="org.qq4j.core.handler.message.QQSystemMessageHandlerMapping">
+        <property name="defaultHandler" ref="unknow_message_handler"></property>
+        <property name="handlers">
+            <map>
+                <entry key="verify_required">
+                    <bean class="org.qq4j.core.handler.message.QQFriendVerifyMessageHandler">
+                        <property name="password" value=""></property>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+    
+    <bean id="group_system_message_handler" class="org.qq4j.core.handler.message.QQSystemMessageHandlerMapping">
+        <property name="defaultHandler" ref="unknow_message_handler"></property>
+        <property name="handlers">
+            <map>
+                <entry key="group_join">
+                    <bean class="org.qq4j.core.handler.message.QQGroupJoinMessageHandler"></bean>
+                </entry>
+                <entry key="group_request_join">
+                    <bean class="org.qq4j.core.handler.message.QQGroupJoinRequestMessageHandler"></bean>
+                </entry>
+                <entry key="group_leave">
+                    <bean class="org.qq4j.core.handler.message.QQGroupLeaveMessageHandler"></bean>
+                </entry>
+                <entry key="group_admin_op">
+                    <bean class="org.qq4j.core.handler.message.QQGroupAdminopMessageHandler"></bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+    
+    <bean id="input_notify_handler" class="org.qq4j.core.handler.message.QQInputNotifyMessageHandler"></bean>
+    <bean id="shake_message_handler" class="org.qq4j.core.handler.message.QQShakeMessageHandler"></bean>
+    <bean id="kick_message_handler" class="org.qq4j.core.handler.message.QQKickMessageHandler"></bean>
+    <bean id="buddies_status_change_handler" class="org.qq4j.core.handler.message.QQBuddiesStatusChangeMessageHandler"></bean>
+    <bean id="buddylist_change_handler" class="org.qq4j.core.handler.message.QQBuddyListChangeMessageHandler"></bean>
+    <bean id="sess_message_handler" class="org.qq4j.core.handler.message.QQStrangerMessageHandler">
+        <property name="answer" value="你还不是我的好友，快加我吧。"></property>
+    </bean>
+    
+    <bean id="default_message_handler" class="org.qq4j.core.handler.command.QQReplyOrStudyCommandHandler">
+		<property name="command1" value="不对"></property>
+		<property name="command3" value="放弃"></property>
+		<property name="answer1" value="主人你好～很高兴能和你一起聊天。如果我有不懂的，主人要教我回答哦。回答错误的时候，回复【不对】：可以纠正回答。还有，聊天时记得关闭自动回复哦。"></property>
+		<property name="answer2" value="主人你说什么了吗？"></property>
+		<property name="answer3" value="那我应该怎么回答呢？"></property>
+		<property name="answer4" value="你说的太长了，我记不住额。。@_@"></property>
+		<property name="answer6" value="我不知道你在说神马。教教我吧。回复【放弃】：放弃本次学习。"></property>
+		<property name="answer7" value="好吧，说点别的吧。"></property>
+		<property name="answer8" value="恩，我记住了～"></property>
+		<property name="faith" value="1"></property>
+	</bean>
+    <bean id="default_group_message_handler" class="org.qq4j.core.handler.command.QQReplyCommandHandler"></bean>
+    
+    <bean id="shake_command_handler" class="org.qq4j.core.handler.command.QQShakeCommandHandler"></bean>
+    <bean id="echo_command_handler" class="org.qq4j.core.handler.command.QQEchoCommandHandler">
+        <property name="answer" value="你想让我说什么呢?"></property>
+    </bean>
+    <bean id="faith_command_handler" class="org.qq4j.core.handler.command.QQFaithCommandHandler">
+	    <property name="answer1" value="${nick}的好感：${faith}。现在排名：第${rank}位"></property>
+	    <property name="answer2" value="你是谁？"></property>
+    </bean>
+    <bean id="time_command_handler" class="org.qq4j.core.handler.command.QQTimeCommandHandler">
+        <property name="format" value="hh:mm:ss"></property>
+        <property name="hello1" value="早上好！"></property>
+        <property name="hello2" value="上午好！"></property>
+        <property name="hello3" value="中午好！"></property>
+        <property name="hello4" value="下午好！"></property>
+        <property name="hello5" value="晚上好！"></property>
+    </bean>
+    
+    
+    <bean id="sina_robot" class="org.sina4j.impl.SinaRobot">
+        <property name="sinaUser" ref="sina_user"></property>
+        <property name="sinaLogin" ref="sina_login"></property>
+        <property name="sinaClient" ref="sina_client"></property>
+        
+    </bean>
+    <bean id="sina_user" class="org.sina4j.domain.SinaUserDTO">
+        <property name="email" value="2541694184@qq.com"></property>
+        <property name="password" value="bushing"></property>
+    </bean>
+    <bean id="sina_login" class="org.sina4j.core.SinaLogin">
+        <property name="sinaClient" ref="sina_client"></property>
+    </bean>
+    <bean id="sina_client" class="org.sina4j.core.SinaHttpClient">
+    </bean>
+    
+    <bean id="sinaweibo_command_handler" class="org.qq4j.core.handler.command.QQSinaweiboCommandHandler">
+        <property name="sinaRobot" ref="sina_robot"></property>
+        <property name="answer1" value="主人想说点什么呢？不要超过140个字哦。回复【放弃】取消发送。"></property>
+        <property name="answer2" value="已取消发送微博。"></property>
+        <property name="answer3" value="微博发送成功，查看微博请关注 @天才_琪露诺 http://www.weibo.com/u/2803325782"></property>
+        <property name="answer4" value="啊咧，好像出错了呢QAQ"></property>
+        <property name="answer5" value="主人，虽然你想说的话有很多，但是渣浪不允许呢，所以不可以超过140个字哦。回复【放弃】取消发送。"></property>
+        <property name="command1" value="放弃"></property>
+    </bean>
+</beans>

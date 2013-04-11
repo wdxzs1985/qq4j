@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+    
+    <bean id="alice" class="org.qq4j.impl.QQRobot">
+        <property name="context" ref="alice_context"></property>
+        <property name="login" ref="login"></property>
+        <property name="messagePoller">
+            <bean class="org.qq4j.core.QQMessagePoller">
+                <property name="context" ref="alice_context"></property>
+                <property name="handlers">
+                    <bean class="org.qq4j.core.handler.QQMessageHandlerMapping">
+                        <property name="defaultHandler">
+                            <bean class="org.qq4j.core.handler.message.QQUnknowMessageHandler"></bean>
+                        </property>
+                        <property name="handlers">
+                            <map>
+                                <entry key="system_message" value-ref="system_message_handler"></entry>
+                                <entry key="sys_g_msg" value-ref="group_system_message_handler"></entry>
+                                <entry key="input_notify" value-ref="input_notify_handler"></entry>
+                                <entry key="shake_message" value-ref="shake_message_handler"></entry>
+                                <entry key="kick_message" value-ref="kick_message_handler"></entry>
+                                <entry key="buddies_status_change" value-ref="buddies_status_change_handler"></entry>
+                                <entry key="buddylist_change" value-ref="buddylist_change_handler"></entry>
+                                <entry key="sess_message" value-ref="sess_message_handler"></entry>
+                                <entry key="message">
+                                    <bean class="org.qq4j.core.handler.message.QQUserMessageHandler">
+                                        <property name="replyTimeLimit" value="30000"></property>
+                                        <property name="repeatAnswer1" value="复制帝你好，复制帝再见。"></property>
+                                        <property name="handlers">
+                                            <bean class="org.qq4j.core.handler.QQCommandHandlerMapping">
+                                                <property name="defaultHandler">
+                                                    <bean class="org.qq4j.core.handler.QQSessionHandler">
+                                                        <property name="defaultHandler" ref="default_message_handler"></property>
+												    </bean>
+                                                </property>
+                                                <property name="handlers">
+                                                    <map>
+                                                        <entry key="帮助">
+                                                            <bean class="org.qq4j.core.handler.command.QQHelpCommandHandler">
+                                                                <property name="mapping">
+                                                                    <props>
+                                                                        <prop key="帮助"><![CDATA[查看帮助信息]]></prop>
+                                                                        <prop key="暖被窝"><![CDATA[增加好感度]]></prop>
+                                                                        <prop key="好感"><![CDATA[查看好感度和排名]]></prop>
+                                                                        <prop key="震我一下"><![CDATA[我也震你一下 o(>﹏<)o]]></prop>
+                                                                        <prop key="回音"><![CDATA[这是肥音你懂吗 是肥音你懂吗 肥音你懂吗 音你懂吗 你懂吗 懂吗 吗]]></prop>
+                                                                        <prop key="报时"><![CDATA[查看现在时间]]></prop>
+                                                                    </props>
+                                                                </property>
+                                                            </bean>
+                                                        </entry>
+                                                        <entry key="暖被窝" value-ref="alice_saisen_handler"></entry>
+                                                        <entry key="好感" value-ref="faith_command_handler"></entry>
+                                                        <entry key="报时" value-ref="time_command_handler"></entry>
+                                                        <entry key="震我一下" value-ref="shake_command_handler"></entry>
+                                                        <entry key="回音" value-ref="echo_command_handler"></entry>
+                                                    </map>
+                                                </property>
+                                            </bean>
+                                        </property>
+                                    </bean>
+                                </entry>
+                                <entry key="group_message">
+                                    <bean class="org.qq4j.core.handler.message.QQGroupMessageHandler">
+                                        <property name="replyTimeLimit" value="5000"></property>
+                                        <property name="repeatAnswer1" value="复制帝你好，复制帝再见。"></property>
+                                        <property name="handlers">
+                                            <bean class="org.qq4j.core.handler.QQCommandHandlerMapping">
+                                                <property name="defaultHandler" ref="default_group_message_handler"></property>
+                                                <property name="handlers">
+                                                    <map>
+                                                        <entry key="帮助">
+                                                            <bean class="org.qq4j.core.handler.command.QQHelpCommandHandler">
+                                                                <property name="mapping">
+                                                                    <props>
+                                                                        <prop key="帮助"><![CDATA[查看帮助信息]]></prop>
+                                                                        <prop key="暖被窝"><![CDATA[增加好感度]]></prop>
+                                                                        <prop key="好感"><![CDATA[查看好感度和排名]]></prop>
+                                                                        <prop key="报时"><![CDATA[查看现在时间]]></prop>
+                                                                    </props>
+                                                                </property>
+                                                            </bean>
+                                                        </entry>
+                                                        <entry key="暖被窝" value-ref="alice_saisen_handler"></entry>
+                                                        <entry key="好感" value-ref="faith_command_handler"></entry>
+                                                        <entry key="报时" value-ref="time_command_handler"></entry>
+                                                    </map>
+                                                </property>
+                                            </bean>
+                                        </property>
+                                    </bean>
+                                </entry>
+                            </map>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="alice_saisen_handler" class="org.qq4j.core.handler.command.QQSaisenCommandHandler">
+        <property name="answer1" value="好的，我去给主人暖被窝了哦～～${nick}的好感提升了。"></property>
+        <property name="answer2" value="呜，好冷。。。${nick}的好感没有变化。"></property>
+        <property name="answer3" value="被窝已经暖好了哦，主人。"></property>
+        <property name="timesLimit" value="1"></property>
+        <property name="timeLimitFormat" value="yyyyMMddHH"></property>
+    </bean>
+    
+    <bean id="alice_user" class="org.qq4j.domain.QQUser">
+        <property name="account" value="1959194042"></property>
+        <property name="password" value="131081199"></property>
+        <property name="status" value="callme"></property>
+    </bean>
+    
+    <bean id="alice_context" class="org.qq4j.core.QQContext">
+        <!-- login -->
+        <property name="self" ref="alice_user"></property>
+        <!-- font -->
+        <property name="font">
+            <bean class="org.qq4j.domain.QQFont">
+                <property name="name" value="宋体"></property>
+                <property name="color" value="ff8f8f"></property>
+                <property name="size" value="10"></property>
+                <property name="bold" value="false"></property>
+                <property name="underline" value="false"></property>
+                <property name="italic" value="false"></property>
+            </bean>
+        </property>
+        <!-- AIManager -->
+        <property name="aiManager">
+            <bean class=" org.qq4j.core.QQAiManager">
+                <property name="jdbcTemplate" ref="jdbcTemplate"></property>
+                <property name="context" ref="alice_context"></property>
+            </bean>
+        </property>
+        <!-- SessionManager -->
+        <property name="sessionManager">
+            <bean class=" org.qq4j.core.QQSessionManager"></bean>
+        </property>
+        <!-- FriendManager -->
+        <property name="friendManager">
+            <bean class=" org.qq4j.core.QQUserManager">
+                <property name="context" ref="alice_context"></property>
+                <property name="jdbcTemplate" ref="jdbcTemplate"></property>
+            </bean>
+        </property>
+        <!-- GroupManager -->
+        <property name="groupManager">
+            <bean class=" org.qq4j.core.QQGroupManager">
+                <property name="context" ref="alice_context"></property>
+            </bean>
+        </property>
+        <!-- QQSender -->
+        <property name="sender">
+            <bean class=" org.qq4j.core.QQSender">
+                <property name="context" ref="alice_context"></property>
+            </bean>
+        </property>
+    </bean>
+</beans>
