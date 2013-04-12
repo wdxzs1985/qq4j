@@ -14,7 +14,7 @@ public class QQGroupJoinRequestMessageHandler implements QQMessageHandler {
 
     private final Log log = LogFactory.getLog(QQGroupJoinRequestMessageHandler.class);
 
-    private final String password = null;
+    private String password = null;
 
     @Override
     public void handle(final QQContext context, final JSONObject json) {
@@ -29,8 +29,8 @@ public class QQGroupJoinRequestMessageHandler implements QQMessageHandler {
                                         context.getSelf(),
                                         user,
                                         group));
-            if (StringUtils.isBlank(this.password) || StringUtils.equals(msg,
-                                                                         this.password)) {
+            if (StringUtils.isBlank(this.getPassword()) || StringUtils.equals(msg,
+                                                                              this.getPassword())) {
                 this.log.info(String.format("%s >> 同意%s入群%s",
                                             context.getSelf(),
                                             user,
@@ -43,6 +43,14 @@ public class QQGroupJoinRequestMessageHandler implements QQMessageHandler {
     @Override
     public String getHandleType() {
         return "group_request_join";
+    }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+    public void setPassword(final String password) {
+        this.password = password;
     }
 
 }

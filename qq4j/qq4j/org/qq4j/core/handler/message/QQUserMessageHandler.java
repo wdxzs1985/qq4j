@@ -50,17 +50,20 @@ public class QQUserMessageHandler implements QQMessageHandler {
                                             context.getSelf(),
                                             user,
                                             message));
-                // if (msgId != user.getLastMsgId() &&
-                // System.currentTimeMillis() - time < this.getReplyTimeLimit()
-                // && !friendManager.isBlackList(user) && !this.isBuzy(user)) {
-                // if (this.isRepeat(user, message)) {
-                // this.handleRepeat(context, user);
-                // } else {
-                // this.getHandlers().handle(context, user, message);
-                // }
-                // }
-                // user.setLastMsgId(msgId);
-                // user.setLastMsg(message);
+                final boolean isNew = msgId > user.getLastMsgId();
+                final boolean isTooOld = System.currentTimeMillis() - time < this.getReplyTimeLimit();
+                final boolean isBlack = friendManager.isBlackList(user);
+                final boolean isBusy = this.isBuzy(user);
+
+                if (isNew && !isTooOld && !isBlack && !isBusy) {
+                    if (this.isRepeat(user, message)) {
+                        this.handleRepeat(context, user);
+                    } else {
+                        this.getHandlers().handle(context, user, message);
+                    }
+                }
+                user.setLastMsgId(msgId);
+                user.setLastMsg(message);
             }
         }
     }
@@ -86,14 +89,17 @@ public class QQUserMessageHandler implements QQMessageHandler {
             break;
         }
         context.getSender().sendToUser(user, answer);
-
     }
 
     private boolean isBuzy(final QQUser user) {
         final String status = user.getStatus();
-        if (StringUtils.equals(QQConstants.STATUS_SILENT, status) || StringUtils.equals(QQConstants.STATUS_BUSY,
-                                                                                        status) || StringUtils.equals(QQConstants.STATUS_AWAY,
-                                                                                                                      status)) {
+        final boolean isSilent = StringUtils.equals(QQConstants.STATUS_SILENT,
+                                                    status);
+        final boolean isBusy = StringUtils.equals(QQConstants.STATUS_BUSY,
+                                                  status);
+        final boolean isAway = StringUtils.equals(QQConstants.STATUS_AWAY,
+                                                  status);
+        if (isSilent || isBusy || isAway) {
             return true;
         }
         return false;

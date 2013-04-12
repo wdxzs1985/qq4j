@@ -1,7 +1,5 @@
 package org.qq4j.core;
 
-import java.util.Properties;
-
 import org.qq4j.domain.QQFont;
 import org.qq4j.domain.QQUser;
 
@@ -11,8 +9,6 @@ public class QQContext {
 
     private QQHttpClient httpClient = null;
 
-    private Properties configation = null;
-
     private QQUser self = null;
 
     private QQUserManager friendManager = null;
@@ -20,10 +16,6 @@ public class QQContext {
     private QQGroupManager groupManager = null;
 
     private QQSessionManager sessionManager = null;
-
-    private QQAiManager aiManager = null;
-
-    private QQFaithManager faithManager = null;
 
     private QQSender sender = null;
 
@@ -91,14 +83,6 @@ public class QQContext {
         return this.groupManager;
     }
 
-    public QQSessionManager getSessionManager() {
-        return this.sessionManager;
-    }
-
-    public QQAiManager getAiManager() {
-        return this.aiManager;
-    }
-
     public void setFriendManager(final QQUserManager friendManager) {
         this.friendManager = friendManager;
     }
@@ -107,28 +91,12 @@ public class QQContext {
         this.groupManager = groupManager;
     }
 
-    public void setSessionManager(final QQSessionManager sessionManager) {
-        this.sessionManager = sessionManager;
-    }
-
-    public void setAiManager(final QQAiManager aiManager) {
-        this.aiManager = aiManager;
-    }
-
     public QQSender getSender() {
         return this.sender;
     }
 
     public void setSender(final QQSender sender) {
         this.sender = sender;
-    }
-
-    public QQFaithManager getFaithManager() {
-        return this.faithManager;
-    }
-
-    public void setFaithManager(final QQFaithManager faithManager) {
-        this.faithManager = faithManager;
     }
 
     public QQHttpClient getHttpClient() {
@@ -151,19 +119,19 @@ public class QQContext {
         this.self = user;
     }
 
-    public Properties getConfigation() {
-        return this.configation;
-    }
-
     public void setHttpClient(final QQHttpClient httpClient) {
         this.httpClient = httpClient;
     }
 
-    public void setConfigation(final Properties configation) {
-        this.configation = configation;
-    }
-
     public void setClientid(final long clientid) {
         this.clientid = clientid;
+    }
+
+    public QQSessionManager getSessionManager() {
+        return this.sessionManager;
+    }
+
+    public void setSessionManager(final QQSessionManager sessionManager) {
+        this.sessionManager = sessionManager;
     }
 }

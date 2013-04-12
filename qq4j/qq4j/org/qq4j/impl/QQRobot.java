@@ -1,6 +1,5 @@
 package org.qq4j.impl;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Random;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -91,8 +90,6 @@ public class QQRobot {
                 this.login.online(context);
                 return true;
             }
-        } catch (final UnsupportedEncodingException e) {
-            QQRobot.LOG.error(e.getMessage(), e);
         } catch (final JSONException e) {
             QQRobot.LOG.error(e.getMessage(), e);
         }

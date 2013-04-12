@@ -7,6 +7,7 @@ import java.util.Random;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.StrSubstitutor;
 import org.apache.commons.lang3.time.DateFormatUtils;
+import org.qq4j.core.QQAiManager;
 import org.qq4j.core.QQContext;
 import org.qq4j.core.handler.QQCommandHandler;
 import org.qq4j.domain.QQGroup;
@@ -16,6 +17,8 @@ import org.qq4j.domain.QQUser;
 import framework.SystemConstants;
 
 public class QQSaisenCommandHandler implements QQCommandHandler {
+
+    private QQAiManager aiManager = null;
 
     private String answer1 = null;
     private String answer2 = null;
@@ -70,7 +73,7 @@ public class QQSaisenCommandHandler implements QQCommandHandler {
         if (saisen.getTimes() <= this.timesLimit) {
             final int random = new Random().nextInt(100);
             if (random % 2 == 0) {
-                context.getAiManager().increaseFaith(user, 1);
+                this.getAiManager().increaseFaith(user, 1);
                 if (StringUtils.isNotBlank(this.answer1)) {
                     final Map<String, String> valueMap = new HashMap<String, String>();
                     valueMap.put("nick", user.getNick());
@@ -132,5 +135,13 @@ public class QQSaisenCommandHandler implements QQCommandHandler {
 
     public void setTimeLimitFormat(final String timeLimitFormat) {
         this.timeLimitFormat = timeLimitFormat;
+    }
+
+    public QQAiManager getAiManager() {
+        return this.aiManager;
+    }
+
+    public void setAiManager(final QQAiManager aiManager) {
+        this.aiManager = aiManager;
     }
 }

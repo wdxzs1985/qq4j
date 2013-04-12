@@ -13,6 +13,8 @@ import org.qq4j.domain.QQUser;
 
 public class QQFaithCommandHandler implements QQCommandHandler {
 
+    private QQAiManager aiManager = null;
+
     private String answer1 = null;
     private String answer2 = null;
 
@@ -34,9 +36,9 @@ public class QQFaithCommandHandler implements QQCommandHandler {
     }
 
     private String getAnswer(final QQContext context, final QQUser user) {
-        final QQAiManager aiManager = context.getAiManager();
-        if (aiManager.hasFaith(user)) {
-            final Map<String, Object> result = aiManager.queryRank(user);
+        if (this.getAiManager().hasFaith(user)) {
+            final Map<String, Object> result = this.getAiManager()
+                                                   .queryRank(user);
             final BigDecimal faith = (BigDecimal) result.get("faith");
             final BigDecimal rank = (BigDecimal) result.get("rank");
 
@@ -66,5 +68,13 @@ public class QQFaithCommandHandler implements QQCommandHandler {
 
     public void setAnswer2(final String answer2) {
         this.answer2 = answer2;
+    }
+
+    public QQAiManager getAiManager() {
+        return this.aiManager;
+    }
+
+    public void setAiManager(final QQAiManager aiManager) {
+        this.aiManager = aiManager;
     }
 }

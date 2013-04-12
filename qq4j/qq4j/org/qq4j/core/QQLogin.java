@@ -3,7 +3,6 @@ package org.qq4j.core;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.UnsupportedEncodingException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,7 +10,6 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -75,8 +73,7 @@ public class QQLogin {
         return false;
     }
 
-    public void online(final QQContext context)
-                                               throws UnsupportedEncodingException {
+    public void online(final QQContext context) {
         this.getDataFromCookie(context);
         this.fetchChannelInfo(context);
     }
@@ -89,9 +86,7 @@ public class QQLogin {
         this.log.info(String.format("获得skey：%s", context.getSkey()));
     }
 
-    private void fetchChannelInfo(final QQContext context)
-                                                          throws UnsupportedEncodingException,
-                                                          JSONException {
+    private void fetchChannelInfo(final QQContext context) {
         final String result = this.getChannelInfo(context);
         final JSONObject retJson = JSONObject.fromObject(result);
         final int retcode = retJson.getInt("retcode");
@@ -149,9 +144,7 @@ public class QQLogin {
         }
     }
 
-    private String getChannelInfo(final QQContext context)
-                                                          throws JSONException,
-                                                          UnsupportedEncodingException {
+    private String getChannelInfo(final QQContext context) {
         final String url = "http://d.web2.qq.com/channel/login2";
 
         final JSONObject content = new JSONObject();

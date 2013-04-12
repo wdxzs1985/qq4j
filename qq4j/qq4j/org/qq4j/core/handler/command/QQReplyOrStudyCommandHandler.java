@@ -13,6 +13,8 @@ import org.qq4j.domain.QQUser;
 
 public class QQReplyOrStudyCommandHandler implements QQCommandHandler {
 
+    private QQAiManager aiManager = null;
+
     public static final String STUDY_STEP = "QQReplyOrStudyCommandHandler.step";
     public static final String STUDY_QUESTION = "QQReplyOrStudyCommandHandler.question";
     public static final int STEP_0 = 0;
@@ -100,10 +102,9 @@ public class QQReplyOrStudyCommandHandler implements QQCommandHandler {
 
                     final long account = context.getSelf().getAccount();
                     final long owner = user.getAccount();
-                    final QQAiManager aimanager = context.getAiManager();
-                    answer = aimanager.getReplyAnswerSmart(message,
-                                                           account,
-                                                           owner);
+                    answer = this.getAiManager().getReplyAnswerSmart(message,
+                                                                     account,
+                                                                     owner);
                     if (StringUtils.isBlank(answer)) {
                         answer = this.getAnswer6();
                         session.put(QQReplyOrStudyCommandHandler.STUDY_STEP,
@@ -131,9 +132,10 @@ public class QQReplyOrStudyCommandHandler implements QQCommandHandler {
                 answer = this.getAnswer7();
             } else {
                 final String question = (String) session.get(QQReplyOrStudyCommandHandler.STUDY_QUESTION);
-                final QQAiManager aiManager = context.getAiManager();
-                aiManager.addAnswer(question, message, user.getAccount());
-                aiManager.increaseFaith(user, this.getFaith());
+                this.getAiManager().addAnswer(question,
+                                              message,
+                                              user.getAccount());
+                this.getAiManager().increaseFaith(user, this.getFaith());
                 answer = this.getAnswer8();
             }
             // session.remove(QQSessionHandler.SESSION_HANDLER);
@@ -231,6 +233,14 @@ public class QQReplyOrStudyCommandHandler implements QQCommandHandler {
 
     public void setAnswer4(final String answer4) {
         this.answer4 = answer4;
+    }
+
+    public QQAiManager getAiManager() {
+        return this.aiManager;
+    }
+
+    public void setAiManager(final QQAiManager aiManager) {
+        this.aiManager = aiManager;
     }
 
 }

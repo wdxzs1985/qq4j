@@ -9,6 +9,9 @@
         http://www.springframework.org/schema/context/spring-context.xsd">
         
     <bean id="login" class="org.qq4j.core.QQLogin"></bean>
+    <bean id="aiManager" class="org.qq4j.core.QQAiManager"></bean>
+    
+    <!-- Message Handler -->
     <bean id="unknow_message_handler" class="org.qq4j.core.handler.message.QQUnknowMessageHandler"></bean>
     <bean id="system_message_handler" class="org.qq4j.core.handler.message.QQSystemMessageHandlerMapping">
         <property name="defaultHandler" ref="unknow_message_handler"></property>
@@ -16,7 +19,7 @@
             <map>
                 <entry key="verify_required">
                     <bean class="org.qq4j.core.handler.message.QQFriendVerifyMessageHandler">
-                        <property name="password" value=""></property>
+                        <property name="password" value="请加好友"></property>
                     </bean>
                 </entry>
             </map>
@@ -31,7 +34,9 @@
                     <bean class="org.qq4j.core.handler.message.QQGroupJoinMessageHandler"></bean>
                 </entry>
                 <entry key="group_request_join">
-                    <bean class="org.qq4j.core.handler.message.QQGroupJoinRequestMessageHandler"></bean>
+                    <bean class="org.qq4j.core.handler.message.QQGroupJoinRequestMessageHandler">
+                        <property name="password" value="请求入群"></property>
+                    </bean>
                 </entry>
                 <entry key="group_leave">
                     <bean class="org.qq4j.core.handler.message.QQGroupLeaveMessageHandler"></bean>
