@@ -11,7 +11,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.qq4j.core.QQContext;
 import org.qq4j.core.QQGroupManager;
-import org.qq4j.core.QQHttpClient;
 import org.qq4j.core.QQLogin;
 import org.qq4j.core.QQMessagePoller;
 import org.qq4j.core.QQSender;
@@ -50,21 +49,16 @@ public class QQRobot {
 
     public void startup() {
         this.context.setClientid(new Random().nextInt(10000000));
-        this.context.setHttpClient(new QQHttpClient());
-
         if (this.doLogin(this.context)) {
-            //
+            // sender
             final QQSender sender = this.context.getSender();
-            // sender.setContext(this.context);
             sender.initSender();
             // friend manager
             final QQUserManager friendManager = this.context.getFriendManager();
-            // friendManager.setContext(this.context);
             friendManager.initFriendsInfo();
             friendManager.initBlackList();
             // group manager
             final QQGroupManager groupManager = this.context.getGroupManager();
-            // groupManager.setContext(this.context);
             groupManager.initGroupInfo();
             //
             this.context.setRun(true);
@@ -74,11 +68,15 @@ public class QQRobot {
     }
 
     public void reLogin() {
-        this.context.setHttpClient(new QQHttpClient());
         if (this.doLogin(this.context)) {
+            // sender
+            final QQSender sender = this.context.getSender();
+            sender.initSender();
+            // friend manager
             final QQUserManager friendManager = this.context.getFriendManager();
             friendManager.initFriendsInfo();
             friendManager.initBlackList();
+            // group manager
             final QQGroupManager groupManager = this.context.getGroupManager();
             groupManager.initGroupInfo();
         }

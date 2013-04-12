@@ -124,7 +124,7 @@ public class QQSender {
         context.getHttpClient().getData(url);
     }
 
-    private void initGfaceSig() throws JSONException {
+    private void initGfaceSig() {
         final QQContext context = this.getContext();
         final String url = "http://d.web2.qq.com/channel/get_gface_sig2" + "?clientid=" + context.getClientid() + "&psessionid=" + context.getPsessionid() + "&t=" + System.currentTimeMillis();
         final String result = context.getHttpClient().getData(url);

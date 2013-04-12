@@ -131,13 +131,7 @@
                 <property name="italic" value="false"></property>
             </bean>
         </property>
-        <!-- AIManager -->
-        <property name="aiManager">
-            <bean class="org.qq4j.core.QQAiManager">
-                <property name="jdbcTemplate" ref="jdbcTemplate"></property>
-                <property name="context" ref="mokou_context"></property>
-            </bean>
-        </property>
+
         <!-- SessionManager -->
         <property name="sessionManager">
             <bean class="org.qq4j.core.QQSessionManager"></bean>
@@ -146,7 +140,6 @@
         <property name="friendManager">
             <bean class="org.qq4j.core.QQUserManager">
                 <property name="context" ref="mokou_context"></property>
-                <property name="jdbcTemplate" ref="jdbcTemplate"></property>
             </bean>
         </property>
         <!-- GroupManager -->
