@@ -113,7 +113,7 @@
     
     <bean id="mokou_user" class="org.qq4j.domain.QQUser">
         <property name="account" value="1721961131"></property>
-        <property name="password" value="wyp1721961131"></property>
+        <property name="password" value="******"></property>
         <property name="status" value="callme"></property>
     </bean>
     

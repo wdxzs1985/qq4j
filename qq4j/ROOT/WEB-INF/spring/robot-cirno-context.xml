@@ -112,7 +112,7 @@
 
     <bean id="cirno_user" class="org.qq4j.domain.QQUser">
         <property name="account" value="1840596989"></property>
-        <property name="password" value="bushing"></property>
+        <property name="password" value="******"></property>
         <property name="status" value="callme"></property>
     </bean>
     

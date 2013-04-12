@@ -120,7 +120,7 @@
     
     <bean id="daiyousei_user" class="org.qq4j.domain.QQUser">
         <property name="account" value="2580298030"></property>
-        <property name="password" value="bushing"></property>
+        <property name="password" value="******"></property>
         <property name="status" value="callme"></property>
     </bean>
             
