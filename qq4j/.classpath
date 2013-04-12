@@ -1,38 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="sina4j"/>
-	<classpathentry kind="src" path="qq4j"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
-	<classpathentry kind="lib" path="ROOT/WEB-INF/lib/commons-codec-1.5.jar"/>
-	<classpathentry kind="lib" path="ROOT/WEB-INF/lib/commons-collections-3.2.1.jar"/>
-	<classpathentry kind="lib" path="ROOT/WEB-INF/lib/commons-dbcp-1.4.jar"/>
-	<classpathentry kind="lib" path="ROOT/WEB-INF/lib/commons-io-2.1.jar"/>
-	<classpathentry kind="lib" path="ROOT/WEB-INF/lib/commons-lang3-3.0.1.jar"/>
-	<classpathentry kind="lib" path="ROOT/WEB-INF/lib/commons-logging-1.1.1.jar"/>
-	<classpathentry kind="lib" path="ROOT/WEB-INF/lib/httpclient-4.2-beta1.jar"/>
-	<classpathentry kind="lib" path="ROOT/WEB-INF/lib/httpcore-4.2-beta1.jar"/>
-	<classpathentry kind="lib" path="ROOT/WEB-INF/lib/httpcore-nio-4.2-beta1.jar"/>
-	<classpathentry kind="lib" path="ROOT/WEB-INF/lib/json-taglib-0.4.1.jar"/>
-	<classpathentry kind="lib" path="ROOT/WEB-INF/lib/log4j-1.2.16.jar"/>
-	<classpathentry kind="lib" path="ROOT/WEB-INF/lib/org.springframework.aop-3.1.1.RELEASE.jar"/>
-	<classpathentry kind="lib" path="ROOT/WEB-INF/lib/org.springframework.asm-3.1.1.RELEASE.jar"/>
-	<classpathentry kind="lib" path="ROOT/WEB-INF/lib/org.springframework.aspects-3.1.1.RELEASE.jar"/>
-	<classpathentry kind="lib" path="ROOT/WEB-INF/lib/org.springframework.beans-3.1.1.RELEASE.jar"/>
-	<classpathentry kind="lib" path="ROOT/WEB-INF/lib/org.springframework.context-3.1.1.RELEASE.jar"/>
-	<classpathentry kind="lib" path="ROOT/WEB-INF/lib/org.springframework.context.support-3.1.1.RELEASE.jar"/>
-	<classpathentry kind="lib" path="ROOT/WEB-INF/lib/org.springframework.core-3.1.1.RELEASE.jar"/>
-	<classpathentry kind="lib" path="ROOT/WEB-INF/lib/org.springframework.expression-3.1.1.RELEASE.jar"/>
-	<classpathentry kind="lib" path="ROOT/WEB-INF/lib/org.springframework.instrument-3.1.1.RELEASE.jar"/>
-	<classpathentry kind="lib" path="ROOT/WEB-INF/lib/org.springframework.instrument.tomcat-3.1.1.RELEASE.jar"/>
-	<classpathentry kind="lib" path="ROOT/WEB-INF/lib/org.springframework.jdbc-3.1.1.RELEASE.jar"/>
-	<classpathentry kind="lib" path="ROOT/WEB-INF/lib/org.springframework.orm-3.1.1.RELEASE.jar"/>
-	<classpathentry kind="lib" path="ROOT/WEB-INF/lib/org.springframework.oxm-3.1.1.RELEASE.jar"/>
-	<classpathentry kind="lib" path="ROOT/WEB-INF/lib/org.springframework.transaction-3.1.1.RELEASE.jar"/>
-	<classpathentry kind="lib" path="ROOT/WEB-INF/lib/org.springframework.web-3.1.1.RELEASE.jar"/>
-	<classpathentry kind="lib" path="ROOT/WEB-INF/lib/org.springframework.web.servlet-3.1.1.RELEASE.jar"/>
-	<classpathentry kind="lib" path="ROOT/WEB-INF/lib/aopalliance-1.0.jar"/>
-	<classpathentry kind="lib" path="ROOT/WEB-INF/lib/commons-pool-1.6.jar"/>
-	<classpathentry kind="lib" path="ROOT/WEB-INF/lib/ojdbc6.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry excluding="org/qq4j/test/StringAnalystBatch.java" including="**/*.java" kind="src" output="target/classes" path="src">
+		<attributes>
+			<attribute name="optional" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry excluding="org/qq4j/core/handler/command/QQSinaweiboCommandHandler.java" including="**/*.java" kind="src" path="qq4j"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>

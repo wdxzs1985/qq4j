@@ -1,13 +1,9 @@
 package org.qq4j.core.handler;
 
-import java.io.UnsupportedEncodingException;
-
 import org.qq4j.core.QQContext;
 import org.qq4j.core.QQSession;
 import org.qq4j.domain.QQGroup;
 import org.qq4j.domain.QQUser;
-
-import atg.taglib.json.util.JSONException;
 
 public class QQSessionHandler implements QQCommandHandler {
 
@@ -18,8 +14,7 @@ public class QQSessionHandler implements QQCommandHandler {
     @Override
     public void handle(final QQContext context,
                        final QQUser user,
-                       final String message)
-            throws UnsupportedEncodingException, JSONException {
+                       final String message) {
         final QQSession session = context.getSessionManager().getSession(user);
         QQCommandHandler handler = null;
         if (session != null) {
@@ -33,8 +28,7 @@ public class QQSessionHandler implements QQCommandHandler {
     public void handleGroup(final QQContext context,
                             final QQGroup group,
                             final QQUser user,
-                            final String message)
-            throws UnsupportedEncodingException, JSONException {
+                            final String message) {
         final QQSession session = context.getSessionManager().getSession(user);
         QQCommandHandler handler = null;
         if (session != null) {

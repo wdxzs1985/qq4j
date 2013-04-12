@@ -1,6 +1,7 @@
 package org.qq4j.core.handler.message;
 
-import java.io.UnsupportedEncodingException;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -9,10 +10,6 @@ import org.qq4j.core.handler.QQMessageHandler;
 import org.qq4j.domain.QQUser;
 import org.qq4j.helper.QQMessageParser;
 
-import atg.taglib.json.util.JSONArray;
-import atg.taglib.json.util.JSONException;
-import atg.taglib.json.util.JSONObject;
-
 public class QQStrangerMessageHandler implements QQMessageHandler {
 
     private final Log log = LogFactory.getLog(QQStrangerMessageHandler.class);
@@ -20,8 +17,7 @@ public class QQStrangerMessageHandler implements QQMessageHandler {
     private String answer = null;
 
     @Override
-    public void handle(final QQContext context, final JSONObject json)
-            throws JSONException, UnsupportedEncodingException {
+    public void handle(final QQContext context, final JSONObject json) {
         final JSONObject value = json.getJSONObject("value");
         final long uin = value.getLong("from_uin");
         final long msgId = value.getLong("msg_id");

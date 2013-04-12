@@ -3,10 +3,11 @@ package org.qq4j.core;
 import java.util.Collections;
 import java.util.List;
 
+import net.sf.json.JSONObject;
+
 import org.apache.http.HttpMessage;
 import org.apache.http.message.BasicNameValuePair;
 
-import atg.taglib.json.util.JSONObject;
 import framework.CommonHttpClient;
 
 public class QQHttpClient extends CommonHttpClient {

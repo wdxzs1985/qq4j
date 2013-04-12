@@ -1,13 +1,13 @@
 package org.qq4j.core;
 
+import net.sf.json.JSONException;
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.qq4j.domain.QQGroup;
 import org.qq4j.domain.QQUser;
-
-import atg.taglib.json.util.JSONException;
-import atg.taglib.json.util.JSONObject;
 
 public abstract class QQAccountManager {
 
@@ -19,14 +19,7 @@ public abstract class QQAccountManager {
 
     protected QQUser fetchUserAccount(final QQUser user) {
         final QQContext context = this.getContext();
-        final String url = "http://s.web2.qq.com/api/get_friend_uin2?"
-                           + "tuin="
-                           + user.getUin()
-                           + "&type=1&verifysession=&code="
-                           + "&vfwebqq="
-                           + context.getVfwebqq()
-                           + "&t="
-                           + System.currentTimeMillis();
+        final String url = "http://s.web2.qq.com/api/get_friend_uin2?" + "tuin=" + user.getUin() + "&type=1&verifysession=&code=" + "&vfwebqq=" + context.getVfwebqq() + "&t=" + System.currentTimeMillis();
         final String result = context.getHttpClient().getData(url);
         final long account = this.parseUserAccount(result);
         if (account != QQAccountManager.ERROR_USER) {
@@ -38,14 +31,7 @@ public abstract class QQAccountManager {
 
     protected QQGroup fetchGroupAccount(final QQGroup group) {
         final QQContext context = this.getContext();
-        final String url = "http://s.web2.qq.com/api/get_friend_uin2?"
-                           + "tuin="
-                           + group.getCode()
-                           + "&type=4&verifysession=&code="
-                           + "&vfwebqq="
-                           + context.getVfwebqq()
-                           + "&t="
-                           + System.currentTimeMillis();
+        final String url = "http://s.web2.qq.com/api/get_friend_uin2?" + "tuin=" + group.getCode() + "&type=4&verifysession=&code=" + "&vfwebqq=" + context.getVfwebqq() + "&t=" + System.currentTimeMillis();
         final String result = context.getHttpClient().getData(url);
         final long account = this.parseUserAccount(result);
         if (account != QQAccountManager.ERROR_USER) {
@@ -59,7 +45,7 @@ public abstract class QQAccountManager {
     private long parseUserAccount(final String result) {
         if (StringUtils.isNotBlank(result)) {
             try {
-                final JSONObject retJson = new JSONObject(result);
+                final JSONObject retJson = JSONObject.fromObject(result);
                 if (retJson.getInt("retcode") == 0) {
                     final JSONObject value = retJson.getJSONObject("result");
                     return value.getLong("account");

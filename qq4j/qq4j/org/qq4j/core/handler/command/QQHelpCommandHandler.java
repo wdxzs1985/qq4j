@@ -1,6 +1,5 @@
 package org.qq4j.core.handler.command;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -10,8 +9,6 @@ import org.qq4j.core.handler.QQCommandHandler;
 import org.qq4j.domain.QQGroup;
 import org.qq4j.domain.QQUser;
 
-import atg.taglib.json.util.JSONException;
-
 public class QQHelpCommandHandler implements QQCommandHandler {
 
     private Map<String, String> mapping = null;
@@ -19,8 +16,7 @@ public class QQHelpCommandHandler implements QQCommandHandler {
     @Override
     public void handle(final QQContext context,
                        final QQUser user,
-                       final String message)
-            throws UnsupportedEncodingException, JSONException {
+                       final String message) {
         final String answer = this.getAnswer(context.getSelf());
         context.getSender().sendToUser(user, answer);
     }
@@ -29,8 +25,7 @@ public class QQHelpCommandHandler implements QQCommandHandler {
     public void handleGroup(final QQContext context,
                             final QQGroup group,
                             final QQUser user,
-                            final String message)
-            throws UnsupportedEncodingException, JSONException {
+                            final String message) {
         final String answer = this.getAnswer(context.getSelf());
         context.getSender().sendToGroup(group, answer);
     }

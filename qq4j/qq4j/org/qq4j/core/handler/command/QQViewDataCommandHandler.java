@@ -1,6 +1,5 @@
 package org.qq4j.core.handler.command;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import org.apache.commons.lang3.SystemUtils;
@@ -9,8 +8,6 @@ import org.qq4j.core.handler.QQCommandHandler;
 import org.qq4j.domain.QQGroup;
 import org.qq4j.domain.QQUser;
 
-import atg.taglib.json.util.JSONException;
-
 public class QQViewDataCommandHandler implements QQCommandHandler {
 
     private long admin;
@@ -18,8 +15,7 @@ public class QQViewDataCommandHandler implements QQCommandHandler {
     @Override
     public void handle(final QQContext context,
                        final QQUser user,
-                       final String message)
-            throws UnsupportedEncodingException, JSONException {
+                       final String message) {
         context.getSender().sendToUser(user, this.getAnswer(context, user));
     }
 
@@ -27,19 +23,16 @@ public class QQViewDataCommandHandler implements QQCommandHandler {
     public void handleGroup(final QQContext context,
                             final QQGroup group,
                             final QQUser user,
-                            final String message)
-            throws UnsupportedEncodingException, JSONException {
+                            final String message) {
         context.getSender().sendToGroup(group, this.getAnswer(context, null));
     }
 
-    private String getAnswer(final QQContext context, final QQUser user)
-            throws UnsupportedEncodingException, JSONException {
+    private String getAnswer(final QQContext context, final QQUser user) {
         final Map<Long, QQUser> friendList = context.getFriendManager()
                                                     .getUsers();
         final Map<Long, QQGroup> groupList = context.getGroupManager()
                                                     .getGroups();
-        final boolean isAdmin = user != null
-                                && this.getAdmin() == user.getAccount();
+        final boolean isAdmin = user != null && this.getAdmin() == user.getAccount();
         //
         final StringBuilder answer = new StringBuilder();
         answer.append("☆已有").append(friendList.size()).append("个好友。☆");

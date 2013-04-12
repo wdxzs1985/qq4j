@@ -1,7 +1,10 @@
 package org.qq4j.core;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Random;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONException;
+import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -10,10 +13,6 @@ import org.qq4j.domain.QQFont;
 import org.qq4j.domain.QQGroup;
 import org.qq4j.domain.QQUser;
 import org.qq4j.helper.QQMessageParser;
-
-import atg.taglib.json.util.JSONArray;
-import atg.taglib.json.util.JSONException;
-import atg.taglib.json.util.JSONObject;
 
 public class QQSender {
 
@@ -25,16 +24,11 @@ public class QQSender {
     private boolean canSendGface = false;
 
     public void initSender() {
-        try {
-            this.initGfaceSig();
-            this.canSendGface = true;
-        } catch (final JSONException e) {
-            this.log.warn(e.getMessage());
-        }
+        this.initGfaceSig();
+        this.canSendGface = true;
     }
 
-    public void sendToUser(final QQUser user, final String message)
-            throws JSONException, UnsupportedEncodingException {
+    public void sendToUser(final QQUser user, final String message) {
         if (StringUtils.isBlank(message)) {
             return;
         }
@@ -57,8 +51,7 @@ public class QQSender {
         this.sendMessage(json, sendMsgUrl);
     }
 
-    public void sendToGroup(final QQGroup group, final String message)
-            throws JSONException, UnsupportedEncodingException {
+    public void sendToGroup(final QQGroup group, final String message) {
         if (StringUtils.isBlank(message)) {
             return;
         }
@@ -115,8 +108,7 @@ public class QQSender {
         return msg.toString();
     }
 
-    private void sendMessage(final JSONObject content, final String url)
-            throws JSONException, UnsupportedEncodingException {
+    private void sendMessage(final JSONObject content, final String url) {
         final QQContext context = this.getContext();
 
         content.put("msg_id", new Random().nextInt(10000000));
@@ -128,30 +120,16 @@ public class QQSender {
 
     public void sendShakeMessage(final QQUser user) {
         final QQContext context = this.getContext();
-        final String url = "http://d.web2.qq.com/channel/shake2"
-                           + "?to_uin="
-                           + user.getUin()
-                           + "&clientid="
-                           + context.getClientid()
-                           + "&psessionid="
-                           + context.getPsessionid()
-                           + "&t="
-                           + System.currentTimeMillis();
+        final String url = "http://d.web2.qq.com/channel/shake2" + "?to_uin=" + user.getUin() + "&clientid=" + context.getClientid() + "&psessionid=" + context.getPsessionid() + "&t=" + System.currentTimeMillis();
         context.getHttpClient().getData(url);
     }
 
     private void initGfaceSig() throws JSONException {
         final QQContext context = this.getContext();
-        final String url = "http://d.web2.qq.com/channel/get_gface_sig2"
-                           + "?clientid="
-                           + context.getClientid()
-                           + "&psessionid="
-                           + context.getPsessionid()
-                           + "&t="
-                           + System.currentTimeMillis();
+        final String url = "http://d.web2.qq.com/channel/get_gface_sig2" + "?clientid=" + context.getClientid() + "&psessionid=" + context.getPsessionid() + "&t=" + System.currentTimeMillis();
         final String result = context.getHttpClient().getData(url);
         if (StringUtils.isNotBlank(result)) {
-            final JSONObject json = new JSONObject(result);
+            final JSONObject json = JSONObject.fromObject(result);
             final int retcode = json.getInt("retcode");
             if (retcode == 0) {
                 final JSONObject resultJson = json.getJSONObject("result");

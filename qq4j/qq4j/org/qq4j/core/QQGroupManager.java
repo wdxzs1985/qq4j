@@ -4,15 +4,15 @@ import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONException;
+import net.sf.json.JSONObject;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.qq4j.domain.QQGroup;
 import org.qq4j.domain.QQUser;
-
-import atg.taglib.json.util.JSONArray;
-import atg.taglib.json.util.JSONException;
-import atg.taglib.json.util.JSONObject;
 
 public class QQGroupManager extends QQAccountManager {
 
@@ -54,12 +54,8 @@ public class QQGroupManager extends QQAccountManager {
     }
 
     public QQGroup fetchGroupInfo(final long gcode) {
-        final String url = "http://s.web2.qq.com/api/get_group_info_ext2?gcode="
-                           + gcode
-                           + "&vfwebqq="
-                           + this.getContext().getVfwebqq()
-                           + "&t="
-                           + System.currentTimeMillis();
+        final String url = "http://s.web2.qq.com/api/get_group_info_ext2?gcode=" + gcode + "&vfwebqq=" + this.getContext()
+                                                                                                             .getVfwebqq() + "&t=" + System.currentTimeMillis();
         final String result = this.getContext().getHttpClient().getData(url);
         return this.parseGroupInfo(result);
     }
@@ -69,7 +65,7 @@ public class QQGroupManager extends QQAccountManager {
 
         if (StringUtils.isNotBlank(result)) {
             try {
-                final JSONObject retJson = new JSONObject(result);
+                final JSONObject retJson = JSONObject.fromObject(result);
                 final int retcode = retJson.getInt("retcode");
                 if (retcode == 0) {
                     final JSONObject groupJson = retJson.getJSONObject("result");
@@ -123,20 +119,14 @@ public class QQGroupManager extends QQAccountManager {
     }
 
     public void allowJoinGroup(final QQGroup group, final QQUser user) {
-        final String pollUrl = "http://d.web2.qq.com/channel/op_group_join_req?"
-                               + "group_uin="
-                               + group.getUin()
-                               + "&req_uin="
-                               + user.getUin()
-                               + "&msg=&op_type=2&clientid="
-                               + this.getContext().getClientid()
-                               + "&psessionid="
-                               + this.getContext().getPsessionid();
+        final String pollUrl = "http://d.web2.qq.com/channel/op_group_join_req?" + "group_uin=" + group.getUin() + "&req_uin=" + user.getUin() + "&msg=&op_type=2&clientid=" + this.getContext()
+                                                                                                                                                                                   .getClientid() + "&psessionid=" + this.getContext()
+                                                                                                                                                                                                                         .getPsessionid();
         this.getContext().getHttpClient().getData(pollUrl);
     }
 
     public void quitGroup(final QQGroup group) throws JSONException,
-            UnsupportedEncodingException {
+                                              UnsupportedEncodingException {
         final QQContext context = this.getContext();
         final String url = "http://s.web2.qq.com/api/quit_group2";
 
@@ -147,11 +137,11 @@ public class QQGroupManager extends QQAccountManager {
     }
 
     private Map<Long, QQGroup> parseGroupMapping(final String result)
-            throws JSONException {
+                                                                     throws JSONException {
         final Map<Long, QQGroup> groupMapping = new HashMap<Long, QQGroup>();
         if (StringUtils.isNotBlank(result)) {
 
-            final JSONObject retJson = new JSONObject(result);
+            final JSONObject retJson = JSONObject.fromObject(result);
             final int retcode = retJson.getInt("retcode");
             if (retcode == 0) {
                 final JSONObject resultJson = retJson.getJSONObject("result");

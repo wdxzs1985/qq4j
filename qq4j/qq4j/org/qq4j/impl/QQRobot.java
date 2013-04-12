@@ -6,6 +6,8 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import net.sf.json.JSONException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.qq4j.core.QQContext;
@@ -14,11 +16,9 @@ import org.qq4j.core.QQHttpClient;
 import org.qq4j.core.QQLogin;
 import org.qq4j.core.QQMessagePoller;
 import org.qq4j.core.QQSender;
+import org.qq4j.core.QQThreadFactory;
 import org.qq4j.core.QQUserManager;
 import org.qq4j.domain.QQUser;
-import org.qq4j.factory.QQThreadFactory;
-
-import atg.taglib.json.util.JSONException;
 
 /**
  * 

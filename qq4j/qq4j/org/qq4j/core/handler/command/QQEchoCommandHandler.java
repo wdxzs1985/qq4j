@@ -1,7 +1,5 @@
 package org.qq4j.core.handler.command;
 
-import java.io.UnsupportedEncodingException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.commons.logging.Log;
@@ -14,8 +12,6 @@ import org.qq4j.core.handler.QQSessionHandler;
 import org.qq4j.domain.QQGroup;
 import org.qq4j.domain.QQUser;
 
-import atg.taglib.json.util.JSONException;
-
 public class QQEchoCommandHandler implements QQCommandHandler {
 
     private static final Log LOG = LogFactory.getLog(QQEchoCommandHandler.class);
@@ -25,8 +21,7 @@ public class QQEchoCommandHandler implements QQCommandHandler {
     @Override
     public void handle(final QQContext context,
                        final QQUser user,
-                       final String message)
-            throws UnsupportedEncodingException, JSONException {
+                       final String message) {
         if (QQEchoCommandHandler.LOG.isDebugEnabled()) {
             QQEchoCommandHandler.LOG.debug(String.format("%s进入回音模式", user));
         }
@@ -49,8 +44,7 @@ public class QQEchoCommandHandler implements QQCommandHandler {
     public void handleGroup(final QQContext context,
                             final QQGroup group,
                             final QQUser user,
-                            final String message)
-            throws UnsupportedEncodingException, JSONException {
+                            final String message) {
         if (QQEchoCommandHandler.LOG.isDebugEnabled()) {
             QQEchoCommandHandler.LOG.debug(String.format("%s进入回音模式", user));
         }

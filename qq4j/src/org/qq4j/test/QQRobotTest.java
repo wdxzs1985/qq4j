@@ -13,9 +13,8 @@ public class QQRobotTest {
 
     public static void main(final String[] args) throws FileNotFoundException {
         final String ROOT = "/ROOT";
-        final ApplicationContext context = new FileSystemXmlApplicationContext(new String[] { ROOT
-                                                                                              + "/WEB-INF/spring/application-test-context.xml" });
-        final QQRobot robot = (QQRobot) context.getBean("cirno");
+        final ApplicationContext context = new FileSystemXmlApplicationContext(new String[] { ROOT + "/WEB-INF/spring/application-test-context.xml" });
+        final QQRobot robot = (QQRobot) context.getBean("default");
         robot.startup();
         // final SinaRobot sinarobot = (SinaRobot)
         // context.getBean("sina_robot");

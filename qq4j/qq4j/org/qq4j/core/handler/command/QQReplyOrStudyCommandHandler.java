@@ -1,7 +1,5 @@
 package org.qq4j.core.handler.command;
 
-import java.io.UnsupportedEncodingException;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -12,8 +10,6 @@ import org.qq4j.core.handler.QQCommandHandler;
 import org.qq4j.core.handler.QQSessionHandler;
 import org.qq4j.domain.QQGroup;
 import org.qq4j.domain.QQUser;
-
-import atg.taglib.json.util.JSONException;
 
 public class QQReplyOrStudyCommandHandler implements QQCommandHandler {
 
@@ -42,8 +38,7 @@ public class QQReplyOrStudyCommandHandler implements QQCommandHandler {
     @Override
     public void handle(final QQContext context,
                        final QQUser user,
-                       final String message)
-            throws UnsupportedEncodingException, JSONException {
+                       final String message) {
         final QQSession session = context.getSessionManager().getSession(user);
         Integer step = (Integer) session.get(QQReplyOrStudyCommandHandler.STUDY_STEP);
         if (step == null) {
@@ -72,8 +67,7 @@ public class QQReplyOrStudyCommandHandler implements QQCommandHandler {
 
     private void doStep0(final QQContext context,
                          final QQUser user,
-                         final QQSession session)
-            throws UnsupportedEncodingException, JSONException {
+                         final QQSession session) {
         context.getSender().sendToUser(user, this.getAnswer1());
         session.put(QQSessionHandler.SESSION_HANDLER, this);
         session.put(QQReplyOrStudyCommandHandler.STUDY_STEP,
@@ -83,8 +77,7 @@ public class QQReplyOrStudyCommandHandler implements QQCommandHandler {
     private void doStep1(final QQContext context,
                          final QQUser user,
                          final QQSession session,
-                         final String message)
-            throws UnsupportedEncodingException, JSONException {
+                         final String message) {
         String answer = null;
         if (StringUtils.isBlank(message)) {
             answer = this.getAnswer2();
@@ -93,8 +86,8 @@ public class QQReplyOrStudyCommandHandler implements QQCommandHandler {
             if (StringUtils.length(message) > 200) {
                 answer = this.getAnswer4();
             } else {
-                if (StringUtils.isNotBlank(question)
-                    && StringUtils.equals(this.getCommand1(), message)) {
+                if (StringUtils.isNotBlank(question) && StringUtils.equals(this.getCommand1(),
+                                                                           message)) {
                     // 不对
                     answer = this.getAnswer3();
                     session.put(QQSessionHandler.SESSION_HANDLER, this);
@@ -127,8 +120,7 @@ public class QQReplyOrStudyCommandHandler implements QQCommandHandler {
     private void doStep2(final QQContext context,
                          final QQUser user,
                          final QQSession session,
-                         final String message)
-            throws UnsupportedEncodingException, JSONException {
+                         final String message) {
         String answer = null;
         if (StringUtils.isBlank(message)) {
             answer = this.getAnswer2();
@@ -158,8 +150,7 @@ public class QQReplyOrStudyCommandHandler implements QQCommandHandler {
     public void handleGroup(final QQContext context,
                             final QQGroup group,
                             final QQUser user,
-                            final String message)
-            throws UnsupportedEncodingException, JSONException {
+                            final String message) {
     }
 
     public String getCommand1() {

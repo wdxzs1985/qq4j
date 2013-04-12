@@ -1,15 +1,12 @@
 package org.qq4j.core.handler.message;
 
-import java.io.UnsupportedEncodingException;
+import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.qq4j.core.QQContext;
 import org.qq4j.core.handler.QQMessageHandler;
-
-import atg.taglib.json.util.JSONException;
-import atg.taglib.json.util.JSONObject;
 
 public class QQFriendVerifyMessageHandler implements QQMessageHandler {
 
@@ -18,8 +15,7 @@ public class QQFriendVerifyMessageHandler implements QQMessageHandler {
     private String password = null;
 
     @Override
-    public void handle(final QQContext context, final JSONObject json)
-            throws JSONException, UnsupportedEncodingException {
+    public void handle(final QQContext context, final JSONObject json) {
         final JSONObject value = json.getJSONObject("value");
         final long account = value.getLong("account");
         final String msg = value.getString("msg");
@@ -27,8 +23,8 @@ public class QQFriendVerifyMessageHandler implements QQMessageHandler {
                                     context.getSelf(),
                                     account,
                                     msg));
-        if (StringUtils.isBlank(this.password)
-            || StringUtils.equals(msg, this.password)) {
+        if (StringUtils.isBlank(this.password) || StringUtils.equals(msg,
+                                                                     this.password)) {
             this.log.info(String.format("%s >> 同意并加好友：%s",
                                         context.getSelf(),
                                         account));

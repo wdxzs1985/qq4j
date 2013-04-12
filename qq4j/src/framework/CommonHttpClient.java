@@ -1,6 +1,8 @@
 package framework;
 
 import java.io.IOException;
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -15,22 +17,19 @@ import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.GzipDecompressingEntity;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.params.ClientPNames;
-import org.apache.http.client.params.CookiePolicy;
 import org.apache.http.client.protocol.ClientContext;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.PoolingClientConnectionManager;
-import org.apache.http.params.HttpParams;
+import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
@@ -43,30 +42,42 @@ public class CommonHttpClient {
     private final HttpContext localContext;
 
     public CommonHttpClient() {
-        final SchemeRegistry schemeRegistry = new SchemeRegistry();
-        schemeRegistry.register(new Scheme("http",
-                                           80,
-                                           PlainSocketFactory.getSocketFactory()));
-        schemeRegistry.register(new Scheme("https",
-                                           443,
-                                           SSLSocketFactory.getSocketFactory()));
-
-        final PoolingClientConnectionManager cm = new PoolingClientConnectionManager(schemeRegistry);
+        final PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager();
         // Increase max total connection to 200
-        cm.setMaxTotal(200);
+        connManager.setMaxTotal(200);
         // Increase default max connection per route to 20
-        cm.setDefaultMaxPerRoute(20);
+        connManager.setDefaultMaxPerRoute(20);
 
-        this.client = new DefaultHttpClient(cm);
         this.cookieStore = new BasicCookieStore();
+        final RequestConfig defaultRequestConfig = RequestConfig.custom()
+                                                                .setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY)
+                                                                .build();
+
+        final HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+        clientBuilder.setConnectionManager(connManager);
+        clientBuilder.setDefaultCookieStore(this.cookieStore);
+        clientBuilder.setDefaultRequestConfig(defaultRequestConfig);
+        clientBuilder.setUserAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:11.0) Gecko/20100101 Firefox/11.0");
+        clientBuilder.setKeepAliveStrategy(DefaultConnectionKeepAliveStrategy.INSTANCE);
+        final Collection<Header> defaultHeaders = new LinkedList<Header>();
+        defaultHeaders.add(new BasicHeader("Accept",
+                                           "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"));
+        defaultHeaders.add(new BasicHeader("Accept-Charset", "UTF-8;"));
+        defaultHeaders.add(new BasicHeader("Accept-Encoding", "gzip, deflate"));
+        defaultHeaders.add(new BasicHeader("Accept-Language",
+                                           "zh-cn,zh;q=0.8,en-us;q=0.5,en;q=0.3"));
+        defaultHeaders.add(new BasicHeader("Cache-Control", "no-cache"));
+        defaultHeaders.add(new BasicHeader("Connection", "keep-alive"));
+        defaultHeaders.add(new BasicHeader("Pragma", "no-cache"));
+        clientBuilder.setDefaultHeaders(defaultHeaders);
+        this.client = clientBuilder.build();
+
+        // this.client = new DefaultHttpClient(cm);
         this.localContext = new BasicHttpContext();
         // Bind custom cookie store to the local context
         this.localContext.setAttribute(ClientContext.COOKIE_STORE,
                                        this.cookieStore);
 
-        final HttpParams params = this.client.getParams();
-        params.setParameter(ClientPNames.COOKIE_POLICY,
-                            CookiePolicy.BROWSER_COMPATIBILITY);
     }
 
     public String getData(final String url) {
@@ -143,22 +154,11 @@ public class CommonHttpClient {
     }
 
     protected void initHttpHeader(final HttpMessage httpMessage) {
-        httpMessage.addHeader("Accept",
-                              "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
-        httpMessage.addHeader("Accept-Charset", "UTF-8;");
-        httpMessage.addHeader("Accept-Encoding", "gzip, deflate");
-        httpMessage.addHeader("Accept-Language",
-                              "zh-cn,zh;q=0.8,en-us;q=0.5,en;q=0.3");
-        httpMessage.addHeader("Cache-Control", "no-cache");
-        httpMessage.addHeader("Connection", "keep-alive");
-        httpMessage.addHeader("Pragma", "no-cache");
-        // httpMessage.addHeader("Referer", SinaHttpClient.REFERER);
-        httpMessage.addHeader("User-Agent",
-                              "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:11.0) Gecko/20100101 Firefox/11.0");
     }
 
     private String entityToString(final HttpEntity entity)
-            throws ParseException, IOException {
+                                                          throws ParseException,
+                                                          IOException {
         String result = null;
         if (this.isGzip(entity)) {
             result = EntityUtils.toString(new GzipDecompressingEntity(entity));

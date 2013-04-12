@@ -1,6 +1,5 @@
 package org.qq4j.core.handler.command;
 
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -14,7 +13,6 @@ import org.qq4j.domain.QQGroup;
 import org.qq4j.domain.QQSaisen;
 import org.qq4j.domain.QQUser;
 
-import atg.taglib.json.util.JSONException;
 import framework.SystemConstants;
 
 public class QQSaisenCommandHandler implements QQCommandHandler {
@@ -25,13 +23,12 @@ public class QQSaisenCommandHandler implements QQCommandHandler {
 
     private int timesLimit = 0;
     private String timeLimitFormat = null;
-    private Map<Long, QQSaisen> timesMapping = new HashMap<Long, QQSaisen>();
+    private final Map<Long, QQSaisen> timesMapping = new HashMap<Long, QQSaisen>();
 
     @Override
     public void handle(final QQContext context,
                        final QQUser user,
-                       final String message)
-            throws UnsupportedEncodingException, JSONException {
+                       final String message) {
         final QQSaisen saisen = this.increaseTimes(user);
         final String answer = this.getAnswer(context, user, saisen);
         context.getSender().sendToUser(user, answer);
@@ -41,8 +38,7 @@ public class QQSaisenCommandHandler implements QQCommandHandler {
     public void handleGroup(final QQContext context,
                             final QQGroup group,
                             final QQUser user,
-                            final String message)
-            throws UnsupportedEncodingException, JSONException {
+                            final String message) {
         final QQSaisen saisen = this.increaseTimes(user);
         final String answer = this.getAnswer(context, user, saisen);
         context.getSender().sendToGroup(group, answer);

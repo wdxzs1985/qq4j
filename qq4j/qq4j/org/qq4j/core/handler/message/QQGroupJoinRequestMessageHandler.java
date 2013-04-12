@@ -1,6 +1,6 @@
 package org.qq4j.core.handler.message;
 
-import java.io.UnsupportedEncodingException;
+import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -10,18 +10,14 @@ import org.qq4j.core.handler.QQMessageHandler;
 import org.qq4j.domain.QQGroup;
 import org.qq4j.domain.QQUser;
 
-import atg.taglib.json.util.JSONException;
-import atg.taglib.json.util.JSONObject;
-
 public class QQGroupJoinRequestMessageHandler implements QQMessageHandler {
 
     private final Log log = LogFactory.getLog(QQGroupJoinRequestMessageHandler.class);
 
-    private String password = null;
+    private final String password = null;
 
     @Override
-    public void handle(final QQContext context, final JSONObject json)
-            throws UnsupportedEncodingException, JSONException {
+    public void handle(final QQContext context, final JSONObject json) {
         final JSONObject value = json.getJSONObject("value");
         final long gcode = value.getLong("gcode");
         final long uin = value.getLong("request_uin");
@@ -33,8 +29,8 @@ public class QQGroupJoinRequestMessageHandler implements QQMessageHandler {
                                         context.getSelf(),
                                         user,
                                         group));
-            if (StringUtils.isBlank(this.password)
-                || StringUtils.equals(msg, this.password)) {
+            if (StringUtils.isBlank(this.password) || StringUtils.equals(msg,
+                                                                         this.password)) {
                 this.log.info(String.format("%s >> 同意%s入群%s",
                                             context.getSelf(),
                                             user,

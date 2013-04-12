@@ -1,4 +1,4 @@
-package org.qq4j.factory;
+package org.qq4j.core;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;

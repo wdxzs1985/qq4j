@@ -1,16 +1,12 @@
 package org.qq4j.core.handler;
 
-import java.io.UnsupportedEncodingException;
+import net.sf.json.JSONObject;
 
 import org.qq4j.core.QQContext;
 
-import atg.taglib.json.util.JSONException;
-import atg.taglib.json.util.JSONObject;
-
 public interface QQMessageHandler {
 
-    public void handle(QQContext context, final JSONObject json)
-            throws UnsupportedEncodingException, JSONException;
+    public void handle(QQContext context, final JSONObject json);
 
     public String getHandleType();
 }

@@ -1,12 +1,10 @@
 package org.qq4j.core.handler;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
-import org.qq4j.core.QQContext;
+import net.sf.json.JSONObject;
 
-import atg.taglib.json.util.JSONException;
-import atg.taglib.json.util.JSONObject;
+import org.qq4j.core.QQContext;
 
 public class QQSystemMessageHandlerMapping implements QQMessageHandler {
 
@@ -14,8 +12,7 @@ public class QQSystemMessageHandlerMapping implements QQMessageHandler {
     private QQMessageHandler defaultHandler = null;
 
     @Override
-    public void handle(final QQContext context, final JSONObject json)
-            throws JSONException, UnsupportedEncodingException {
+    public void handle(final QQContext context, final JSONObject json) {
         final String type = json.getString("type");
         if (this.getHandlers().containsKey(type)) {
             this.getHandlers().get(type).handle(context, json);

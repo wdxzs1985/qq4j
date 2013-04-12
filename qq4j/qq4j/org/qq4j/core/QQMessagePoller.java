@@ -1,20 +1,19 @@
 package org.qq4j.core;
 
-import java.io.UnsupportedEncodingException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONException;
+import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.qq4j.core.handler.QQMessageHandlerMapping;
-import org.qq4j.factory.QQThreadFactory;
 
-import atg.taglib.json.util.JSONArray;
-import atg.taglib.json.util.JSONException;
-import atg.taglib.json.util.JSONObject;
 import framework.SystemConstants;
 
 public class QQMessagePoller implements Runnable {
@@ -35,20 +34,17 @@ public class QQMessagePoller implements Runnable {
     @Override
     public void run() {
         final QQContext context = this.getContext();
-        final String pollUrl = "http://d.web2.qq.com/channel/poll2?clientid="
-                               + context.getClientid()
-                               + "&psessionid="
-                               + context.getPsessionid();
+        final String pollUrl = "http://d.web2.qq.com/channel/poll2?clientid=" + context.getClientid() + "&psessionid=" + context.getPsessionid();
         while (context.isRun()) {
             try {
                 final String ret = context.getHttpClient().getData(pollUrl);
                 if (StringUtils.isNotBlank(ret)) {
-                    final JSONObject json = new JSONObject(ret);
-                    final int retcode = json.getInt("retcode");
+                    final JSONObject retJson = JSONObject.fromObject(ret);
+                    final int retcode = retJson.getInt("retcode");
                     switch (retcode) {
                     case 0:
-                        final JSONArray result = json.getJSONArray("result");
-                        for (int i = 0; i < result.length(); i++) {
+                        final JSONArray result = retJson.getJSONArray("result");
+                        for (int i = 0; i < result.size(); i++) {
                             QQMessagePoller.threadExecutor.execute(new HandleMessageWorker(context,
                                                                                            this.handlers,
                                                                                            result.getJSONObject(i)));
@@ -64,7 +60,7 @@ public class QQMessagePoller implements Runnable {
                         }
                         break;
                     case 116:
-                        final String p = json.getString("p");
+                        final String p = retJson.getString("p");
                         if (QQMessagePoller.LOG.isDebugEnabled()) {
                             final String message = String.format("[%s]%s >> 更新Ptwebqq：%s",
                                                                  DateFormatUtils.format(System.currentTimeMillis(),
@@ -124,8 +120,7 @@ public class QQMessagePoller implements Runnable {
         private final QQMessageHandlerMapping handlers;
         private final JSONObject obj;
 
-        HandleMessageWorker(final QQContext context,
-                final QQMessageHandlerMapping handlers, final JSONObject obj) {
+        HandleMessageWorker(final QQContext context, final QQMessageHandlerMapping handlers, final JSONObject obj) {
             this.context = context;
             this.handlers = handlers;
             this.obj = obj;
@@ -135,8 +130,6 @@ public class QQMessagePoller implements Runnable {
         public void run() {
             try {
                 this.handlers.handle(this.context, this.obj);
-            } catch (final UnsupportedEncodingException e) {
-                QQMessagePoller.LOG.error(e.getMessage());
             } catch (final JSONException e) {
                 QQMessagePoller.LOG.error(e.getMessage());
             }

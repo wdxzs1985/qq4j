@@ -1,6 +1,5 @@
 package org.qq4j.core.handler.command;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -11,7 +10,6 @@ import org.qq4j.core.handler.QQCommandHandler;
 import org.qq4j.domain.QQGroup;
 import org.qq4j.domain.QQUser;
 
-import atg.taglib.json.util.JSONException;
 import framework.SystemConstants;
 
 public class QQTimeCommandHandler implements QQCommandHandler {
@@ -26,8 +24,7 @@ public class QQTimeCommandHandler implements QQCommandHandler {
     @Override
     public void handle(final QQContext context,
                        final QQUser user,
-                       final String message)
-            throws UnsupportedEncodingException, JSONException {
+                       final String message) {
         context.getSender().sendToUser(user, this.getAnswer());
     }
 
@@ -35,8 +32,7 @@ public class QQTimeCommandHandler implements QQCommandHandler {
     public void handleGroup(final QQContext context,
                             final QQGroup group,
                             final QQUser user,
-                            final String message)
-            throws UnsupportedEncodingException, JSONException {
+                            final String message) {
         context.getSender().sendToGroup(group, this.getAnswer());
     }
 
@@ -81,10 +77,9 @@ public class QQTimeCommandHandler implements QQCommandHandler {
             break;
         }
 
-        return hello
-               + DateFormatUtils.format(System.currentTimeMillis(),
-                                        this.format,
-                                        SystemConstants.DEFAULT_LOCALE);
+        return hello + DateFormatUtils.format(System.currentTimeMillis(),
+                                              this.format,
+                                              SystemConstants.DEFAULT_LOCALE);
     }
 
     public String getFormat() {

@@ -1,6 +1,6 @@
 package org.qq4j.core.handler.message;
 
-import java.io.UnsupportedEncodingException;
+import net.sf.json.JSONObject;
 
 import org.qq4j.core.QQContext;
 import org.qq4j.core.QQSender;
@@ -8,14 +8,10 @@ import org.qq4j.core.handler.QQMessageHandler;
 import org.qq4j.domain.QQGroup;
 import org.qq4j.domain.QQUser;
 
-import atg.taglib.json.util.JSONException;
-import atg.taglib.json.util.JSONObject;
-
 public class QQGroupAdminopMessageHandler implements QQMessageHandler {
 
     @Override
-    public void handle(final QQContext context, final JSONObject json)
-            throws UnsupportedEncodingException, JSONException {
+    public void handle(final QQContext context, final JSONObject json) {
         final JSONObject value = json.getJSONObject("value");
         final long gcode = value.getLong("gcode");
         final long uin = value.getLong("uin");

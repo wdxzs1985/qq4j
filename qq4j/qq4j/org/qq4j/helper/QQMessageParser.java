@@ -1,14 +1,12 @@
 package org.qq4j.helper;
 
-import java.io.UnsupportedEncodingException;
 import java.util.regex.Pattern;
+
+import net.sf.json.JSONArray;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import atg.taglib.json.util.JSONArray;
-import atg.taglib.json.util.JSONException;
 
 public class QQMessageParser {
 
@@ -21,10 +19,9 @@ public class QQMessageParser {
 
     // ["offpic",{"success":1,"file_path":"/2fb8625d-79b8-44b7-8d65-7e1870b0cfbf"}]
 
-    public static String parseMessage(final JSONArray content)
-            throws JSONException, UnsupportedEncodingException {
+    public static String parseMessage(final JSONArray content) {
         final StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < content.length(); i++) {
+        for (int i = 0; i < content.size(); i++) {
             final String fragment = content.getString(i);
             if (StringUtils.isBlank(fragment)) {
                 // do nothing

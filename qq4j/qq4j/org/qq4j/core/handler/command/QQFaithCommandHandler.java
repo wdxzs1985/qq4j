@@ -1,6 +1,5 @@
 package org.qq4j.core.handler.command;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,8 +11,6 @@ import org.qq4j.core.handler.QQCommandHandler;
 import org.qq4j.domain.QQGroup;
 import org.qq4j.domain.QQUser;
 
-import atg.taglib.json.util.JSONException;
-
 public class QQFaithCommandHandler implements QQCommandHandler {
 
     private String answer1 = null;
@@ -22,8 +19,7 @@ public class QQFaithCommandHandler implements QQCommandHandler {
     @Override
     public void handle(final QQContext context,
                        final QQUser user,
-                       final String message)
-            throws UnsupportedEncodingException, JSONException {
+                       final String message) {
         final String messageToSend = this.getAnswer(context, user);
         context.getSender().sendToUser(user, messageToSend);
     }
@@ -32,8 +28,7 @@ public class QQFaithCommandHandler implements QQCommandHandler {
     public void handleGroup(final QQContext context,
                             final QQGroup group,
                             final QQUser user,
-                            final String message)
-            throws UnsupportedEncodingException, JSONException {
+                            final String message) {
         final String messageToSend = this.getAnswer(context, user);
         context.getSender().sendToGroup(group, messageToSend);
     }

@@ -1,6 +1,7 @@
 package org.qq4j.core.handler.message;
 
-import java.io.UnsupportedEncodingException;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -15,9 +16,6 @@ import org.qq4j.domain.QQGroup;
 import org.qq4j.domain.QQUser;
 import org.qq4j.helper.QQMessageParser;
 
-import atg.taglib.json.util.JSONArray;
-import atg.taglib.json.util.JSONException;
-import atg.taglib.json.util.JSONObject;
 import framework.SystemConstants;
 
 public class QQGroupMessageHandler implements QQMessageHandler {
@@ -31,8 +29,7 @@ public class QQGroupMessageHandler implements QQMessageHandler {
     private String repeatAnswer1 = null;
 
     @Override
-    public void handle(final QQContext context, final JSONObject json)
-            throws UnsupportedEncodingException, JSONException {
+    public void handle(final QQContext context, final JSONObject json) {
         final JSONObject value = json.getJSONObject("value");
         // 内容
         final JSONArray content = value.getJSONArray("content");
@@ -67,21 +64,22 @@ public class QQGroupMessageHandler implements QQMessageHandler {
                                                 group,
                                                 member,
                                                 message));
-                    synchronized (member) {
-                        if (msgId != member.getLastMsgId()
-                            && System.currentTimeMillis() - time < this.getReplyTimeLimit()) {
-                            if (this.isRepeat(member, message)) {
-                                this.handleRepeat(context, group, member);
-                            } else {
-                                this.getHandlers().handleGroup(context,
-                                                               group,
-                                                               member,
-                                                               message);
-                            }
-                        }
-                        member.setLastMsgId(msgId);
-                        member.setLastMsg(message);
-                    }
+                    // synchronized (member) {
+                    // if (msgId != member.getLastMsgId() &&
+                    // System.currentTimeMillis() - time <
+                    // this.getReplyTimeLimit()) {
+                    // if (this.isRepeat(member, message)) {
+                    // this.handleRepeat(context, group, member);
+                    // } else {
+                    // this.getHandlers().handleGroup(context,
+                    // group,
+                    // member,
+                    // message);
+                    // }
+                    // }
+                    // member.setLastMsgId(msgId);
+                    // member.setLastMsg(message);
+                    // }
                 }
             }
         }
@@ -98,8 +96,7 @@ public class QQGroupMessageHandler implements QQMessageHandler {
 
     protected void handleRepeat(final QQContext context,
                                 final QQGroup group,
-                                final QQUser member)
-            throws UnsupportedEncodingException, JSONException {
+                                final QQUser member) {
         String answer = null;
 
         switch (member.getRepeatTimes()) {

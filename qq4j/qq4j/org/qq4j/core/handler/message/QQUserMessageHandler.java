@@ -1,6 +1,7 @@
 package org.qq4j.core.handler.message;
 
-import java.io.UnsupportedEncodingException;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
@@ -14,9 +15,6 @@ import org.qq4j.core.handler.QQMessageHandler;
 import org.qq4j.domain.QQUser;
 import org.qq4j.helper.QQMessageParser;
 
-import atg.taglib.json.util.JSONArray;
-import atg.taglib.json.util.JSONException;
-import atg.taglib.json.util.JSONObject;
 import framework.SystemConstants;
 
 public class QQUserMessageHandler implements QQMessageHandler {
@@ -31,8 +29,7 @@ public class QQUserMessageHandler implements QQMessageHandler {
     private String repeatAnswer1 = null;
 
     @Override
-    public void handle(final QQContext context, final JSONObject json)
-            throws UnsupportedEncodingException, JSONException {
+    public void handle(final QQContext context, final JSONObject json) {
         final JSONObject value = json.getJSONObject("value");
         // 内容
         final JSONArray content = value.getJSONArray("content");
@@ -53,18 +50,17 @@ public class QQUserMessageHandler implements QQMessageHandler {
                                             context.getSelf(),
                                             user,
                                             message));
-                if (msgId != user.getLastMsgId()
-                    && System.currentTimeMillis() - time < this.getReplyTimeLimit()
-                    && !friendManager.isBlackList(user)
-                    && !this.isBuzy(user)) {
-                    if (this.isRepeat(user, message)) {
-                        this.handleRepeat(context, user);
-                    } else {
-                        this.getHandlers().handle(context, user, message);
-                    }
-                }
-                user.setLastMsgId(msgId);
-                user.setLastMsg(message);
+                // if (msgId != user.getLastMsgId() &&
+                // System.currentTimeMillis() - time < this.getReplyTimeLimit()
+                // && !friendManager.isBlackList(user) && !this.isBuzy(user)) {
+                // if (this.isRepeat(user, message)) {
+                // this.handleRepeat(context, user);
+                // } else {
+                // this.getHandlers().handle(context, user, message);
+                // }
+                // }
+                // user.setLastMsgId(msgId);
+                // user.setLastMsg(message);
             }
         }
     }
@@ -78,8 +74,7 @@ public class QQUserMessageHandler implements QQMessageHandler {
         return false;
     }
 
-    protected void handleRepeat(final QQContext context, final QQUser user)
-            throws UnsupportedEncodingException, JSONException {
+    protected void handleRepeat(final QQContext context, final QQUser user) {
         String answer = null;
 
         switch (user.getRepeatTimes()) {
@@ -96,9 +91,9 @@ public class QQUserMessageHandler implements QQMessageHandler {
 
     private boolean isBuzy(final QQUser user) {
         final String status = user.getStatus();
-        if (StringUtils.equals(QQConstants.STATUS_SILENT, status)
-            || StringUtils.equals(QQConstants.STATUS_BUSY, status)
-            || StringUtils.equals(QQConstants.STATUS_AWAY, status)) {
+        if (StringUtils.equals(QQConstants.STATUS_SILENT, status) || StringUtils.equals(QQConstants.STATUS_BUSY,
+                                                                                        status) || StringUtils.equals(QQConstants.STATUS_AWAY,
+                                                                                                                      status)) {
             return true;
         }
         return false;
