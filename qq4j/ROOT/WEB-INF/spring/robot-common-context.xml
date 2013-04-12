@@ -84,30 +84,4 @@
         <property name="hello5" value="晚上好！"></property>
     </bean>
     
-    
-    <bean id="sina_robot" class="org.sina4j.impl.SinaRobot">
-        <property name="sinaUser" ref="sina_user"></property>
-        <property name="sinaLogin" ref="sina_login"></property>
-        <property name="sinaClient" ref="sina_client"></property>
-        
-    </bean>
-    <bean id="sina_user" class="org.sina4j.domain.SinaUserDTO">
-        <property name="email" value="2541694184@qq.com"></property>
-        <property name="password" value="bushing"></property>
-    </bean>
-    <bean id="sina_login" class="org.sina4j.core.SinaLogin">
-        <property name="sinaClient" ref="sina_client"></property>
-    </bean>
-    <bean id="sina_client" class="org.sina4j.core.SinaHttpClient">
-    </bean>
-    
-    <bean id="sinaweibo_command_handler" class="org.qq4j.core.handler.command.QQSinaweiboCommandHandler">
-        <property name="sinaRobot" ref="sina_robot"></property>
-        <property name="answer1" value="主人想说点什么呢？不要超过140个字哦。回复【放弃】取消发送。"></property>
-        <property name="answer2" value="已取消发送微博。"></property>
-        <property name="answer3" value="微博发送成功，查看微博请关注 @天才_琪露诺 http://www.weibo.com/u/2803325782"></property>
-        <property name="answer4" value="啊咧，好像出错了呢QAQ"></property>
-        <property name="answer5" value="主人，虽然你想说的话有很多，但是渣浪不允许呢，所以不可以超过140个字哦。回复【放弃】取消发送。"></property>
-        <property name="command1" value="放弃"></property>
-    </bean>
 </beans>
