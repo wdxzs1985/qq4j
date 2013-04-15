@@ -10,6 +10,7 @@ import org.qq4j.core.QQContext;
 import org.qq4j.core.QQGroupManager;
 import org.qq4j.core.QQLogin;
 import org.qq4j.core.QQMessagePoller;
+import org.qq4j.core.QQRobot;
 import org.qq4j.core.QQSender;
 import org.qq4j.core.QQUserManager;
 import org.qq4j.domain.QQUser;
@@ -17,9 +18,9 @@ import org.qq4j.domain.QQUser;
 /**
  * 
  */
-public class QQRobot {
+public class QQRobotImpl implements QQRobot {
 
-    private static final Log LOG = LogFactory.getLog(QQRobot.class);
+    private static final Log LOG = LogFactory.getLog(QQRobotImpl.class);
 
     private QQContext context = null;
 
@@ -27,6 +28,7 @@ public class QQRobot {
 
     private QQLogin login = null;
 
+    @Override
     public void startup() {
         this.context.setClientid(new Random().nextInt(10000000));
         if (this.doLogin(this.context)) {
@@ -54,20 +56,31 @@ public class QQRobot {
                 return true;
             }
         } catch (final JSONException e) {
-            QQRobot.LOG.error(e.getMessage(), e);
+            QQRobotImpl.LOG.error(e.getMessage(), e);
         }
 
         this.context.setRun(false);
-        QQRobot.LOG.error(String.format("QQ登录失败！QQ:%d,密码:%s",
-                                        this.context.getSelf().getAccount(),
-                                        this.context.getSelf().getPassword()));
+        QQRobotImpl.LOG.error(String.format("QQ登录失败！QQ:%d,密码:%s",
+                                            this.context.getSelf().getAccount(),
+                                            this.context.getSelf()
+                                                        .getPassword()));
         return false;
     }
 
     private void startPoller(final QQContext context) {
         final QQUser self = context.getSelf();
-        QQRobot.LOG.info(String.format("QQ开始运行！QQ:%s", self));
+        QQRobotImpl.LOG.info(String.format("QQ开始运行！QQ:%s", self));
         new Thread(this.messagePoller).run();
+    }
+
+    @Override
+    public void shutdown() {
+        if (this.isRun()) {
+            this.login.offline(this.context);
+            this.context.setRun(false);
+            final QQUser self = this.context.getSelf();
+            QQRobotImpl.LOG.info(String.format("QQ停止运行！QQ:%s", self));
+        }
     }
 
     public QQContext getContext() {
@@ -92,6 +105,16 @@ public class QQRobot {
 
     public void setLogin(final QQLogin login) {
         this.login = login;
+    }
+
+    @Override
+    public boolean isRun() {
+        return this.context.isRun();
+    }
+
+    @Override
+    public String getName() {
+        return this.getContext().getSelf().getNick();
     }
 
 }

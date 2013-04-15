@@ -13,8 +13,8 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.qq4j.core.handler.QQMessageHandlerMapping;
+import org.qq4j.net.SystemConstants;
 
-import framework.SystemConstants;
 
 public class QQMessagePoller implements Runnable {
 

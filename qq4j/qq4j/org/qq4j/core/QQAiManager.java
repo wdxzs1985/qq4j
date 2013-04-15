@@ -24,11 +24,12 @@ public class QQAiManager {
     public String getReplyAnswer(final String message,
                                  final long account,
                                  final long owner) {
-        final String question = message.toLowerCase();
-        final List<Map<String, Object>> aiList = this.queryAnswer(question,
-                                                                  account,
-                                                                  owner);
-        return this.getAnswer(aiList);
+        // final String question = message.toLowerCase();
+        // final List<Map<String, Object>> aiList = this.queryAnswer(question,
+        // account,
+        // owner);
+        // return this.getAnswer(aiList);
+        return "baka";
     }
 
     public String getReplyAnswerSmart(final String message,

@@ -1,4 +1,4 @@
-package framework;
+package org.qq4j.net;
 
 import java.io.IOException;
 import java.util.Collection;

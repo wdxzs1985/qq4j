@@ -15,8 +15,8 @@ import org.qq4j.core.handler.QQMessageHandler;
 import org.qq4j.domain.QQGroup;
 import org.qq4j.domain.QQUser;
 import org.qq4j.helper.QQMessageParser;
+import org.qq4j.net.SystemConstants;
 
-import framework.SystemConstants;
 
 public class QQGroupMessageHandler implements QQMessageHandler {
 

@@ -13,8 +13,8 @@ import org.qq4j.core.handler.QQCommandHandler;
 import org.qq4j.domain.QQGroup;
 import org.qq4j.domain.QQSaisen;
 import org.qq4j.domain.QQUser;
+import org.qq4j.net.SystemConstants;
 
-import framework.SystemConstants;
 
 public class QQSaisenCommandHandler implements QQCommandHandler {
 

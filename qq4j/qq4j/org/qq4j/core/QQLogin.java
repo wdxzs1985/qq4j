@@ -133,7 +133,7 @@ public class QQLogin {
         try {
             se.eval(new FileReader(new File(this.getClass()
                                                 .getClassLoader()
-                                                .getResource("org/qq4j/impl/encode.js")
+                                                .getResource("org/qq4j/core/encode.js")
                                                 .getPath())));
             final Object t = se.eval("md5(md5(hexchar2bin(md5('" + pass + "'))+'" + uin + "')+'" + code + "')");
             return t.toString();
