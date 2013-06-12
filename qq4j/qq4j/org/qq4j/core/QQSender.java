@@ -121,13 +121,13 @@ public class QQSender {
     public void sendShakeMessage(final QQUser user) {
         final QQContext context = this.getContext();
         final String url = "http://d.web2.qq.com/channel/shake2" + "?to_uin=" + user.getUin() + "&clientid=" + context.getClientid() + "&psessionid=" + context.getPsessionid() + "&t=" + System.currentTimeMillis();
-        context.getHttpClient().getData(url);
+        context.getHttpClient().getJSON(url);
     }
 
     private void initGfaceSig() {
         final QQContext context = this.getContext();
         final String url = "http://d.web2.qq.com/channel/get_gface_sig2" + "?clientid=" + context.getClientid() + "&psessionid=" + context.getPsessionid() + "&t=" + System.currentTimeMillis();
-        final String result = context.getHttpClient().getData(url);
+        final String result = context.getHttpClient().getJSON(url);
         if (StringUtils.isNotBlank(result)) {
             final JSONObject json = JSONObject.fromObject(result);
             final int retcode = json.getInt("retcode");
