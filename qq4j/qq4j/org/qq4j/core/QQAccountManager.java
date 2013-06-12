@@ -20,7 +20,7 @@ public abstract class QQAccountManager {
     protected QQUser fetchUserAccount(final QQUser user) {
         final QQContext context = this.getContext();
         final String url = "http://s.web2.qq.com/api/get_friend_uin2?" + "tuin=" + user.getUin() + "&type=1&verifysession=&code=" + "&vfwebqq=" + context.getVfwebqq() + "&t=" + System.currentTimeMillis();
-        final String result = context.getHttpClient().getJSON(url);
+        final String result = context.getHttpClient().getData(url);
         final long account = this.parseUserAccount(result);
         if (account != QQAccountManager.ERROR_USER) {
             user.setAccount(account);
@@ -32,7 +32,7 @@ public abstract class QQAccountManager {
     protected QQGroup fetchGroupAccount(final QQGroup group) {
         final QQContext context = this.getContext();
         final String url = "http://s.web2.qq.com/api/get_friend_uin2?" + "tuin=" + group.getCode() + "&type=4&verifysession=&code=" + "&vfwebqq=" + context.getVfwebqq() + "&t=" + System.currentTimeMillis();
-        final String result = context.getHttpClient().getJSON(url);
+        final String result = context.getHttpClient().getData(url);
         final long account = this.parseUserAccount(result);
         if (account != QQAccountManager.ERROR_USER) {
             group.setAccount(account);

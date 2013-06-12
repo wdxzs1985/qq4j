@@ -1,13 +1,11 @@
 package org.qq4j.core;
 
-import java.util.Random;
-
 import org.qq4j.domain.QQFont;
 import org.qq4j.domain.QQUser;
 
 public class QQContext {
 
-    private long clientid = new Random().nextInt(10000000);
+    private long clientid;
 
     private QQHttpClient httpClient = null;
 
@@ -121,15 +119,19 @@ public class QQContext {
         this.self = user;
     }
 
+    public void setHttpClient(final QQHttpClient httpClient) {
+        this.httpClient = httpClient;
+    }
+
+    public void setClientid(final long clientid) {
+        this.clientid = clientid;
+    }
+
     public QQSessionManager getSessionManager() {
         return this.sessionManager;
     }
 
     public void setSessionManager(final QQSessionManager sessionManager) {
         this.sessionManager = sessionManager;
-    }
-
-    public void setHttpClient(final QQHttpClient httpClient) {
-        this.httpClient = httpClient;
     }
 }

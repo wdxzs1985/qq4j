@@ -8,6 +8,7 @@
         http://www.springframework.org/schema/context 
         http://www.springframework.org/schema/context/spring-context.xsd">
         
+    <bean id="login" class="org.qq4j.core.QQLogin"></bean>
     <bean id="aiManager" class="org.qq4j.core.QQAiManager"></bean>
     
     <!-- Message Handler -->

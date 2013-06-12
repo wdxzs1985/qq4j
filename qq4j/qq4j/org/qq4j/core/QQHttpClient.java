@@ -18,7 +18,7 @@ public class QQHttpClient extends CommonHttpClient {
         final String contents = content.toString();
         final List<BasicNameValuePair> nvps = Collections.singletonList(new BasicNameValuePair("r",
                                                                                                contents));
-        return this.postJSON(url, nvps);
+        return this.postData(url, nvps);
     }
 
     @Override

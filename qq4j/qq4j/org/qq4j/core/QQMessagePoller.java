@@ -15,6 +15,7 @@ import org.apache.commons.logging.LogFactory;
 import org.qq4j.core.handler.QQMessageHandlerMapping;
 import org.qq4j.net.SystemConstants;
 
+
 public class QQMessagePoller implements Runnable {
 
     private static Log LOG = LogFactory.getLog(QQMessagePoller.class);
@@ -36,12 +37,12 @@ public class QQMessagePoller implements Runnable {
         final String pollUrl = "http://d.web2.qq.com/channel/poll2?clientid=" + context.getClientid() + "&psessionid=" + context.getPsessionid();
         while (context.isRun()) {
             try {
-                final String ret = context.getHttpClient().getJSON(pollUrl);
+                final String ret = context.getHttpClient().getData(pollUrl);
                 if (StringUtils.isNotBlank(ret)) {
                     final JSONObject retJson = JSONObject.fromObject(ret);
                     final int retcode = retJson.getInt("retcode");
                     switch (retcode) {
-                    case 0: // LoginSuccess
+                    case 0:
                         final JSONArray result = retJson.getJSONArray("result");
                         for (int i = 0; i < result.size(); i++) {
                             QQMessagePoller.threadExecutor.execute(new HandleMessageWorker(context,
@@ -70,12 +71,7 @@ public class QQMessagePoller implements Runnable {
                         }
                         context.setPtwebqq(p);
                         break;
-                    case 103: // NotLogin
-                    case 106: // UinNotInWhitelist
-                    case 111: // UinInBlacklist
-                    case 112: // Overload
-                    case 100001:// PtwebqqFail
-                    case 100002:// PtwebqqFail
+                    case 100:
                     case 120:
                     case 121:
                     default:
