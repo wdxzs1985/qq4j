@@ -80,7 +80,7 @@ public class CommonHttpClient {
 
     }
 
-    public String getData(final String url) {
+    public String getJSON(final String url) {
         if (this.log.isDebugEnabled()) {
             this.log.debug("method : GET");
             this.log.debug("   url : " + url);
@@ -108,7 +108,7 @@ public class CommonHttpClient {
         return result;
     }
 
-    public String postData(final String url,
+    public String postJSON(final String url,
                            final List<? extends NameValuePair> nvps) {
         if (this.log.isDebugEnabled()) {
             this.log.debug("method : POST");
@@ -130,6 +130,34 @@ public class CommonHttpClient {
             final HttpEntity entity = response.getEntity();
             result = this.entityToString(entity);
 
+            // Consume response content
+            EntityUtils.consume(entity);
+        } catch (final ClientProtocolException e) {
+            throw new RuntimeException(e);
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        }
+        if (this.log.isDebugEnabled()) {
+            this.log.debug("result : " + result);
+        }
+        return result;
+    }
+
+    public byte[] getByte(final String url) {
+        if (this.log.isDebugEnabled()) {
+            this.log.debug("method : GET");
+            this.log.debug("   url : " + url);
+        }
+        final HttpGet httpget = new HttpGet(url);
+        this.initHttpHeader(httpget);
+
+        byte[] result = null;
+        try {
+            // Pass local context as a parameter
+            final HttpResponse response = this.client.execute(httpget,
+                                                              this.localContext);
+            final HttpEntity entity = response.getEntity();
+            result = EntityUtils.toByteArray(entity);
             // Consume response content
             EntityUtils.consume(entity);
         } catch (final ClientProtocolException e) {

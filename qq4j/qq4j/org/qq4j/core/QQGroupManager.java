@@ -56,7 +56,7 @@ public class QQGroupManager extends QQAccountManager {
     public QQGroup fetchGroupInfo(final long gcode) {
         final String url = "http://s.web2.qq.com/api/get_group_info_ext2?gcode=" + gcode + "&vfwebqq=" + this.getContext()
                                                                                                              .getVfwebqq() + "&t=" + System.currentTimeMillis();
-        final String result = this.getContext().getHttpClient().getData(url);
+        final String result = this.getContext().getHttpClient().getJSON(url);
         return this.parseGroupInfo(result);
     }
 
@@ -122,7 +122,7 @@ public class QQGroupManager extends QQAccountManager {
         final String pollUrl = "http://d.web2.qq.com/channel/op_group_join_req?" + "group_uin=" + group.getUin() + "&req_uin=" + user.getUin() + "&msg=&op_type=2&clientid=" + this.getContext()
                                                                                                                                                                                    .getClientid() + "&psessionid=" + this.getContext()
                                                                                                                                                                                                                          .getPsessionid();
-        this.getContext().getHttpClient().getData(pollUrl);
+        this.getContext().getHttpClient().getJSON(pollUrl);
     }
 
     public void quitGroup(final QQGroup group) throws JSONException,

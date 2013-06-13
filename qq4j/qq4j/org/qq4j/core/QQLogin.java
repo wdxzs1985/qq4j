@@ -16,61 +16,71 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.qq4j.core.exception.NeedVerifyCodeException;
 import org.qq4j.domain.QQUser;
 
 public class QQLogin {
 
-    protected Log log = LogFactory.getLog(QQLogin.class);
-
     public static final int APPID = 1003903;
 
-    public boolean login(final QQContext context) {
-        final String[] verifyCode = this.getVerifyCode(context);
+    protected Log log = LogFactory.getLog(QQLogin.class);
+
+    private QQHttpClient httpClient = null;
+
+    private String uin = null;
+
+    public QQUser login(final long account, final String pasword)
+                                                                 throws NeedVerifyCodeException {
+        final String verifyCode = this.getVerifyCode(account);
         if (verifyCode != null) {
-            this.log.info(String.format("获得验证码：%s", verifyCode[0]));
-            this.log.info(String.format("获得UIN：%s", verifyCode[1]));
-            return this.doLogin(context, verifyCode[0], verifyCode[1]);
+            this.log.info(String.format("获得验证码：%s", verifyCode));
+            this.log.info(String.format("获得UIN：%s", this.uin));
+            return this.login(account, pasword, verifyCode);
         }
-        return false;
+        return null;
     }
 
-    private String[] getVerifyCode(final QQContext context) {
-        final long account = context.getSelf().getAccount();
-        // http://check.ptlogin2.qq.com/check?uin=398940444&appid=1003903&r=0.9252068820172412
+    private String getVerifyCode(final long account)
+                                                    throws NeedVerifyCodeException {
         final String checkQQUrl = "http://check.ptlogin2.qq.com/check?appid=" + QQLogin.APPID + "&uin=" + account;
-        final String result = context.getHttpClient().getData(checkQQUrl);
-        String[] verifyCode = null;
+        final String result = this.httpClient.getJSON(checkQQUrl);
+        String[] group = null;
         if (StringUtils.isNotBlank(result)) {
-            verifyCode = this.findString("\\'([!\\\\0-9a-zA-Z]{2,})\\'", result);
-            // TODO 生成图片验证码
-            if (!verifyCode[0].startsWith("!")) {
-                // 生成图片验证码
-                return null;
+            group = this.findString("'(.*?)'", result);
+            this.uin = group[2];
+            if (group[0].equals("0")) {
+                return group[1];
+            } else {
+                // TODO 生成图片验证码
+                throw new NeedVerifyCodeException();
             }
         }
-        return verifyCode;
+        return null;
     }
 
-    private boolean doLogin(final QQContext context,
-                            final String verifyCode,
-                            final String uin) {
-        final long account = context.getSelf().getAccount();
-        final String password = context.getSelf().getPassword();
+    public byte[] downloadVerifyImage(final long account) {
+        final String url = "http://captcha.qq.com/getimage?aid=" + QQLogin.APPID + "&uin=" + account;
+        return this.httpClient.getByte(url);
+    }
 
+    public QQUser login(final long account,
+                        final String password,
+                        final String verifyCode) {
         final String loginUrl = "http://ptlogin2.qq.com/login?u=" + account + "&p=" + this.encodePass(password,
                                                                                                       verifyCode,
-                                                                                                      uin) + "&verifycode="
+                                                                                                      this.uin) + "&verifycode="
 
-        + verifyCode + "&webqq_type=10&remember_uin=1&login2qq=1&aid=" + QQLogin.APPID + "&u1=http%3A%2F%2Fweb.qq.com%2Floginproxy.html%3Flogin2qq%3D1%26webqq_type%3D10" + "&h=1&ptredirect=0&ptlang=2052&from_ui=1&pttype=1&dumy=&fp=loginerroralert" + "&action=5-13-9792&mibao_css=m_webqq&t=1&g=1";
-        final String result = context.getHttpClient().getData(loginUrl);
+        + verifyCode + "&webqq_type=10&remember_uin=1&login2qq=1&aid=" + QQLogin.APPID + "&u1=http%3A%2F%2Fweb.qq.com%2Floginproxy.html%3Flogin2qq%3D1%26webqq_type%3D10" + "&h=1&ptredirect=0&ptlang=2052&from_ui=1&pttype=1&dumy=&fp=loginerroralert&action=5-13-9792&mibao_css=m_webqq&t=1&g=1";
+        final String result = this.httpClient.getJSON(loginUrl);
         final String nick = this.findString("'登录成功！', '(.+)'\\);", result)[0];
         if (StringUtils.isNotBlank(nick)) {
-            final QQUser self = context.getSelf();
+            final QQUser self = new QQUser();
+            self.setAccount(account);
             self.setNick(nick);
             this.log.info(String.format("QQ登录成功！QQ:%s", self));
-            return true;
+            return self;
         }
-        return false;
+        return null;
     }
 
     public void online(final QQContext context) {
@@ -79,9 +89,8 @@ public class QQLogin {
     }
 
     private void getDataFromCookie(final QQContext context) {
-        final QQHttpClient httpClient = context.getHttpClient();
-        context.setPtwebqq(httpClient.findCookie("ptwebqq"));
-        context.setSkey(httpClient.findCookie("skey"));
+        context.setPtwebqq(this.httpClient.findCookie("ptwebqq"));
+        context.setSkey(this.httpClient.findCookie("skey"));
         this.log.info(String.format("获得ptwebqq：%s", context.getPtwebqq()));
         this.log.info(String.format("获得skey：%s", context.getSkey()));
     }
@@ -102,13 +111,12 @@ public class QQLogin {
     }
 
     public void offline(final QQContext context) {
-        // http://d.web2.qq.com/channel/change_status2?newstatus=offline&clientid=31594005&psessionid=8368046764001e636f6e6e7365727665725f77656271714031302e3132382e36362e313132000063e800001b2b016e0400e82c7f976d0000000a407a32336a394a49445a6d00000028681c0860608ca67acfb4f2fdf7a2b707e0e9ed2fe48dcd3b945580965f8070fd3519674e61284311&t=1330534346665
         final String statusUrl = "http://d.web2.qq.com/channel/change_status2?newstatus=offline&clientid=" + context.getClientid() + "&psessionid=" + context.getPsessionid() + "&t=" + System.currentTimeMillis();
-        context.getHttpClient().getData(statusUrl);
+        this.httpClient.getJSON(statusUrl);
         context.setRun(false);
     }
 
-    private String[] findString(final String pattern, final String search) {
+    public String[] findString(final String pattern, final String search) {
         final Pattern p = Pattern.compile(pattern);
         final Matcher m = p.matcher(search);
         String[] targets = {};
@@ -135,7 +143,7 @@ public class QQLogin {
                                                 .getClassLoader()
                                                 .getResource("org/qq4j/core/encode.js")
                                                 .getPath())));
-            final Object t = se.eval("md5(md5(hexchar2bin(md5('" + pass + "'))+'" + uin + "')+'" + code + "')");
+            final Object t = se.eval("md5(md5(hexchar2bin(md5('" + pass + "'))+'" + uin + "')+'" + code.toUpperCase() + "')");
             return t.toString();
         } catch (final FileNotFoundException e) {
             throw new RuntimeException(e);
@@ -152,6 +160,10 @@ public class QQLogin {
         content.put("ptwebqq", context.getPtwebqq());
         content.put("passwd_sig", "");
         content.put("clientid", context.getClientid());
-        return context.getHttpClient().postJsonData(url, content);
+        return this.httpClient.postJsonData(url, content);
+    }
+
+    public void setHttpClient(final QQHttpClient httpClient) {
+        this.httpClient = httpClient;
     }
 }
