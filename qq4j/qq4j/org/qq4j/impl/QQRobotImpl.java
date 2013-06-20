@@ -33,17 +33,7 @@ public class QQRobotImpl implements QQRobot {
         QQUser self = null;
         try {
             self = this.login.login(account, password);
-            if (self != null) {
-                this.context.setSelf(self);
-                this.login.online(this.context);
-            } else {
-                this.context.setRun(false);
-                QQRobotImpl.LOG.error(String.format("QQ登录失败！QQ:%d,密码:%s",
-                                                    this.context.getSelf()
-                                                                .getAccount(),
-                                                    this.context.getSelf()
-                                                                .getPassword()));
-            }
+            this.postLogin(self);
         } catch (final JSONException e) {
             QQRobotImpl.LOG.error(e.getMessage(), e);
         }
@@ -56,20 +46,20 @@ public class QQRobotImpl implements QQRobot {
         QQUser self = null;
         try {
             self = this.login.login(account, password, verifyCode);
-            if (self != null) {
-                this.context.setRun(true);
-                this.context.setSelf(self);
-                this.login.online(this.context);
-            } else {
-                this.context.setRun(false);
-                QQRobotImpl.LOG.error(String.format("QQ登录失败！QQ:%d,密码:%s",
-                                                    this.context.getSelf()
-                                                                .getAccount(),
-                                                    this.context.getSelf()
-                                                                .getPassword()));
-            }
+            this.postLogin(self);
         } catch (final JSONException e) {
             QQRobotImpl.LOG.error(e.getMessage(), e);
+        }
+    }
+
+    private void postLogin(final QQUser self) {
+        if (self != null) {
+            this.context.setRun(true);
+            this.context.setSelf(self);
+            this.login.online(this.context);
+        } else {
+            this.context.setRun(false);
+            QQRobotImpl.LOG.error("QQ登录失败！");
         }
     }
 
@@ -94,7 +84,7 @@ public class QQRobotImpl implements QQRobot {
     private void startPoller(final QQContext context) {
         final QQUser self = context.getSelf();
         QQRobotImpl.LOG.info(String.format("QQ开始运行！QQ:%s", self));
-        new Thread(this.messagePoller).run();
+        new Thread(this.messagePoller).start();
     }
 
     @Override

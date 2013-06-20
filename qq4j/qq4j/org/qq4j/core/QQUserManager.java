@@ -9,13 +9,13 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.qq4j.domain.QQUser;
 import org.qq4j.net.SystemConstants;
-
 
 public class QQUserManager extends QQAccountManager {
 
@@ -37,6 +37,9 @@ public class QQUserManager extends QQAccountManager {
     }
 
     public boolean isBlackList(final QQUser user) {
+        if (CollectionUtils.isEmpty(this.blackList)) {
+            return false;
+        }
         return this.blackList.contains(user.getAccount());
     }
 

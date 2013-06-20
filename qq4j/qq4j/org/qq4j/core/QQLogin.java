@@ -72,15 +72,20 @@ public class QQLogin {
 
         + verifyCode + "&webqq_type=10&remember_uin=1&login2qq=1&aid=" + QQLogin.APPID + "&u1=http%3A%2F%2Fweb.qq.com%2Floginproxy.html%3Flogin2qq%3D1%26webqq_type%3D10" + "&h=1&ptredirect=0&ptlang=2052&from_ui=1&pttype=1&dumy=&fp=loginerroralert&action=5-13-9792&mibao_css=m_webqq&t=1&g=1";
         final String result = this.httpClient.getJSON(loginUrl);
-        final String nick = this.findString("'登录成功！', '(.+)'\\);", result)[0];
-        if (StringUtils.isNotBlank(nick)) {
-            final QQUser self = new QQUser();
+        final String[] ptuiCB = this.findString("'(.*?)'", result);
+        final String errorCode = ptuiCB[0];
+        final String errorMessage = ptuiCB[4];
+        QQUser self = null;
+        if (StringUtils.equals("0", errorCode)) {
+            final String nick = ptuiCB[5];
+            self = new QQUser();
             self.setAccount(account);
             self.setNick(nick);
-            this.log.info(String.format("QQ登录成功！QQ:%s", self));
-            return self;
+            this.log.info(String.format("%s%s", self, errorMessage));
+        } else {
+            this.log.error(errorMessage);
         }
-        return null;
+        return self;
     }
 
     public void online(final QQContext context) {

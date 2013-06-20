@@ -16,4 +16,6 @@ public interface QQRobot {
     public boolean isRun();
 
     public String getName();
+
+    public byte[] downloadVerifyImage(long account);
 }
