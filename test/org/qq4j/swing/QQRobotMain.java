@@ -58,8 +58,7 @@ public class QQRobotMain implements QQRobot {
     @Override
     public void startup() {
         this.mRobot.startup();
-        this.vFrame.remove(this.vLoginPanel);
-        this.vFrame.invalidate();
+        this.vFrame.setVisible(false);
     }
 
     @Override
