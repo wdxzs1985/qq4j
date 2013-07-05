@@ -15,7 +15,6 @@ import org.qq4j.domain.QQSaisen;
 import org.qq4j.domain.QQUser;
 import org.qq4j.net.SystemConstants;
 
-
 public class QQSaisenCommandHandler implements QQCommandHandler {
 
     private QQAiManager aiManager = null;
@@ -50,13 +49,14 @@ public class QQSaisenCommandHandler implements QQCommandHandler {
     private QQSaisen increaseTimes(final QQUser user) {
         QQSaisen saisen = this.timesMapping.get(user.getAccount());
         //
-        final String time = DateFormatUtils.format(System.currentTimeMillis(),
+        final String date = DateFormatUtils.format(System.currentTimeMillis(),
                                                    "yyyyMMddHH",
                                                    SystemConstants.DEFAULT_LOCALE);
         //
-        if (saisen == null || !saisen.getDate().equals(time)) {
+        if (saisen == null
+            || !saisen.getDate().equals(date)) {
             saisen = new QQSaisen();
-            saisen.setDate(time);
+            saisen.setDate(date);
 
             this.timesMapping.put(user.getAccount(), saisen);
         }
@@ -73,13 +73,15 @@ public class QQSaisenCommandHandler implements QQCommandHandler {
         if (saisen.getTimes() <= this.timesLimit) {
             final int random = new Random().nextInt(100);
             if (random % 2 == 0) {
-                this.getAiManager().increaseFaith(user, 1);
+                this.getAiManager().increaseFaith(user,
+                                                  context.getSelf()
+                                                         .getAccount(),
+                                                  1);
                 if (StringUtils.isNotBlank(this.answer1)) {
                     final Map<String, String> valueMap = new HashMap<String, String>();
                     valueMap.put("nick", user.getNick());
                     answer = StrSubstitutor.replace(this.answer1, valueMap);
                 }
-
             } else {
                 if (StringUtils.isNotBlank(this.answer2)) {
                     final Map<String, String> valueMap = new HashMap<String, String>();

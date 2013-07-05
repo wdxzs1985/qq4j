@@ -88,8 +88,8 @@ public class QQReplyOrStudyCommandHandler implements QQCommandHandler {
             if (StringUtils.length(message) > 200) {
                 answer = this.getAnswer4();
             } else {
-                if (StringUtils.isNotBlank(question) && StringUtils.equals(this.getCommand1(),
-                                                                           message)) {
+                if (StringUtils.isNotBlank(question)
+                    && StringUtils.equals(this.getCommand1(), message)) {
                     // 不对
                     answer = this.getAnswer3();
                     session.put(QQSessionHandler.SESSION_HANDLER, this);
@@ -132,10 +132,13 @@ public class QQReplyOrStudyCommandHandler implements QQCommandHandler {
                 answer = this.getAnswer7();
             } else {
                 final String question = (String) session.get(QQReplyOrStudyCommandHandler.STUDY_QUESTION);
-                this.getAiManager().addAnswer(question,
-                                              message,
-                                              user.getAccount());
-                this.getAiManager().increaseFaith(user, this.getFaith());
+                final QQAiManager aiManager = this.getAiManager();
+                final long account = context.getSelf().getAccount();
+                aiManager.addAnswer(question,
+                                    message,
+                                    account,
+                                    user.getAccount());
+                aiManager.increaseFaith(user, account, this.getFaith());
                 answer = this.getAnswer8();
             }
             // session.remove(QQSessionHandler.SESSION_HANDLER);

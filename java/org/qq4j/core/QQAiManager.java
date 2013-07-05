@@ -19,8 +19,6 @@ public class QQAiManager {
 
     // private JdbcTemplate jdbcTemplate = null;
 
-    private QQContext context = null;
-
     public String getReplyAnswer(final String message,
                                  final long account,
                                  final long owner) {
@@ -137,14 +135,14 @@ public class QQAiManager {
 
     public void addAnswer(final String message,
                           final String answer,
+                          final long account,
                           final long owner) {
         // final String source = message.toLowerCase();
-        // final long qq = this.context.getSelf().getAccount();
         // final String messageId = this.insertNewMessage(source,
         // answer,
         // owner,
-        // qq);
-        // this.createMessageIndex(messageId, source, qq);
+        // account);
+        // this.createMessageIndex(messageId, source, account);
     }
 
     // private void createMessageIndex(final String messageId,
@@ -197,7 +195,7 @@ public class QQAiManager {
     // source,
     // answer,
     // owner,
-    // this.context.getSelf().getAccount());
+    // account);
     // } catch (final DataAccessException e) {
     // this.log.error(e.getMessage());
     // }
@@ -212,7 +210,9 @@ public class QQAiManager {
     // return prefix + StringUtils.leftPad(String.valueOf(nextId), 12, "0");
     // }
 
-    public void increaseFaith(final QQUser user, final int faith) {
+    public void increaseFaith(final QQUser user,
+                              final long account,
+                              final int faith) {
         // final String sql;
         // if (this.hasFaith(user)) {
         // sql =
@@ -227,7 +227,7 @@ public class QQAiManager {
         // this.jdbcTemplate.update(sql,
         // faith,
         // account,
-        // this.context.getSelf().getAccount());
+        // account);
         // } catch (final DataAccessException e) {
         // this.log.error(e.getMessage());
         // }
@@ -238,12 +238,11 @@ public class QQAiManager {
         // final String sql = "select faith, rank from " +
         // "(select account, faith, ROW_NUMBER() OVER (ORDER BY FAITH DESC) AS RANK from QQ_FAITH where qq = ?)"
         // + " where account = ?";
-        // final long account = user.getAccount();
+        // final long userAccount = user.getAccount();
         // try {
         // return this.jdbcTemplate.queryForMap(sql,
-        // this.context.getSelf()
-        // .getAccount(),
-        // account);
+        // account,
+        // userAccount);
         // } catch (final DataAccessException e) {
         // this.log.error(e.getMessage());
         // }
@@ -251,15 +250,14 @@ public class QQAiManager {
         return Collections.emptyMap();
     }
 
-    public boolean hasFaith(final QQUser user) {
+    public boolean hasFaith(final QQUser user, final long account) {
         // final String sql =
         // "select count(account) from QQ_FAITH where account = ? and qq = ?";
-        // final long account = user.getAccount();
+        // final long userAccount = user.getAccount();
         // try {
         // return this.jdbcTemplate.queryForInt(sql,
-        // account,
-        // this.context.getSelf()
-        // .getAccount()) > 0;
+        // userAccount,
+        // account) > 0;
         // } catch (final DataAccessException e) {
         // this.log.error(e.getMessage());
         // }
@@ -273,13 +271,5 @@ public class QQAiManager {
     // public void setJdbcTemplate(final JdbcTemplate jdbcTemplate) {
     // this.jdbcTemplate = jdbcTemplate;
     // }
-
-    public QQContext getContext() {
-        return this.context;
-    }
-
-    public void setContext(final QQContext context) {
-        this.context = context;
-    }
 
 }

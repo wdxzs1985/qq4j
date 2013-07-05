@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+    
+    <bean id="default" class="org.qq4j.impl.QQRobotImpl">
+        <property name="login" ref="default_login" />
+        <property name="context" ref="default_context" />
+        <property name="messagePoller" ref="default_poller"></property>
+    </bean>
+    
+    <bean id="default_client" class="org.qq4j.core.QQHttpClient" />
+    
+    <bean id="default_login" class="org.qq4j.core.QQLogin">
+        <property name="httpClient" ref="default_client" />
+    </bean>
+    
+    <bean id="default_context" class="org.qq4j.core.QQContext">
+        <property name="httpClient" ref="default_client" />
+        <!-- font -->
+        <property name="font">
+            <bean class="org.qq4j.domain.QQFont">
+                <property name="name" value="宋体"></property>
+                <property name="color" value="ff8f8f"></property>
+                <property name="size" value="10"></property>
+                <property name="bold" value="false"></property>
+                <property name="underline" value="false"></property>
+                <property name="italic" value="false"></property>
+            </bean>
+        </property>
+        <!-- SessionManager -->
+        <property name="sessionManager" >
+            <bean class="org.qq4j.core.QQSessionManager" />
+        </property>
+        <!-- FriendManager -->
+        <property name="friendManager" >
+            <bean class="org.qq4j.core.QQUserManager">
+                <property name="context" ref="default_context"></property>
+            </bean>
+        </property>
+        <!-- GroupManager -->
+        <property name="groupManager" >
+            <bean class="org.qq4j.core.QQGroupManager">
+                <property name="context" ref="default_context"></property>
+            </bean>
+        </property>
+        <!-- QQSender -->
+        <property name="sender" >
+            <bean class="org.qq4j.core.QQSender">
+                <property name="context" ref="default_context"></property>
+            </bean>
+        </property>
+    </bean>
+    
+    <bean id="default_poller" class="org.qq4j.core.QQMessagePoller">
+        <property name="context" ref="default_context"></property>
+        <property name="handlers">
+            <bean class="org.qq4j.core.handler.QQMessageHandlerMapping">
+                <property name="defaultHandler">
+                    <bean class="org.qq4j.core.handler.message.QQUnknowMessageHandler"></bean>
+                </property>
+                <property name="handlers">
+                    <map>
+                        <entry key="system_message" value-ref="system_message_handler"></entry>
+                        <entry key="sys_g_msg" value-ref="group_system_message_handler"></entry>
+                        <entry key="input_notify" value-ref="input_notify_handler"></entry>
+                        <entry key="shake_message" value-ref="shake_message_handler"></entry>
+                        <entry key="kick_message" value-ref="kick_message_handler"></entry>
+                        <entry key="buddies_status_change" value-ref="buddies_status_change_handler"></entry>
+                        <entry key="buddylist_change" value-ref="buddylist_change_handler"></entry>
+                        <entry key="sess_message" value-ref="sess_message_handler"></entry>
+                        <entry key="message">
+                            <bean class="org.qq4j.core.handler.message.QQUserMessageHandler">
+                                <property name="replyTimeLimit" value="30000"></property>
+                                <property name="repeatAnswer">
+                                    <list>
+                                        <value>复制帝你好，复制帝再见。</value>
+                                    </list>
+                                </property>
+                                <property name="handlers">
+                                    <bean class="org.qq4j.core.handler.QQCommandHandlerMapping">
+                                        <property name="defaultHandler">
+                                            <bean class="org.qq4j.core.handler.QQSessionHandler">
+                                                <property name="defaultHandler">
+                                                    <bean class="org.qq4j.core.handler.command.QQReplyOrStudyCommandHandler">
+                                                        <property name="aiManager">
+                                                            <bean class=" org.qq4j.core.QQAiManager" />
+                                                        </property>
+                                                        <property name="command1" value="不对"></property>
+                                                        <property name="command3" value="放弃"></property>
+                                                        <property name="answer1" value="主人你好～很高兴能和你一起聊天。如果我有不懂的，主人要教我回答哦。回答错误的时候，回复【不对】：可以纠正回答。还有，聊天时记得关闭自动回复哦。"></property>
+                                                        <property name="answer2" value="主人你说什么了吗？"></property>
+                                                        <property name="answer3" value="那我应该怎么回答呢？"></property>
+                                                        <property name="answer4" value="你说的太长了，我记不住额。。@_@"></property>
+                                                        <property name="answer6" value="我不知道你在说神马。教教我吧。回复【放弃】：放弃本次学习。"></property>
+                                                        <property name="answer7" value="好吧，说点别的吧。"></property>
+                                                        <property name="answer8" value="恩，我记住了～"></property>
+                                                        <property name="faith" value="1"></property>
+                                                    </bean>
+                                                </property>
+                                            </bean>
+                                        </property>
+                                        <property name="handlers">
+                                            <map>
+                                                <entry key="帮助">
+                                                    <bean class="org.qq4j.core.handler.command.QQHelpCommandHandler">
+                                                        <property name="mapping">
+                                                            <props>
+                                                                <prop key="帮助"><![CDATA[查看帮助信息]]></prop>
+                                                                <prop key="冻青蛙"><![CDATA[冻青蛙可以增加好感]]></prop>
+                                                                <prop key="好感"><![CDATA[查看好感度和排名]]></prop>
+                                                                <prop key="震我一下"><![CDATA[我也震你一下 o(>﹏<)o]]></prop>
+                                                                <prop key="回音"><![CDATA[这是肥音你懂吗 是肥音你懂吗 肥音你懂吗 音你懂吗 你懂吗 懂吗 吗]]></prop>
+                                                                <prop key="报时"><![CDATA[查看现在时间]]></prop>
+                                                            </props>
+                                                        </property>
+                                                    </bean>
+                                                </entry>
+                                                <entry key="冻青蛙">
+                                                    <bean class="org.qq4j.core.handler.command.QQSaisenCommandHandler">
+                                                        <property name="answer1" value="冻青蛙成功，${nick}的好感提升了"></property>
+                                                        <property name="answer2" value="青蛙逃跑了，${nick}的好感没有变化。"></property>
+                                                        <property name="answer3" value="冻青蛙太多了要怎么办呢？"></property>
+                                                        <property name="timesLimit" value="3"></property>
+                                                        <property name="timeLimitFormat" value="yyyyMMddHH"></property>
+                                                    </bean>
+                                                </entry>
+                                                <entry key="好感" value-ref="faith_command_handler"></entry>
+                                                <entry key="报时" value-ref="time_command_handler"></entry>
+                                                <entry key="震我一下" value-ref="shake_command_handler"></entry>
+                                                <entry key="回音" value-ref="echo_command_handler"></entry>
+                                            </map>
+                                        </property>
+                                    </bean>
+                                </property>
+                            </bean>
+                        </entry>
+                        <entry key="group_message">
+                            <bean class="org.qq4j.core.handler.message.QQGroupMessageHandler">
+                                <property name="replyTimeLimit" value="5000"></property>
+                                <property name="repeatAnswer">
+                                    <list>
+                                        <value>复制帝你好，复制帝再见。</value>
+                                    </list>
+                                </property>
+                                <property name="handlers">
+                                    <bean class="org.qq4j.core.handler.QQCommandHandlerMapping">
+                                        <property name="defaultHandler">
+                                            <bean class="org.qq4j.core.handler.QQSessionHandler">
+                                                <property name="defaultHandler">
+                                                    <bean class="org.qq4j.core.handler.command.QQReplyOrStudyCommandHandler">
+                                                        <property name="command1" value="不对"></property>
+                                                        <property name="command3" value="放弃"></property>
+                                                        <property name="answer1" value="主人你好～很高兴能和你一起聊天。如果我有不懂的，主人要教我回答哦。回答错误的时候，回复【不对】：可以纠正回答。还有，聊天时记得关闭自动回复哦。"></property>
+                                                        <property name="answer2" value="主人你说什么了吗？"></property>
+                                                        <property name="answer3" value="那我应该怎么回答呢？"></property>
+                                                        <property name="answer4" value="你说的太长了，我记不住额。。@_@"></property>
+                                                        <property name="answer6" value="我不知道你在说神马。教教我吧。回复【放弃】：放弃本次学习。"></property>
+                                                        <property name="answer7" value="好吧，说点别的吧。"></property>
+                                                        <property name="answer8" value="恩，我记住了～"></property>
+                                                        <property name="faith" value="1"></property>
+                                                    </bean>
+                                                </property>
+                                            </bean>
+                                        </property>
+                                        <property name="handlers">
+                                            <map>
+                                                <entry key="帮助">
+                                                    <bean class="org.qq4j.core.handler.command.QQHelpCommandHandler">
+                                                        <property name="mapping">
+                                                            <props>
+                                                                <prop key="帮助"><![CDATA[查看帮助信息]]></prop>
+                                                                <prop key="冻青蛙"><![CDATA[冻青蛙可以增加好感]]></prop>
+                                                                <prop key="好感"><![CDATA[查看好感度和排名]]></prop>
+                                                                <prop key="震我一下"><![CDATA[我也震你一下 o(>﹏<)o]]></prop>
+                                                                <prop key="回音"><![CDATA[这是肥音你懂吗 是肥音你懂吗 肥音你懂吗 音你懂吗 你懂吗 懂吗 吗]]></prop>
+                                                                <prop key="报时"><![CDATA[查看现在时间]]></prop>
+                                                            </props>
+                                                        </property>
+                                                    </bean>
+                                                </entry>
+                                                <entry key="冻青蛙">
+                                                    <bean class="org.qq4j.core.handler.command.QQSaisenCommandHandler">
+                                                        <property name="answer1" value="冻青蛙成功，${nick}的好感提升了"></property>
+                                                        <property name="answer2" value="青蛙逃跑了，${nick}的好感没有变化。"></property>
+                                                        <property name="answer3" value="冻青蛙太多了要怎么办呢？"></property>
+                                                        <property name="timesLimit" value="3"></property>
+                                                        <property name="timeLimitFormat" value="yyyyMMddHH"></property>
+                                                    </bean>
+                                                </entry>
+                                                <entry key="好感" value-ref="faith_command_handler"></entry>
+                                                <entry key="报时" value-ref="time_command_handler"></entry>
+                                                <entry key="震我一下" value-ref="shake_command_handler"></entry>
+                                                <entry key="回音" value-ref="echo_command_handler"></entry>
+                                            </map>
+                                        </property>
+                                    </bean>
+                                </property>
+                            </bean>
+                        </entry>
+                    </map>
+                </property>
+            </bean>
+        </property>
+    </bean>
+</beans>

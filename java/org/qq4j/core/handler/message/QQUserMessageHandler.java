@@ -10,23 +10,14 @@ import org.apache.commons.logging.LogFactory;
 import org.qq4j.core.QQConstants;
 import org.qq4j.core.QQContext;
 import org.qq4j.core.QQUserManager;
-import org.qq4j.core.handler.QQCommandHandlerMapping;
 import org.qq4j.core.handler.QQMessageHandler;
 import org.qq4j.domain.QQUser;
 import org.qq4j.helper.QQMessageParser;
 import org.qq4j.net.SystemConstants;
 
+public class QQUserMessageHandler extends BaseMessageHandler implements QQMessageHandler {
 
-public class QQUserMessageHandler implements QQMessageHandler {
-
-    // private final QQMessageSender sender;
     private final Log log = LogFactory.getLog(QQUserMessageHandler.class);
-
-    private QQCommandHandlerMapping handlers = null;
-
-    private int replyTimeLimit = 1000;
-
-    private String repeatAnswer1 = null;
 
     @Override
     public void handle(final QQContext context, final JSONObject json) {
@@ -51,11 +42,15 @@ public class QQUserMessageHandler implements QQMessageHandler {
                                             user,
                                             message));
                 final boolean isNew = msgId > user.getLastMsgId();
-                final boolean isTooOld = System.currentTimeMillis() - time < this.getReplyTimeLimit();
+                final boolean isTooOld = System.currentTimeMillis()
+                                         - time > this.getReplyTimeLimit();
                 final boolean isBlack = friendManager.isBlackList(user);
                 final boolean isBusy = this.isBuzy(user);
 
-                if (isNew && !isTooOld && !isBlack && !isBusy) {
+                if (isNew
+                    && !isTooOld
+                    && !isBlack
+                    && !isBusy) {
                     if (this.isRepeat(user, message)) {
                         this.handleRepeat(context, user);
                     } else {
@@ -68,26 +63,8 @@ public class QQUserMessageHandler implements QQMessageHandler {
         }
     }
 
-    protected boolean isRepeat(final QQUser user, final String message) {
-        if (StringUtils.equals(user.getLastMsg(), message)) {
-            user.setRepeatTimes(user.getRepeatTimes() + 1);
-            return true;
-        }
-        user.setRepeatTimes(0);
-        return false;
-    }
-
     protected void handleRepeat(final QQContext context, final QQUser user) {
-        String answer = null;
-
-        switch (user.getRepeatTimes()) {
-        case 1:
-            answer = this.repeatAnswer1;
-            break;
-        default:
-            answer = null;
-            break;
-        }
+        final String answer = this.selectRepeatAnswer(user);
         context.getSender().sendToUser(user, answer);
     }
 
@@ -99,7 +76,9 @@ public class QQUserMessageHandler implements QQMessageHandler {
                                                   status);
         final boolean isAway = StringUtils.equals(QQConstants.STATUS_AWAY,
                                                   status);
-        if (isSilent || isBusy || isAway) {
+        if (isSilent
+            || isBusy
+            || isAway) {
             return true;
         }
         return false;
@@ -108,30 +87,6 @@ public class QQUserMessageHandler implements QQMessageHandler {
     @Override
     public String getHandleType() {
         return "message";
-    }
-
-    public QQCommandHandlerMapping getHandlers() {
-        return this.handlers;
-    }
-
-    public void setHandlers(final QQCommandHandlerMapping handlers) {
-        this.handlers = handlers;
-    }
-
-    public int getReplyTimeLimit() {
-        return this.replyTimeLimit;
-    }
-
-    public void setReplyTimeLimit(final int replyTimeLimit) {
-        this.replyTimeLimit = replyTimeLimit;
-    }
-
-    public String getRepeatAnswer1() {
-        return this.repeatAnswer1;
-    }
-
-    public void setRepeatAnswer1(final String repeatAnswer1) {
-        this.repeatAnswer1 = repeatAnswer1;
     }
 
 }

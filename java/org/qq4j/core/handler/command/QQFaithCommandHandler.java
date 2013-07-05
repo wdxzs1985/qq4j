@@ -36,7 +36,7 @@ public class QQFaithCommandHandler implements QQCommandHandler {
     }
 
     private String getAnswer(final QQContext context, final QQUser user) {
-        if (this.getAiManager().hasFaith(user)) {
+        if (this.getAiManager().hasFaith(user, context.getSelf().getAccount())) {
             final Map<String, Object> result = this.getAiManager()
                                                    .queryRank(user);
             final BigDecimal faith = (BigDecimal) result.get("faith");

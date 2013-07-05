@@ -10,23 +10,15 @@ import org.apache.commons.logging.LogFactory;
 import org.qq4j.core.QQContext;
 import org.qq4j.core.QQGroupManager;
 import org.qq4j.core.QQUserManager;
-import org.qq4j.core.handler.QQCommandHandlerMapping;
 import org.qq4j.core.handler.QQMessageHandler;
 import org.qq4j.domain.QQGroup;
 import org.qq4j.domain.QQUser;
 import org.qq4j.helper.QQMessageParser;
 import org.qq4j.net.SystemConstants;
 
-
-public class QQGroupMessageHandler implements QQMessageHandler {
-
-    private QQCommandHandlerMapping handlers = null;
+public class QQGroupMessageHandler extends BaseMessageHandler implements QQMessageHandler {
 
     private final Log log = LogFactory.getLog(QQGroupMessageHandler.class);
-
-    private int replyTimeLimit = 1000;
-
-    private String repeatAnswer1 = null;
 
     @Override
     public void handle(final QQContext context, final JSONObject json) {
@@ -47,7 +39,6 @@ public class QQGroupMessageHandler implements QQMessageHandler {
             final QQGroup group = groupManager.getQQGroup(gCode);
             if (group != null) {
                 final QQUser member = group.getMembers().get(uin);
-                // final QQUser user = friendManager.getQQUser(uin);
                 if (member != null) {
                     if (member.getAccount() == 0) {
                         final QQUser user = friendManager.getQQUser(uin);
@@ -64,78 +55,36 @@ public class QQGroupMessageHandler implements QQMessageHandler {
                                                 group,
                                                 member,
                                                 message));
-                    // synchronized (member) {
-                    // if (msgId != member.getLastMsgId() &&
-                    // System.currentTimeMillis() - time <
-                    // this.getReplyTimeLimit()) {
-                    // if (this.isRepeat(member, message)) {
-                    // this.handleRepeat(context, group, member);
-                    // } else {
-                    // this.getHandlers().handleGroup(context,
-                    // group,
-                    // member,
-                    // message);
-                    // }
-                    // }
-                    // member.setLastMsgId(msgId);
-                    // member.setLastMsg(message);
-                    // }
+                    synchronized (member) {
+                        if (msgId != member.getLastMsgId()
+                            && System.currentTimeMillis()
+                               - time < this.getReplyTimeLimit()) {
+                            if (this.isRepeat(member, message)) {
+                                this.handleRepeat(context, group, member);
+                            } else {
+                                this.getHandlers().handleGroup(context,
+                                                               group,
+                                                               member,
+                                                               message);
+                            }
+                        }
+                        member.setLastMsgId(msgId);
+                        member.setLastMsg(message);
+                    }
                 }
             }
         }
     }
 
-    protected boolean isRepeat(final QQUser user, final String message) {
-        if (StringUtils.equals(user.getLastMsg(), message)) {
-            user.setRepeatTimes(user.getRepeatTimes() + 1);
-            return true;
-        }
-        user.setRepeatTimes(0);
-        return false;
-    }
-
     protected void handleRepeat(final QQContext context,
                                 final QQGroup group,
                                 final QQUser member) {
-        String answer = null;
-
-        switch (member.getRepeatTimes()) {
-        case 1:
-            answer = this.repeatAnswer1;
-            break;
-        default:
-            answer = null;
-            break;
-        }
+        final String answer = this.selectRepeatAnswer(member);
         context.getSender().sendToGroup(group, answer);
     }
 
     @Override
     public String getHandleType() {
         return "group_message";
-    }
-
-    public QQCommandHandlerMapping getHandlers() {
-        return this.handlers;
-    }
-
-    public void setHandlers(final QQCommandHandlerMapping handlers) {
-        this.handlers = handlers;
-    }
-
-    public int getReplyTimeLimit() {
-        return this.replyTimeLimit;
-    }
-
-    public void setReplyTimeLimit(final int replyTimeLimit) {
-        this.replyTimeLimit = replyTimeLimit;
-    }
-
-    public String getRepeatAnswer1() {
-        return this.repeatAnswer1;
-    }
-
-    public void setRepeatAnswer1(final String repeatAnswer1) {
-        this.repeatAnswer1 = repeatAnswer1;
     }
 }
