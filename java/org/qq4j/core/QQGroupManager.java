@@ -1,6 +1,7 @@
 package org.qq4j.core;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -20,6 +21,7 @@ public class QQGroupManager extends QQAccountManager {
     private Map<Long, QQGroup> groups = null;
 
     public void initGroupInfo() {
+        this.groups = Collections.synchronizedMap(new HashMap<Long, QQGroup>());
         // final QQContext context = this.getContext();
         // final String url =
         // "http://s.web2.qq.com/api/get_group_name_list_mask2";

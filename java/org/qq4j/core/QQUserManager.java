@@ -1,6 +1,8 @@
 package org.qq4j.core;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +44,7 @@ public class QQUserManager extends QQAccountManager {
     }
 
     public void initFriendsInfo() {
+        this.users = Collections.synchronizedMap(new HashMap<Long, QQUser>());
         // final QQContext context = this.getContext();
         // final String url = "http://s.web2.qq.com/api/get_user_friends2";
         //
