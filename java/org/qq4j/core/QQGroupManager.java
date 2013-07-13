@@ -54,8 +54,11 @@ public class QQGroupManager extends QQAccountManager {
     }
 
     public QQGroup fetchGroupInfo(final long gcode) {
-        final String url = "http://s.web2.qq.com/api/get_group_info_ext2?gcode=" + gcode + "&vfwebqq=" + this.getContext()
-                                                                                                             .getVfwebqq() + "&t=" + System.currentTimeMillis();
+        final String url = "http://s.web2.qq.com/api/get_group_info_ext2?gcode=" + gcode
+                           + "&vfwebqq="
+                           + this.getContext().getVfwebqq()
+                           + "&t="
+                           + System.currentTimeMillis();
         final String result = this.getContext().getHttpClient().getJSON(url);
         return this.parseGroupInfo(result);
     }
@@ -119,14 +122,19 @@ public class QQGroupManager extends QQAccountManager {
     }
 
     public void allowJoinGroup(final QQGroup group, final QQUser user) {
-        final String pollUrl = "http://d.web2.qq.com/channel/op_group_join_req?" + "group_uin=" + group.getUin() + "&req_uin=" + user.getUin() + "&msg=&op_type=2&clientid=" + this.getContext()
-                                                                                                                                                                                   .getClientid() + "&psessionid=" + this.getContext()
-                                                                                                                                                                                                                         .getPsessionid();
+        final String pollUrl = "http://d.web2.qq.com/channel/op_group_join_req?" + "group_uin="
+                               + group.getUin()
+                               + "&req_uin="
+                               + user.getUin()
+                               + "&msg=&op_type=2&clientid="
+                               + this.getContext().getClientid()
+                               + "&psessionid="
+                               + this.getContext().getPsessionid();
         this.getContext().getHttpClient().getJSON(pollUrl);
     }
 
     public void quitGroup(final QQGroup group) throws JSONException,
-                                              UnsupportedEncodingException {
+            UnsupportedEncodingException {
         final QQContext context = this.getContext();
         final String url = "http://s.web2.qq.com/api/quit_group2";
 
@@ -137,7 +145,7 @@ public class QQGroupManager extends QQAccountManager {
     }
 
     private Map<Long, QQGroup> parseGroupMapping(final String result)
-                                                                     throws JSONException {
+            throws JSONException {
         final Map<Long, QQGroup> groupMapping = new HashMap<Long, QQGroup>();
         if (StringUtils.isNotBlank(result)) {
 

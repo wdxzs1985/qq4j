@@ -122,9 +122,12 @@ public class CommonHttpClient {
 
         String result = null;
         try {
-            httppost.setEntity(new UrlEncodedFormEntity(nvps,
-                                                        SystemConstants.ENCODING));
-
+            final UrlEncodedFormEntity postEntity = new UrlEncodedFormEntity(nvps,
+                                                                             SystemConstants.ENCODING);
+            httppost.setEntity(postEntity);
+            if (this.log.isDebugEnabled()) {
+                this.log.debug("postEntity : " + this.entityToString(postEntity));
+            }
             final HttpResponse response = this.client.execute(httppost,
                                                               this.localContext);
             final HttpEntity entity = response.getEntity();
@@ -185,8 +188,7 @@ public class CommonHttpClient {
     }
 
     private String entityToString(final HttpEntity entity)
-                                                          throws ParseException,
-                                                          IOException {
+            throws ParseException, IOException {
         String result = null;
         if (this.isGzip(entity)) {
             result = EntityUtils.toString(new GzipDecompressingEntity(entity));

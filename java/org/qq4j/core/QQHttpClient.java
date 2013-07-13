@@ -9,7 +9,6 @@ import org.apache.http.HttpMessage;
 import org.apache.http.message.BasicNameValuePair;
 import org.qq4j.net.CommonHttpClient;
 
-
 public class QQHttpClient extends CommonHttpClient {
 
     private static final String REFERER = "http://d.web2.qq.com/proxy.html?v=20110331002&callback=2";

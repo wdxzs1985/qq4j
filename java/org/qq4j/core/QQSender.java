@@ -41,13 +41,14 @@ public class QQSender {
             this.log.debug(String.format("%s >> 回复%s：%s",
                                          this.context.getSelf(),
                                          user,
-                                         content.toString()));
+                                         content));
         }
 
         final String sendMsgUrl = "http://d.web2.qq.com/channel/send_buddy_msg2";
         final JSONObject json = new JSONObject();
         json.put("to", user.getUin());// 要发送的人
-        json.put("content", content);
+        json.put("face", 600); // 迷之参数
+        json.put("content", "\"" + content + "\"");
         this.sendMessage(json, sendMsgUrl);
     }
 
@@ -67,7 +68,7 @@ public class QQSender {
             this.log.debug(String.format("%s >> 回复%s：%s",
                                          this.context.getSelf(),
                                          group,
-                                         content.toString()));
+                                         content));
         }
 
         if (this.canSendGface) {
@@ -76,7 +77,7 @@ public class QQSender {
             json.put("sig", this.gfaceSig);
         }
 
-        json.put("content", content);
+        json.put("content", "\"" + content + "\"");
         this.sendMessage(json, sendMsgUrl);
     }
 
@@ -92,7 +93,7 @@ public class QQSender {
 
         final JSONObject fontBase = new JSONObject();
         fontBase.put("name", font.getName());
-        fontBase.put("size", font.getSize());
+        fontBase.put("size", String.valueOf(font.getSize()));
 
         final JSONArray style = new JSONArray();
         style.add(font.isBold() ? 1 : 0);
@@ -112,7 +113,7 @@ public class QQSender {
         final QQContext context = this.getContext();
 
         content.put("msg_id", new Random().nextInt(10000000));
-        content.put("clientid", context.getClientid());
+        content.put("clientid", String.valueOf(context.getClientid()));
         content.put("psessionid", context.getPsessionid());// 需要这个才能发送
 
         context.getHttpClient().postJsonData(url, content);
@@ -120,13 +121,25 @@ public class QQSender {
 
     public void sendShakeMessage(final QQUser user) {
         final QQContext context = this.getContext();
-        final String url = "http://d.web2.qq.com/channel/shake2" + "?to_uin=" + user.getUin() + "&clientid=" + context.getClientid() + "&psessionid=" + context.getPsessionid() + "&t=" + System.currentTimeMillis();
+        final String url = "http://d.web2.qq.com/channel/shake2" + "?to_uin="
+                           + user.getUin()
+                           + "&clientid="
+                           + context.getClientid()
+                           + "&psessionid="
+                           + context.getPsessionid()
+                           + "&t="
+                           + System.currentTimeMillis();
         context.getHttpClient().getJSON(url);
     }
 
     private void initGfaceSig() {
         final QQContext context = this.getContext();
-        final String url = "http://d.web2.qq.com/channel/get_gface_sig2" + "?clientid=" + context.getClientid() + "&psessionid=" + context.getPsessionid() + "&t=" + System.currentTimeMillis();
+        final String url = "http://d.web2.qq.com/channel/get_gface_sig2" + "?clientid="
+                           + context.getClientid()
+                           + "&psessionid="
+                           + context.getPsessionid()
+                           + "&t="
+                           + System.currentTimeMillis();
         final String result = context.getHttpClient().getJSON(url);
         if (StringUtils.isNotBlank(result)) {
             final JSONObject json = JSONObject.fromObject(result);

@@ -30,7 +30,7 @@ public class QQLogin {
     private String uin = null;
 
     public QQUser login(final long account, final String pasword)
-                                                                 throws NeedVerifyCodeException {
+            throws NeedVerifyCodeException {
         final String verifyCode = this.getVerifyCode(account);
         if (verifyCode != null) {
             this.log.info(String.format("获得验证码：%s", verifyCode));
@@ -41,8 +41,10 @@ public class QQLogin {
     }
 
     private String getVerifyCode(final long account)
-                                                    throws NeedVerifyCodeException {
-        final String checkQQUrl = "http://check.ptlogin2.qq.com/check?appid=" + QQLogin.APPID + "&uin=" + account;
+            throws NeedVerifyCodeException {
+        final String checkQQUrl = "http://check.ptlogin2.qq.com/check?appid=" + QQLogin.APPID
+                                  + "&uin="
+                                  + account;
         final String result = this.httpClient.getJSON(checkQQUrl);
         String[] group = null;
         if (StringUtils.isNotBlank(result)) {
@@ -59,18 +61,27 @@ public class QQLogin {
     }
 
     public byte[] downloadVerifyImage(final long account) {
-        final String url = "http://captcha.qq.com/getimage?aid=" + QQLogin.APPID + "&uin=" + account;
+        final String url = "http://captcha.qq.com/getimage?aid=" + QQLogin.APPID
+                           + "&uin="
+                           + account;
         return this.httpClient.getByte(url);
     }
 
     public QQUser login(final long account,
                         final String password,
                         final String verifyCode) {
-        final String loginUrl = "http://ptlogin2.qq.com/login?u=" + account + "&p=" + this.encodePass(password,
-                                                                                                      verifyCode,
-                                                                                                      this.uin) + "&verifycode="
+        final String loginUrl = "http://ptlogin2.qq.com/login?u=" + account
+                                + "&p="
+                                + this.encodePass(password,
+                                                  verifyCode,
+                                                  this.uin)
+                                + "&verifycode="
 
-        + verifyCode + "&webqq_type=10&remember_uin=1&login2qq=1&aid=" + QQLogin.APPID + "&u1=http%3A%2F%2Fweb.qq.com%2Floginproxy.html%3Flogin2qq%3D1%26webqq_type%3D10" + "&h=1&ptredirect=0&ptlang=2052&from_ui=1&pttype=1&dumy=&fp=loginerroralert&action=5-13-9792&mibao_css=m_webqq&t=1&g=1";
+                                + verifyCode
+                                + "&webqq_type=10&remember_uin=1&login2qq=1&aid="
+                                + QQLogin.APPID
+                                + "&u1=http%3A%2F%2Fweb.qq.com%2Floginproxy.html%3Flogin2qq%3D1%26webqq_type%3D10"
+                                + "&h=1&ptredirect=0&ptlang=2052&from_ui=1&pttype=1&dumy=&fp=loginerroralert&action=5-13-9792&mibao_css=m_webqq&t=1&g=1";
         final String result = this.httpClient.getJSON(loginUrl);
         final String[] ptuiCB = this.findString("'(.*?)'", result);
         final String errorCode = ptuiCB[0];
@@ -116,7 +127,11 @@ public class QQLogin {
     }
 
     public void offline(final QQContext context) {
-        final String statusUrl = "http://d.web2.qq.com/channel/change_status2?newstatus=offline&clientid=" + context.getClientid() + "&psessionid=" + context.getPsessionid() + "&t=" + System.currentTimeMillis();
+        final String statusUrl = "http://d.web2.qq.com/channel/change_status2?newstatus=offline&clientid=" + context.getClientid()
+                                 + "&psessionid="
+                                 + context.getPsessionid()
+                                 + "&t="
+                                 + System.currentTimeMillis();
         this.httpClient.getJSON(statusUrl);
         context.setRun(false);
     }
@@ -148,7 +163,12 @@ public class QQLogin {
                                                 .getClassLoader()
                                                 .getResource("org/qq4j/core/encode.js")
                                                 .getPath())));
-            final Object t = se.eval("md5(md5(hexchar2bin(md5('" + pass + "'))+'" + uin + "')+'" + code.toUpperCase() + "')");
+            final Object t = se.eval("md5(md5(hexchar2bin(md5('" + pass
+                                     + "'))+'"
+                                     + uin
+                                     + "')+'"
+                                     + code.toUpperCase()
+                                     + "')");
             return t.toString();
         } catch (final FileNotFoundException e) {
             throw new RuntimeException(e);

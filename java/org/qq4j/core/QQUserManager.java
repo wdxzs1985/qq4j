@@ -88,15 +88,25 @@ public class QQUserManager extends QQAccountManager {
     }
 
     protected QQUser fetchFriendInfo(final long uin) {
-        final String url = "http://s.web2.qq.com/api/get_friend_info2?" + "tuin=" + uin + "&verifysession=&gid=0&code=" + "&vfwebqq=" + this.getContext()
-                                                                                                                                            .getVfwebqq() + "&t=" + System.currentTimeMillis();
+        final String url = "http://s.web2.qq.com/api/get_friend_info2?" + "tuin="
+                           + uin
+                           + "&verifysession=&gid=0&code="
+                           + "&vfwebqq="
+                           + this.getContext().getVfwebqq()
+                           + "&t="
+                           + System.currentTimeMillis();
         final String result = this.getContext().getHttpClient().getJSON(url);
         return this.parseUserInfo(result);
     }
 
     protected QQUser fetchStrangerInfo(final long uin) {
-        final String url = "http://s.web2.qq.com/api/get_stranger_info2?" + "tuin=" + uin + "&verifysession=&gid=0&code=" + "&vfwebqq=" + this.getContext()
-                                                                                                                                              .getVfwebqq() + "&t=" + System.currentTimeMillis();
+        final String url = "http://s.web2.qq.com/api/get_stranger_info2?" + "tuin="
+                           + uin
+                           + "&verifysession=&gid=0&code="
+                           + "&vfwebqq="
+                           + this.getContext().getVfwebqq()
+                           + "&t="
+                           + System.currentTimeMillis();
         final String result = this.getContext().getHttpClient().getJSON(url);
         return this.parseUserInfo(result);
     }
@@ -129,8 +139,13 @@ public class QQUserManager extends QQAccountManager {
     }
 
     public QQUser searchFriendInfo(final long qq) {
-        final String url = "http://s.web2.qq.com/api/search_qq_by_uin2?" + "tuin=" + qq + "&verifysession=&code=" + "&vfwebqq=" + this.getContext()
-                                                                                                                                      .getVfwebqq() + "&t=" + System.currentTimeMillis();
+        final String url = "http://s.web2.qq.com/api/search_qq_by_uin2?" + "tuin="
+                           + qq
+                           + "&verifysession=&code="
+                           + "&vfwebqq="
+                           + this.getContext().getVfwebqq()
+                           + "&t="
+                           + System.currentTimeMillis();
         final String result = this.getContext().getHttpClient().getJSON(url);
         return this.parseUserInfo(result);
     }
@@ -148,7 +163,7 @@ public class QQUserManager extends QQAccountManager {
     }
 
     public void setLongNick(final String nlk) throws JSONException,
-                                             UnsupportedEncodingException {
+            UnsupportedEncodingException {
         final QQContext context = this.getContext();
         final String url = "http://s.web2.qq.com/api/set_long_nick2";
         final JSONObject content = new JSONObject();
@@ -158,7 +173,7 @@ public class QQUserManager extends QQAccountManager {
     }
 
     private Map<Long, QQUser> parseFriendMapping(final String result)
-                                                                     throws JSONException {
+            throws JSONException {
         final Map<Long, QQUser> userMapping = new HashMap<Long, QQUser>();
 
         if (StringUtils.isNotBlank(result)) {
