@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.text.StrSubstitutor;
-import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.text.StrSubstitutor;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.qq4j.core.QQAiManager;
 import org.qq4j.core.QQContext;
 import org.qq4j.core.handler.QQCommandHandler;
@@ -53,8 +53,7 @@ public class QQSaisenCommandHandler implements QQCommandHandler {
                                                    "yyyyMMddHH",
                                                    SystemConstants.DEFAULT_LOCALE);
         //
-        if (saisen == null
-            || !saisen.getDate().equals(date)) {
+        if (saisen == null || !saisen.getDate().equals(date)) {
             saisen = new QQSaisen();
             saisen.setDate(date);
 

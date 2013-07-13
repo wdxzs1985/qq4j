@@ -3,8 +3,8 @@ package org.qq4j.core.handler.message;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.qq4j.core.QQConstants;
@@ -15,7 +15,8 @@ import org.qq4j.domain.QQUser;
 import org.qq4j.helper.QQMessageParser;
 import org.qq4j.net.SystemConstants;
 
-public class QQUserMessageHandler extends BaseMessageHandler implements QQMessageHandler {
+public class QQUserMessageHandler extends BaseMessageHandler implements
+        QQMessageHandler {
 
     private final Log log = LogFactory.getLog(QQUserMessageHandler.class);
 
@@ -42,15 +43,11 @@ public class QQUserMessageHandler extends BaseMessageHandler implements QQMessag
                                             user,
                                             message));
                 final boolean isNew = msgId > user.getLastMsgId();
-                final boolean isTooOld = System.currentTimeMillis()
-                                         - time > this.getReplyTimeLimit();
+                final boolean isTooOld = System.currentTimeMillis() - time > this.getReplyTimeLimit();
                 final boolean isBlack = friendManager.isBlackList(user);
                 final boolean isBusy = this.isBuzy(user);
 
-                if (isNew
-                    && !isTooOld
-                    && !isBlack
-                    && !isBusy) {
+                if (isNew && !isTooOld && !isBlack && !isBusy) {
                     if (this.isRepeat(user, message)) {
                         this.handleRepeat(context, user);
                     } else {
@@ -76,9 +73,7 @@ public class QQUserMessageHandler extends BaseMessageHandler implements QQMessag
                                                   status);
         final boolean isAway = StringUtils.equals(QQConstants.STATUS_AWAY,
                                                   status);
-        if (isSilent
-            || isBusy
-            || isAway) {
+        if (isSilent || isBusy || isAway) {
             return true;
         }
         return false;

@@ -3,7 +3,7 @@ package org.qq4j.core.handler.command;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang3.SystemUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.qq4j.core.QQContext;
 import org.qq4j.core.handler.QQCommandHandler;
 import org.qq4j.domain.QQGroup;

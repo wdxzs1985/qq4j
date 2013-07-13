@@ -12,8 +12,8 @@ import javax.script.ScriptException;
 
 import net.sf.json.JSONObject;
 
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.qq4j.core.exception.NeedVerifyCodeException;
@@ -46,12 +46,12 @@ public class QQLogin {
                                   + "&uin="
                                   + account;
         final String result = this.httpClient.getJSON(checkQQUrl);
-        String[] group = null;
+        Object[] group = null;
         if (StringUtils.isNotBlank(result)) {
             group = this.findString("'(.*?)'", result);
-            this.uin = group[2];
+            this.uin = (String) group[2];
             if (group[0].equals("0")) {
-                return group[1];
+                return (String) group[1];
             } else {
                 // TODO 生成图片验证码
                 throw new NeedVerifyCodeException();
@@ -83,12 +83,12 @@ public class QQLogin {
                                 + "&u1=http%3A%2F%2Fweb.qq.com%2Floginproxy.html%3Flogin2qq%3D1%26webqq_type%3D10"
                                 + "&h=1&ptredirect=0&ptlang=2052&from_ui=1&pttype=1&dumy=&fp=loginerroralert&action=5-13-9792&mibao_css=m_webqq&t=1&g=1";
         final String result = this.httpClient.getJSON(loginUrl);
-        final String[] ptuiCB = this.findString("'(.*?)'", result);
-        final String errorCode = ptuiCB[0];
-        final String errorMessage = ptuiCB[4];
+        final Object[] ptuiCB = this.findString("'(.*?)'", result);
+        final String errorCode = (String) ptuiCB[0];
+        final String errorMessage = (String) ptuiCB[4];
         QQUser self = null;
         if (StringUtils.equals("0", errorCode)) {
-            final String nick = ptuiCB[5];
+            final String nick = (String) ptuiCB[5];
             self = new QQUser();
             self.setAccount(account);
             self.setNick(nick);
@@ -136,10 +136,10 @@ public class QQLogin {
         context.setRun(false);
     }
 
-    public String[] findString(final String pattern, final String search) {
+    public Object[] findString(final String pattern, final String search) {
         final Pattern p = Pattern.compile(pattern);
         final Matcher m = p.matcher(search);
-        String[] targets = {};
+        Object[] targets = {};
         while (m.find()) {
             targets = ArrayUtils.add(targets, m.group(1));
         }

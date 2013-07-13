@@ -1,6 +1,6 @@
 package org.qq4j.core.handler.command;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.qq4j.core.QQAiManager;
@@ -88,8 +88,8 @@ public class QQReplyOrStudyCommandHandler implements QQCommandHandler {
             if (StringUtils.length(message) > 200) {
                 answer = this.getAnswer4();
             } else {
-                if (StringUtils.isNotBlank(question)
-                    && StringUtils.equals(this.getCommand1(), message)) {
+                if (StringUtils.isNotBlank(question) && StringUtils.equals(this.getCommand1(),
+                                                                           message)) {
                     // 不对
                     answer = this.getAnswer3();
                     session.put(QQSessionHandler.SESSION_HANDLER, this);

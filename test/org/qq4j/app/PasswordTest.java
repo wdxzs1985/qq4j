@@ -21,13 +21,13 @@ public class PasswordTest {
         System.out.println(loginObject.encodePass(pass, code, uin2));
 
         final String search = "ptui_checkVC('0','!OKU','\\x00\\x00\\x00\\x00\\x17\\xc7\\x59\\x1c');";
-        final String[] verifyCode = loginObject.findString("'(.*?)'", search);
+        final Object[] verifyCode = loginObject.findString("'(.*?)'", search);
         System.out.println(verifyCode[0]);
         System.out.println(verifyCode[1]);
         System.out.println(verifyCode[2]);
 
         final String search2 = "ptui_checkVC('1','37688d32b019a9a7b31fda00bde2fa013e479c1d2168a8ba','\\x00\\x00\\x00\\x00\\x6d\\xb5\\x47\\xfd');";
-        final String[] verifyCode2 = loginObject.findString("'(.*?)'", search2);
+        final Object[] verifyCode2 = loginObject.findString("'(.*?)'", search2);
         System.out.println(verifyCode2[0]);
         System.out.println(verifyCode2[1]);
         System.out.println(verifyCode2[2]);

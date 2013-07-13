@@ -1,7 +1,7 @@
 package org.qq4j.core.handler.command;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.SystemUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.qq4j.core.QQContext;
@@ -63,7 +63,7 @@ public class QQEchoCommandHandler implements QQCommandHandler {
         }
     }
 
-    public String buildEcho(final CharSequence message) {
+    public String buildEcho(final String message) {
         final StringBuilder source = new StringBuilder();
         final StringBuilder echo = new StringBuilder();
         if (StringUtils.isNotBlank(message)) {

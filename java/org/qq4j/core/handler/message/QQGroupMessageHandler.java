@@ -3,8 +3,8 @@ package org.qq4j.core.handler.message;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.qq4j.core.QQContext;
@@ -16,7 +16,8 @@ import org.qq4j.domain.QQUser;
 import org.qq4j.helper.QQMessageParser;
 import org.qq4j.net.SystemConstants;
 
-public class QQGroupMessageHandler extends BaseMessageHandler implements QQMessageHandler {
+public class QQGroupMessageHandler extends BaseMessageHandler implements
+        QQMessageHandler {
 
     private final Log log = LogFactory.getLog(QQGroupMessageHandler.class);
 
@@ -56,9 +57,7 @@ public class QQGroupMessageHandler extends BaseMessageHandler implements QQMessa
                                                 member,
                                                 message));
                     synchronized (member) {
-                        if (msgId != member.getLastMsgId()
-                            && System.currentTimeMillis()
-                               - time < this.getReplyTimeLimit()) {
+                        if (msgId != member.getLastMsgId() && System.currentTimeMillis() - time < this.getReplyTimeLimit()) {
                             if (this.isRepeat(member, message)) {
                                 this.handleRepeat(context, group, member);
                             } else {

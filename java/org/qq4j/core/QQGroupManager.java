@@ -8,7 +8,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.qq4j.domain.QQGroup;
@@ -20,22 +20,23 @@ public class QQGroupManager extends QQAccountManager {
     private Map<Long, QQGroup> groups = null;
 
     public void initGroupInfo() {
-        final QQContext context = this.getContext();
-        final String url = "http://s.web2.qq.com/api/get_group_name_list_mask2";
-
-        try {
-            final JSONObject content = new JSONObject();
-            content.put("vfwebqq", context.getVfwebqq());
-            final String result = context.getHttpClient().postJsonData(url,
-                                                                       content);
-            this.groups = this.parseGroupMapping(result);
-        } catch (final JSONException e) {
-            this.log.error(e.getMessage());
-        }
-
-        this.log.info(String.format("%s >> ☆已加入%d个群。☆",
-                                    context.getSelf(),
-                                    this.groups.size()));
+        // final QQContext context = this.getContext();
+        // final String url =
+        // "http://s.web2.qq.com/api/get_group_name_list_mask2";
+        //
+        // try {
+        // final JSONObject content = new JSONObject();
+        // content.put("vfwebqq", context.getVfwebqq());
+        // final String result = context.getHttpClient().postJsonData(url,
+        // content);
+        // this.groups = this.parseGroupMapping(result);
+        // } catch (final JSONException e) {
+        // this.log.error(e.getMessage());
+        // }
+        //
+        // this.log.info(String.format("%s >> ☆已加入%d个群。☆",
+        // context.getSelf(),
+        // this.groups.size()));
     }
 
     public QQGroup getQQGroup(final long gcode) {
@@ -142,32 +143,6 @@ public class QQGroupManager extends QQAccountManager {
         content.put("gcode", group.getCode());
         content.put("vfwebqq", context.getVfwebqq());
         context.getHttpClient().postJsonData(url, content);
-    }
-
-    private Map<Long, QQGroup> parseGroupMapping(final String result)
-            throws JSONException {
-        final Map<Long, QQGroup> groupMapping = new HashMap<Long, QQGroup>();
-        if (StringUtils.isNotBlank(result)) {
-
-            final JSONObject retJson = JSONObject.fromObject(result);
-            final int retcode = retJson.getInt("retcode");
-            if (retcode == 0) {
-                final JSONObject resultJson = retJson.getJSONObject("result");
-                final JSONArray gnamelistJson = resultJson.getJSONArray("gnamelist");
-                for (int i = 0; i < gnamelistJson.size(); i++) {
-                    final JSONObject gnameJson = gnamelistJson.getJSONObject(i);
-                    final long gid = gnameJson.getLong("gid");
-                    final long code = gnameJson.getLong("code");
-                    final String name = gnameJson.getString("name");
-                    final QQGroup group = new QQGroup();
-                    group.setUin(gid);
-                    group.setCode(code);
-                    group.setName(name);
-                    groupMapping.put(code, group);
-                }
-            }
-        }
-        return groupMapping;
     }
 
     public Map<Long, QQGroup> getGroups() {

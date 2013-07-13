@@ -3,7 +3,7 @@ package org.qq4j.core.handler.message;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.qq4j.core.handler.QQCommandHandlerMapping;
 import org.qq4j.domain.QQUser;
 

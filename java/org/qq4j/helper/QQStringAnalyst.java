@@ -6,7 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
 
 public class QQStringAnalyst {
     static final int BLANK = 0;
@@ -93,8 +93,7 @@ public class QQStringAnalyst {
     }
 
     void appendIfNoRepeat(final char c) {
-        if (this.buffer.length() == 0
-            || this.buffer.charAt(this.buffer.length() - 1) != c) {
+        if (this.buffer.length() == 0 || this.buffer.charAt(this.buffer.length() - 1) != c) {
             this.buffer.append(c);
         }
     }

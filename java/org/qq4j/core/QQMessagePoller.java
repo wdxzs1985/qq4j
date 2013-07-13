@@ -8,8 +8,8 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.qq4j.core.handler.QQMessageHandlerMapping;
@@ -33,7 +33,9 @@ public class QQMessagePoller implements Runnable {
     @Override
     public void run() {
         final QQContext context = this.getContext();
-        final String pollUrl = "http://d.web2.qq.com/channel/poll2?clientid=" + context.getClientid() + "&psessionid=" + context.getPsessionid();
+        final String pollUrl = "http://d.web2.qq.com/channel/poll2?clientid=" + context.getClientid()
+                               + "&psessionid="
+                               + context.getPsessionid();
         while (context.isRun()) {
             try {
                 final String ret = context.getHttpClient().getJSON(pollUrl);
@@ -124,7 +126,8 @@ public class QQMessagePoller implements Runnable {
         private final QQMessageHandlerMapping handlers;
         private final JSONObject obj;
 
-        HandleMessageWorker(final QQContext context, final QQMessageHandlerMapping handlers, final JSONObject obj) {
+        HandleMessageWorker(final QQContext context,
+                final QQMessageHandlerMapping handlers, final JSONObject obj) {
             this.context = context;
             this.handlers = handlers;
             this.obj = obj;

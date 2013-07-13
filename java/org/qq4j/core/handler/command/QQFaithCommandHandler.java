@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang3.text.StrSubstitutor;
+import org.apache.commons.lang.text.StrSubstitutor;
 import org.qq4j.core.QQAiManager;
 import org.qq4j.core.QQContext;
 import org.qq4j.core.handler.QQCommandHandler;
@@ -36,9 +36,10 @@ public class QQFaithCommandHandler implements QQCommandHandler {
     }
 
     private String getAnswer(final QQContext context, final QQUser user) {
-        if (this.getAiManager().hasFaith(user, context.getSelf().getAccount())) {
+        final long qq = context.getSelf().getAccount();
+        if (this.getAiManager().hasFaith(user, qq)) {
             final Map<String, Object> result = this.getAiManager()
-                                                   .queryRank(user);
+                                                   .queryRank(user, qq);
             final BigDecimal faith = (BigDecimal) result.get("faith");
             final BigDecimal rank = (BigDecimal) result.get("rank");
 

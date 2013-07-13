@@ -1,17 +1,15 @@
 package org.qq4j.core;
 
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.qq4j.domain.QQUser;
@@ -44,23 +42,23 @@ public class QQUserManager extends QQAccountManager {
     }
 
     public void initFriendsInfo() {
-        final QQContext context = this.getContext();
-        final String url = "http://s.web2.qq.com/api/get_user_friends2";
-
-        try {
-            final JSONObject content = new JSONObject();
-            content.put("h", "hello");
-            content.put("vfwebqq", context.getVfwebqq());
-            final String result = context.getHttpClient().postJsonData(url,
-                                                                       content);
-            this.users = this.parseFriendMapping(result);
-        } catch (final JSONException e) {
-            this.log.error(e.getMessage());
-        }
-
-        this.log.info(String.format("%s >> ☆已有%d个好友。☆",
-                                    context.getSelf(),
-                                    this.users.size()));
+        // final QQContext context = this.getContext();
+        // final String url = "http://s.web2.qq.com/api/get_user_friends2";
+        //
+        // try {
+        // final JSONObject content = new JSONObject();
+        // content.put("h", "hello");
+        // content.put("vfwebqq", context.getVfwebqq());
+        // final String result = context.getHttpClient().postJsonData(url,
+        // content);
+        // this.users = this.parseFriendMapping(result);
+        // } catch (final JSONException e) {
+        // this.log.error(e.getMessage());
+        // }
+        //
+        // this.log.info(String.format("%s >> ☆已有%d个好友。☆",
+        // context.getSelf(),
+        // this.users.size()));
     }
 
     public QQUser getQQUser(final long uin) {
@@ -170,32 +168,6 @@ public class QQUserManager extends QQAccountManager {
         content.put("nlk", nlk);
         content.put("vfwebqq", context.getVfwebqq());
         context.getHttpClient().postJsonData(url, content);
-    }
-
-    private Map<Long, QQUser> parseFriendMapping(final String result)
-            throws JSONException {
-        final Map<Long, QQUser> userMapping = new HashMap<Long, QQUser>();
-
-        if (StringUtils.isNotBlank(result)) {
-
-            final JSONObject retJson = JSONObject.fromObject(result);
-            final int retcode = retJson.getInt("retcode");
-            if (retcode == 0) {
-                final JSONObject resultJson = retJson.getJSONObject("result");
-                final JSONArray infoJson = resultJson.getJSONArray("info");
-                for (int i = 0; i < infoJson.size(); i++) {
-                    final JSONObject info = infoJson.getJSONObject(i);
-                    final long uin = info.getLong("uin");
-                    final String nick = info.getString("nick");
-                    final QQUser friend = new QQUser();
-                    friend.setUin(uin);
-                    friend.setNick(nick);
-                    userMapping.put(uin, friend);
-                }
-            }
-        }
-
-        return userMapping;
     }
 
     public Map<Long, QQUser> getUsers() {
