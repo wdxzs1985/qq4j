@@ -39,19 +39,15 @@ public class QQRobotLoginPanel extends JPanel {
         this.setLayout(layout);
 
         this.mIdInput = new JTextField(16);
-        this.mIdInput.setText("");
         this.add(this.mIdInput);
 
         this.mPasswordInput = new JPasswordField(16);
-        this.mPasswordInput.setText("");
         this.add(this.mPasswordInput);
 
         this.mVerifyCodeLabel = new JLabel();
-        this.mVerifyCodeLabel.setVisible(this.isNeedVerify);
         this.add(this.mVerifyCodeLabel);
 
         this.mVerifyCodeInput = new JTextField(4);
-        this.mVerifyCodeInput.setText("");
         this.mVerifyCodeInput.setVisible(this.isNeedVerify);
         this.add(this.mVerifyCodeInput);
 
@@ -69,16 +65,32 @@ public class QQRobotLoginPanel extends JPanel {
                     } else {
                         robot.login(account, password, verifyCode);
                     }
-                    robot.startup();
+                    if (robot.isRun()) {
+                        robot.startup();
+                    } else {
+                        QQRobotLoginPanel.this.showLogin();
+                    }
                 } catch (final NumberFormatException ex) {
                     ex.printStackTrace();
                 } catch (final NeedVerifyCodeException ex) {
                     QQRobotLoginPanel.this.showVerifyCode(robot, account);
-                    QQRobotLoginPanel.this.invalidate();
                 }
             }
         });
         this.add(this.mLoginButton);
+
+        this.showLogin();
+    }
+
+    private void showLogin() {
+        this.isNeedVerify = false;
+
+        this.mIdInput.setText("");
+        this.mPasswordInput.setText("");
+        this.mVerifyCodeInput.setText("");
+
+        this.mVerifyCodeLabel.setVisible(this.isNeedVerify);
+        this.mVerifyCodeInput.setVisible(this.isNeedVerify);
         this.invalidate();
     }
 
@@ -90,11 +102,12 @@ public class QQRobotLoginPanel extends JPanel {
             FileUtils.writeByteArrayToFile(verifyImageFile, verifyImageData);
             final BufferedImage myPicture = ImageIO.read(verifyImageFile);
             this.mVerifyCodeLabel.setIcon(new ImageIcon(myPicture));
-            this.mVerifyCodeLabel.setVisible(this.isNeedVerify);
             this.mVerifyCodeInput.setText("");
+            this.mVerifyCodeLabel.setVisible(this.isNeedVerify);
             this.mVerifyCodeInput.setVisible(this.isNeedVerify);
         } catch (final IOException ioe) {
             ioe.printStackTrace();
         }
+        QQRobotLoginPanel.this.invalidate();
     }
 }
