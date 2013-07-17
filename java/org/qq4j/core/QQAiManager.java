@@ -13,6 +13,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.qq4j.domain.QQUser;
 import org.qq4j.helper.QQStringAnalyst;
+import org.qq4j.mapper.QQUserMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -23,6 +25,10 @@ public class QQAiManager {
     public static final String MESSAGE = "message";
     public static final String ANSWER = "answer";
 
+    @Autowired
+    private QQUserMapper userMapper = null;
+
+    @Autowired
     private JdbcTemplate jdbcTemplate = null;
 
     public String getReplyAnswer(final String message,
@@ -113,7 +119,8 @@ public class QQAiManager {
     private List<Map<String, Object>> queryAnswer(final String message,
                                                   final long account,
                                                   final long owner) {
-        final String sql = "select qq, message, answer from QQ_MESSAGES" + " where message = ? and qq = ? and ((owner = ? and privatable = '1') or privatable = '0')";
+        final String sql = "select qq, message, answer from QQ_MESSAGES"
+                           + " where message = ? and qq = ? and ((owner = ? and privatable = '1') or privatable = '0')";
         try {
             return this.jdbcTemplate.queryForList(sql,
                                                   message.toLowerCase(),
@@ -165,8 +172,7 @@ public class QQAiManager {
     private List<String> analystString(final String source) {
         final List<String> indexs = new ArrayList<String>();
         int splitLength = source.length();
-        splitLength = splitLength > QQStringAnalyst.MAX_LENGTH ? QQStringAnalyst.MAX_LENGTH
-                                                              : splitLength;
+        splitLength = splitLength > QQStringAnalyst.MAX_LENGTH ? QQStringAnalyst.MAX_LENGTH : splitLength;
         while (splitLength > 1) {
             final List<String> analyst = QQStringAnalyst.analystString(source,
                                                                        splitLength);
@@ -200,7 +206,8 @@ public class QQAiManager {
         final int nextId = jdbcTemplate.queryForObject(sql, Integer.class);
         final String prefix = DateFormatUtils.format(System.currentTimeMillis(),
                                                      "yyyyMMdd");
-        return prefix + StringUtils.leftPad(String.valueOf(nextId), 12, "0");
+        return prefix
+               + StringUtils.leftPad(String.valueOf(nextId), 12, "0");
     }
 
     public void increaseFaith(final QQUser user, final long qq, final int faith) {
@@ -221,7 +228,8 @@ public class QQAiManager {
 
     public Map<String, Object> queryRank(final QQUser user, final long qq) {
         if (this.hasFaith(user, qq)) {
-            final String sql = "select faith, rank from " + "(select account, faith, ROW_NUMBER() OVER (ORDER BY FAITH DESC) AS RANK from QQ_FAITH where qq = ?)"
+            final String sql = "select faith, rank from "
+                               + "(select account, faith, ROW_NUMBER() OVER (ORDER BY FAITH DESC) AS RANK from QQ_FAITH where qq = ?)"
                                + " where account = ?";
             final long userAccount = user.getAccount();
             try {
@@ -238,22 +246,13 @@ public class QQAiManager {
         final long userAccount = user.getAccount();
         try {
             final int faith = this.jdbcTemplate.queryForObject(sql,
-                                                               new Object[] { userAccount,
-                                                                             account },
+                                                               new Object[] { userAccount, account },
                                                                Integer.class);
             return faith > 0;
         } catch (final DataAccessException e) {
             this.log.error(e.getMessage());
         }
         return false;
-    }
-
-    public JdbcTemplate getJdbcTemplate() {
-        return this.jdbcTemplate;
-    }
-
-    public void setJdbcTemplate(final JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
     }
 
 }

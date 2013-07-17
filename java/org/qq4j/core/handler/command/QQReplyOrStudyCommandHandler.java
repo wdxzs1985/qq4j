@@ -10,9 +10,11 @@ import org.qq4j.core.handler.QQCommandHandler;
 import org.qq4j.core.handler.QQSessionHandler;
 import org.qq4j.domain.QQGroup;
 import org.qq4j.domain.QQUser;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class QQReplyOrStudyCommandHandler implements QQCommandHandler {
 
+    @Autowired
     private QQAiManager aiManager = null;
 
     public static final String STUDY_STEP = "QQReplyOrStudyCommandHandler.step";
@@ -88,8 +90,8 @@ public class QQReplyOrStudyCommandHandler implements QQCommandHandler {
             if (StringUtils.length(message) > 200) {
                 answer = this.getAnswer4();
             } else {
-                if (StringUtils.isNotBlank(question) && StringUtils.equals(this.getCommand1(),
-                                                                           message)) {
+                if (StringUtils.isNotBlank(question)
+                    && StringUtils.equals(this.getCommand1(), message)) {
                     // 不对
                     answer = this.getAnswer3();
                     session.put(QQSessionHandler.SESSION_HANDLER, this);

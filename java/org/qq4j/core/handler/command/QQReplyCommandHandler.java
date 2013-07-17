@@ -6,9 +6,11 @@ import org.qq4j.core.QQContext;
 import org.qq4j.core.handler.QQCommandHandler;
 import org.qq4j.domain.QQGroup;
 import org.qq4j.domain.QQUser;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class QQReplyCommandHandler implements QQCommandHandler {
 
+    @Autowired
     private QQAiManager aiManager = null;
 
     @Override
@@ -17,9 +19,9 @@ public class QQReplyCommandHandler implements QQCommandHandler {
                        final String message) {
         final long account = context.getSelf().getAccount();
         final long owner = user.getAccount();
-        final String answer = this.getAiManager().getReplyAnswer(message,
-                                                                 account,
-                                                                 owner);
+        final String answer = this.aiManager.getReplyAnswer(message,
+                                                            account,
+                                                            owner);
         if (StringUtils.isNotBlank(answer)) {
             context.getSender().sendToUser(user, answer);
         }
@@ -32,21 +34,13 @@ public class QQReplyCommandHandler implements QQCommandHandler {
                             final String message) {
         final long account = context.getSelf().getAccount();
         final long owner = user.getAccount();
-        final String answer = this.getAiManager().getReplyAnswer(message,
-                                                                 account,
-                                                                 owner);
-        if (StringUtils.isNotBlank(answer) && !StringUtils.equals(answer,
-                                                                  "[屏蔽]")) {
+        final String answer = this.aiManager.getReplyAnswer(message,
+                                                            account,
+                                                            owner);
+        if (StringUtils.isNotBlank(answer)
+            && !StringUtils.equals(answer, "[屏蔽]")) {
             context.getSender().sendToGroup(group, answer);
         }
-    }
-
-    public QQAiManager getAiManager() {
-        return this.aiManager;
-    }
-
-    public void setAiManager(final QQAiManager aiManager) {
-        this.aiManager = aiManager;
     }
 
 }

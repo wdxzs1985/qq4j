@@ -9,8 +9,6 @@
         http://www.springframework.org/schema/context/spring-context.xsd">
         
     <bean id="aiManager" class="org.qq4j.core.QQAiManager">
-        <property name="jdbcTemplate" ref="jdbcTemplate"></property>
-        
     </bean>
     
     <!-- Message Handler -->
@@ -73,7 +71,6 @@
 		<property name="faith" value="1"></property>
 	</bean>
     <bean id="default_group_message_handler" class="org.qq4j.core.handler.command.QQReplyCommandHandler">
-        <property name="aiManager" ref="aiManager" />
     </bean>
     
     <bean id="shake_command_handler" class="org.qq4j.core.handler.command.QQShakeCommandHandler"></bean>
@@ -81,7 +78,6 @@
         <property name="answer" value="你想让我说什么呢?"></property>
     </bean>
     <bean id="faith_command_handler" class="org.qq4j.core.handler.command.QQFaithCommandHandler">
-        <property name="aiManager" ref="aiManager" />
 	    <property name="answer1" value="你是谁？"></property>
 	    <property name="answer2" value="你是谁？"></property>
     </bean>

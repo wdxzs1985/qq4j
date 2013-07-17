@@ -14,9 +14,11 @@ import org.qq4j.domain.QQGroup;
 import org.qq4j.domain.QQSaisen;
 import org.qq4j.domain.QQUser;
 import org.qq4j.net.SystemConstants;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class QQSaisenCommandHandler implements QQCommandHandler {
 
+    @Autowired
     private QQAiManager aiManager = null;
 
     private String answer1 = null;
@@ -53,7 +55,8 @@ public class QQSaisenCommandHandler implements QQCommandHandler {
                                                    "yyyyMMddHH",
                                                    SystemConstants.DEFAULT_LOCALE);
         //
-        if (saisen == null || !saisen.getDate().equals(date)) {
+        if (saisen == null
+            || !saisen.getDate().equals(date)) {
             saisen = new QQSaisen();
             saisen.setDate(date);
 

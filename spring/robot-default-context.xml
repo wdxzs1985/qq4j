@@ -86,7 +86,6 @@
                                             <bean class="org.qq4j.core.handler.QQSessionHandler">
                                                 <property name="defaultHandler">
                                                     <bean class="org.qq4j.core.handler.command.QQReplyOrStudyCommandHandler">
-                                                        <property name="aiManager" ref="aiManager" />
                                                         <property name="command1" value="不对"></property>
                                                         <property name="command3" value="放弃"></property>
                                                         <property name="answer1" value="主人你好～很高兴能和你一起聊天。如果我有不懂的，主人要教我回答哦。回答错误的时候，回复【不对】：可以纠正回答。还有，聊天时记得关闭自动回复哦。"></property>
@@ -148,11 +147,7 @@
                                     <bean class="org.qq4j.core.handler.QQCommandHandlerMapping">
                                         <property name="defaultHandler">
                                             <bean class="org.qq4j.core.handler.QQSessionHandler">
-                                                <property name="defaultHandler">
-                                                    <bean class="org.qq4j.core.handler.command.QQReplyCommandHandler">
-                                                        <property name="aiManager" ref="aiManager" />
-                                                    </bean>
-                                                </property>
+                                                <property name="defaultHandler" ref="default_group_message_handler"></property>
                                             </bean>
                                         </property>
                                         <property name="handlers">
@@ -173,7 +168,6 @@
                                                 </entry>
                                                 <entry key="冻青蛙">
                                                     <bean class="org.qq4j.core.handler.command.QQSaisenCommandHandler">
-                                                        <property name="aiManager" ref="aiManager" />
                                                         <property name="answer1" value="冻青蛙成功，{nick}的好感提升了"></property>
                                                         <property name="answer2" value="青蛙逃跑了，{nick}的好感没有变化。"></property>
                                                         <property name="answer3" value="冻青蛙太多了要怎么办呢？"></property>

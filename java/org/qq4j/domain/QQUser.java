@@ -19,6 +19,10 @@ public class QQUser implements Serializable, QQAccount {
 
     private String nick = null;
 
+    private int faith = 0;
+
+    private long qq = 0L;
+
     private long lastMsgId = 0L;
 
     private String lastMsg = null;
@@ -46,7 +50,11 @@ public class QQUser implements Serializable, QQAccount {
 
     @Override
     public String toString() {
-        return "@" + this.nick + "(" + this.account + ")";
+        return "@"
+               + this.nick
+               + "("
+               + this.account
+               + ")";
     }
 
     public long getAccount() {
@@ -117,6 +125,22 @@ public class QQUser implements Serializable, QQAccount {
 
     public void setRepeatTimes(final int repeatTimes) {
         this.repeatTimes = repeatTimes;
+    }
+
+    public int getFaith() {
+        return this.faith;
+    }
+
+    public void setFaith(final int faith) {
+        this.faith = faith;
+    }
+
+    public long getQq() {
+        return this.qq;
+    }
+
+    public void setQq(final long qq) {
+        this.qq = qq;
     }
 
 }

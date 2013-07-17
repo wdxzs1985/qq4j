@@ -83,7 +83,8 @@ public class CommonHttpClient {
     public String getJSON(final String url) {
         if (this.log.isDebugEnabled()) {
             this.log.debug("method : GET");
-            this.log.debug("   url : " + url);
+            this.log.debug("   url : "
+                           + url);
         }
         final HttpGet httpget = new HttpGet(url);
         this.initHttpHeader(httpget);
@@ -103,7 +104,8 @@ public class CommonHttpClient {
             throw new RuntimeException(e);
         }
         if (this.log.isDebugEnabled()) {
-            this.log.debug("result : " + result);
+            this.log.debug("result : "
+                           + result);
         }
         return result;
     }
@@ -112,9 +114,13 @@ public class CommonHttpClient {
                            final List<? extends NameValuePair> nvps) {
         if (this.log.isDebugEnabled()) {
             this.log.debug("method : POST");
-            this.log.debug("   url : " + url);
+            this.log.debug("   url : "
+                           + url);
             for (final NameValuePair nvp : nvps) {
-                this.log.debug("form-" + nvp.getName() + " : " + nvp.getValue());
+                this.log.debug("form-"
+                               + nvp.getName()
+                               + " : "
+                               + nvp.getValue());
             }
         }
         final HttpPost httppost = new HttpPost(url);
@@ -126,7 +132,8 @@ public class CommonHttpClient {
                                                                              SystemConstants.ENCODING);
             httppost.setEntity(postEntity);
             if (this.log.isDebugEnabled()) {
-                this.log.debug("postEntity : " + this.entityToString(postEntity));
+                this.log.debug("entity : "
+                               + this.entityToString(postEntity));
             }
             final HttpResponse response = this.client.execute(httppost,
                                                               this.localContext);
@@ -141,7 +148,8 @@ public class CommonHttpClient {
             throw new RuntimeException(e);
         }
         if (this.log.isDebugEnabled()) {
-            this.log.debug("result : " + result);
+            this.log.debug("result : "
+                           + result);
         }
         return result;
     }
@@ -149,7 +157,8 @@ public class CommonHttpClient {
     public byte[] getByte(final String url) {
         if (this.log.isDebugEnabled()) {
             this.log.debug("method : GET");
-            this.log.debug("   url : " + url);
+            this.log.debug("   url : "
+                           + url);
         }
         final HttpGet httpget = new HttpGet(url);
         this.initHttpHeader(httpget);
@@ -169,7 +178,8 @@ public class CommonHttpClient {
             throw new RuntimeException(e);
         }
         if (this.log.isDebugEnabled()) {
-            this.log.debug("result : " + result);
+            this.log.debug("result : "
+                           + result);
         }
         return result;
     }
@@ -188,7 +198,8 @@ public class CommonHttpClient {
     }
 
     private String entityToString(final HttpEntity entity)
-            throws ParseException, IOException {
+                                                          throws ParseException,
+                                                          IOException {
         String result = null;
         if (this.isGzip(entity)) {
             result = EntityUtils.toString(new GzipDecompressingEntity(entity));
