@@ -14,14 +14,15 @@ public class QQGroupJoinMessageHandler implements QQMessageHandler {
         final JSONObject value = json.getJSONObject("value");
         final long gcode = value.getLong("gcode");
         final long newMember = value.getLong("new_member");
-        final QQGroup group = context.getGroupManager().getQQGroup(gcode);
+        final QQGroup group = context.getGroupManager().forceGetQQGroup(gcode);
         final QQUser user = context.getFriendManager().getQQUser(newMember);
         String answer = null;
-        if (user != null) {
-            if (!user.equals(context.getSelf())) {
-                answer = String.format("欢迎%s入裙！", user.getNick());
-            } else {
+        if (group != null
+            && user != null) {
+            if (user.equals(context.getSelf())) {
                 answer = "大家好，我是新人！请多多关照～～";
+            } else {
+                answer = String.format("欢迎%s入裙！", user.getNick());
             }
             context.getSender().sendToGroup(group, answer);
         }

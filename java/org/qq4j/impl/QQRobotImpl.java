@@ -29,7 +29,7 @@ public class QQRobotImpl implements QQRobot {
 
     @Override
     public void login(final long account, final String password)
-            throws NeedVerifyCodeException {
+                                                                throws NeedVerifyCodeException {
         QQUser self = null;
         try {
             self = this.login.login(account, password);
@@ -72,7 +72,7 @@ public class QQRobotImpl implements QQRobot {
             // friend manager
             final QQUserManager friendManager = this.context.getFriendManager();
             friendManager.initFriendsInfo();
-            friendManager.initBlackList();
+            // friendManager.initBlackList();
             // group manager
             final QQGroupManager groupManager = this.context.getGroupManager();
             groupManager.initGroupInfo();

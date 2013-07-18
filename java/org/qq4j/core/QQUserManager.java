@@ -3,65 +3,34 @@ package org.qq4j.core;
 import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.qq4j.domain.QQUser;
+import org.qq4j.mapper.QQUserMapper;
 import org.qq4j.net.SystemConstants;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class QQUserManager extends QQAccountManager {
 
     private final Log log = LogFactory.getLog(QQUserManager.class);
     private Map<Long, QQUser> users = null;
 
-    // private JdbcTemplate jdbcTemplate = null;
-    private List<Long> blackList = null;
-
-    public void initBlackList() {
-        // this.blackList = new ArrayList<Long>();
-        // final String sql = "select account from qq_blacklist";
-        // final List<Map<String, Object>> resultList = this.getJdbcTemplate()
-        // .queryForList(sql);
-        // for (final Map<String, Object> next : resultList) {
-        // final BigDecimal account = (BigDecimal) next.get("account");
-        // this.blackList.add(account.longValue());
-        // }
-    }
+    @Autowired
+    private QQUserMapper userMapper = null;
 
     public boolean isBlackList(final QQUser user) {
-        if (CollectionUtils.isEmpty(this.blackList)) {
-            return false;
-        }
-        return this.blackList.contains(user.getAccount());
+        return user.getBlack() != 0;
     }
 
     public void initFriendsInfo() {
         this.users = Collections.synchronizedMap(new HashMap<Long, QQUser>());
-        // final QQContext context = this.getContext();
-        // final String url = "http://s.web2.qq.com/api/get_user_friends2";
-        //
-        // try {
-        // final JSONObject content = new JSONObject();
-        // content.put("h", "hello");
-        // content.put("vfwebqq", context.getVfwebqq());
-        // final String result = context.getHttpClient().postJsonData(url,
-        // content);
-        // this.users = this.parseFriendMapping(result);
-        // } catch (final JSONException e) {
-        // this.log.error(e.getMessage());
-        // }
-        //
-        // this.log.info(String.format("%s >> ☆已有%d个好友。☆",
-        // context.getSelf(),
-        // this.users.size()));
     }
 
     public QQUser getQQUser(final long uin) {
@@ -72,15 +41,13 @@ public class QQUserManager extends QQAccountManager {
         if (user == null) {
             // get from friend api
             user = this.fetchFriendInfo(uin);
-            if (user == null) {
-                // get from stranger api
-                user = this.fetchStrangerInfo(uin);
-            }
         }
         // get user qq
-        if (user != null && user.getAccount() == 0) {
+        if (user != null
+            && user.getAccount() == 0) {
             user = this.fetchUserAccount(user);
             if (user != null) {
+                this.registerUser(user);
                 this.users.put(uin, user);
             }
         }
@@ -88,8 +55,22 @@ public class QQUserManager extends QQAccountManager {
         return user;
     }
 
+    private void registerUser(final QQUser user) {
+        final Map<String, Object> params = new HashMap<String, Object>();
+        params.put("qq", user.getQq());
+        params.put("account", user.getAccount());
+        final QQUser userInfo = this.userMapper.fetch(params);
+        if (userInfo == null) {
+            this.userMapper.insert(user);
+        } else {
+            user.setFaith(userInfo.getFaith());
+            user.setBlack(userInfo.getBlack());
+        }
+    }
+
     protected QQUser fetchFriendInfo(final long uin) {
-        final String url = "http://s.web2.qq.com/api/get_friend_info2?" + "tuin="
+        final String url = "http://s.web2.qq.com/api/get_friend_info2?"
+                           + "tuin="
                            + uin
                            + "&verifysession=&gid=0&code="
                            + "&vfwebqq="
@@ -97,11 +78,17 @@ public class QQUserManager extends QQAccountManager {
                            + "&t="
                            + System.currentTimeMillis();
         final String result = this.getContext().getHttpClient().getJSON(url);
-        return this.parseUserInfo(result);
+        QQUser user = this.parseUserInfo(result);
+        if (user == null) {
+            // get from stranger api
+            user = this.fetchStrangerInfo(uin);
+        }
+        return user;
     }
 
     protected QQUser fetchStrangerInfo(final long uin) {
-        final String url = "http://s.web2.qq.com/api/get_stranger_info2?" + "tuin="
+        final String url = "http://s.web2.qq.com/api/get_stranger_info2?"
+                           + "tuin="
                            + uin
                            + "&verifysession=&gid=0&code="
                            + "&vfwebqq="
@@ -133,14 +120,16 @@ public class QQUserManager extends QQAccountManager {
                     this.log.warn(message);
                 }
             } catch (final JSONException e) {
-                this.log.error("用户信息解析失败：" + result, e);
+                this.log.error("用户信息解析失败："
+                               + result, e);
             }
         }
         return user;
     }
 
     public QQUser searchFriendInfo(final long qq) {
-        final String url = "http://s.web2.qq.com/api/search_qq_by_uin2?" + "tuin="
+        final String url = "http://s.web2.qq.com/api/search_qq_by_uin2?"
+                           + "tuin="
                            + qq
                            + "&verifysession=&code="
                            + "&vfwebqq="
@@ -164,7 +153,7 @@ public class QQUserManager extends QQAccountManager {
     }
 
     public void setLongNick(final String nlk) throws JSONException,
-            UnsupportedEncodingException {
+                                             UnsupportedEncodingException {
         final QQContext context = this.getContext();
         final String url = "http://s.web2.qq.com/api/set_long_nick2";
         final JSONObject content = new JSONObject();
@@ -176,20 +165,4 @@ public class QQUserManager extends QQAccountManager {
     public Map<Long, QQUser> getUsers() {
         return this.users;
     }
-
-    public List<Long> getBlackList() {
-        return this.blackList;
-    }
-
-    public void setBlackList(final List<Long> blackList) {
-        this.blackList = blackList;
-    }
-
-    // public JdbcTemplate getJdbcTemplate() {
-    // return this.jdbcTemplate;
-    // }
-    //
-    // public void setJdbcTemplate(final JdbcTemplate jdbcTemplate) {
-    // this.jdbcTemplate = jdbcTemplate;
-    // }
 }

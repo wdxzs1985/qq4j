@@ -23,11 +23,15 @@ public class QQUser implements Serializable, QQAccount {
 
     private long qq = 0L;
 
+    private int black = 0;
+
     private long lastMsgId = 0L;
 
     private String lastMsg = null;
 
     private int repeatTimes = 0;
+
+    private int rank = 0;
 
     private String status = QQConstants.STATUS_ONLINE;
 
@@ -141,6 +145,22 @@ public class QQUser implements Serializable, QQAccount {
 
     public void setQq(final long qq) {
         this.qq = qq;
+    }
+
+    public int getBlack() {
+        return this.black;
+    }
+
+    public void setBlack(final int black) {
+        this.black = black;
+    }
+
+    public int getRank() {
+        return this.rank;
+    }
+
+    public void setRank(final int rank) {
+        this.rank = rank;
     }
 
 }

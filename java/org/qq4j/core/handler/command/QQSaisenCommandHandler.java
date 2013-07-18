@@ -70,33 +70,30 @@ public class QQSaisenCommandHandler implements QQCommandHandler {
     private String getAnswer(final QQContext context,
                              final QQUser user,
                              final QQSaisen saisen) {
-
         String answer = null;
+        final Map<String, String> valueMap = new HashMap<String, String>();
+        valueMap.put("nick", user.getNick());
         if (saisen.getTimes() <= this.timesLimit) {
             final int random = new Random().nextInt(100);
             if (random % 2 == 0) {
-                this.getAiManager().increaseFaith(user,
-                                                  context.getSelf()
-                                                         .getAccount(),
-                                                  1);
+                this.aiManager.increaseFaith(user, 1);
                 if (StringUtils.isNotBlank(this.answer1)) {
-                    final Map<String, String> valueMap = new HashMap<String, String>();
-                    valueMap.put("nick", user.getNick());
-                    answer = StrSubstitutor.replace(this.answer1, valueMap);
+                    answer = StrSubstitutor.replace(this.answer1,
+                                                    valueMap,
+                                                    SystemConstants.REPLACE_PREFIX,
+                                                    SystemConstants.REPLACE_SUFFIX);
                 }
-            } else {
-                if (StringUtils.isNotBlank(this.answer2)) {
-                    final Map<String, String> valueMap = new HashMap<String, String>();
-                    valueMap.put("nick", user.getNick());
-                    answer = StrSubstitutor.replace(this.answer2, valueMap);
-                }
+            } else if (StringUtils.isNotBlank(this.answer2)) {
+                answer = StrSubstitutor.replace(this.answer2,
+                                                valueMap,
+                                                SystemConstants.REPLACE_PREFIX,
+                                                SystemConstants.REPLACE_SUFFIX);
             }
-        } else {
-            if (StringUtils.isNotBlank(this.answer3)) {
-                final Map<String, String> valueMap = new HashMap<String, String>();
-                valueMap.put("nick", user.getNick());
-                answer = StrSubstitutor.replace(this.answer3, valueMap);
-            }
+        } else if (StringUtils.isNotBlank(this.answer3)) {
+            answer = StrSubstitutor.replace(this.answer3,
+                                            valueMap,
+                                            SystemConstants.REPLACE_PREFIX,
+                                            SystemConstants.REPLACE_SUFFIX);
         }
         return answer;
     }
@@ -141,11 +138,4 @@ public class QQSaisenCommandHandler implements QQCommandHandler {
         this.timeLimitFormat = timeLimitFormat;
     }
 
-    public QQAiManager getAiManager() {
-        return this.aiManager;
-    }
-
-    public void setAiManager(final QQAiManager aiManager) {
-        this.aiManager = aiManager;
-    }
 }

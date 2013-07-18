@@ -1,6 +1,5 @@
 package org.qq4j.core.handler.command;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,9 +9,12 @@ import org.qq4j.core.QQContext;
 import org.qq4j.core.handler.QQCommandHandler;
 import org.qq4j.domain.QQGroup;
 import org.qq4j.domain.QQUser;
+import org.qq4j.net.SystemConstants;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class QQFaithCommandHandler implements QQCommandHandler {
 
+    @Autowired
     private QQAiManager aiManager = null;
 
     private String answer1 = null;
@@ -36,23 +38,23 @@ public class QQFaithCommandHandler implements QQCommandHandler {
     }
 
     private String getAnswer(final QQContext context, final QQUser user) {
-        final long qq = context.getSelf().getAccount();
-        if (this.getAiManager().hasFaith(user, qq)) {
-            final Map<String, Object> result = this.getAiManager()
-                                                   .queryRank(user, qq);
-            final BigDecimal faith = (BigDecimal) result.get("faith");
-            final BigDecimal rank = (BigDecimal) result.get("rank");
-
-            final Map<String, Object> valueMap = new HashMap<String, Object>();
-            valueMap.put("nick", user.getNick());
-            valueMap.put("faith", faith.intValue());
-            valueMap.put("rank", rank.intValue());
-            return StrSubstitutor.replace(this.getAnswer1(), valueMap);
+        final QQUser result = this.aiManager.queryRank(user);
+        final Map<String, Object> valueMap = new HashMap<String, Object>();
+        valueMap.put("nick", user.getNick());
+        if (result == null) {
+            return StrSubstitutor.replace(this.getAnswer2(),
+                                          valueMap,
+                                          SystemConstants.REPLACE_PREFIX,
+                                          SystemConstants.REPLACE_SUFFIX);
         } else {
-            final Map<String, Object> valueMap = new HashMap<String, Object>();
-            valueMap.put("nick", user.getNick());
-            return StrSubstitutor.replace(this.getAnswer2(), valueMap);
+            valueMap.put("faith", result.getFaith());
+            valueMap.put("rank", result.getRank());
+            return StrSubstitutor.replace(this.getAnswer1(),
+                                          valueMap,
+                                          SystemConstants.REPLACE_PREFIX,
+                                          SystemConstants.REPLACE_SUFFIX);
         }
+
     }
 
     public String getAnswer1() {
@@ -69,13 +71,5 @@ public class QQFaithCommandHandler implements QQCommandHandler {
 
     public void setAnswer2(final String answer2) {
         this.answer2 = answer2;
-    }
-
-    public QQAiManager getAiManager() {
-        return this.aiManager;
-    }
-
-    public void setAiManager(final QQAiManager aiManager) {
-        this.aiManager = aiManager;
     }
 }

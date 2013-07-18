@@ -22,42 +22,33 @@ public class QQGroupManager extends QQAccountManager {
 
     public void initGroupInfo() {
         this.groups = Collections.synchronizedMap(new HashMap<Long, QQGroup>());
-        // final QQContext context = this.getContext();
-        // final String url =
-        // "http://s.web2.qq.com/api/get_group_name_list_mask2";
-        //
-        // try {
-        // final JSONObject content = new JSONObject();
-        // content.put("vfwebqq", context.getVfwebqq());
-        // final String result = context.getHttpClient().postJsonData(url,
-        // content);
-        // this.groups = this.parseGroupMapping(result);
-        // } catch (final JSONException e) {
-        // this.log.error(e.getMessage());
-        // }
-        //
-        // this.log.info(String.format("%s >> ☆已加入%d个群。☆",
-        // context.getSelf(),
-        // this.groups.size()));
     }
 
     public QQGroup getQQGroup(final long gcode) {
         QQGroup group = null;
         // synchronized (this.groups) {
         group = this.groups.get(gcode);
-        if (group == null || group.getMembers() == null) {
-            group = this.fetchGroupInfo(gcode);
-            if (group != null && group.getAccount() == 0) {
-                group = this.fetchGroupAccount(group);
-                this.groups.put(gcode, group);
-            }
+        if (group == null
+            || group.getMembers() == null) {
+            group = this.forceGetQQGroup(gcode);
         }
         // }
         return group;
     }
 
+    public QQGroup forceGetQQGroup(final long gcode) {
+        QQGroup group = this.fetchGroupInfo(gcode);
+        if (group != null
+            && group.getAccount() == 0) {
+            group = this.fetchGroupAccount(group);
+            this.groups.put(gcode, group);
+        }
+        return group;
+    }
+
     public QQGroup fetchGroupInfo(final long gcode) {
-        final String url = "http://s.web2.qq.com/api/get_group_info_ext2?gcode=" + gcode
+        final String url = "http://s.web2.qq.com/api/get_group_info_ext2?gcode="
+                           + gcode
                            + "&vfwebqq="
                            + this.getContext().getVfwebqq()
                            + "&t="
@@ -85,9 +76,6 @@ public class QQGroupManager extends QQAccountManager {
                     // minfo
                     final JSONArray minfo = groupJson.getJSONArray("minfo");
 
-                    final QQUserManager userManager = this.getContext()
-                                                          .getFriendManager();
-
                     for (int i = 0; i < minfo.size(); i++) {
                         final JSONObject userJson = minfo.getJSONObject(i);
                         final long uin = userJson.getLong("uin");
@@ -96,11 +84,6 @@ public class QQGroupManager extends QQAccountManager {
                         final QQUser member = new QQUser();
                         member.setUin(uin);
                         member.setNick(nick);
-
-                        final QQUser user = userManager.getUsers().get(uin);
-                        if (user != null) {
-                            member.setAccount(user.getAccount());
-                        }
                         group.getMembers().put(uin, member);
                     }
                     // cards
@@ -115,17 +98,20 @@ public class QQGroupManager extends QQAccountManager {
                         }
                     }
                 } else {
-                    this.log.warn("群信息获得失败。error=" + retcode);
+                    this.log.warn("群信息获得失败。error="
+                                  + retcode);
                 }
             } catch (final JSONException e) {
-                this.log.error("群信息解析失败：" + result, e);
+                this.log.error("群信息解析失败："
+                               + result, e);
             }
         }
         return group;
     }
 
     public void allowJoinGroup(final QQGroup group, final QQUser user) {
-        final String pollUrl = "http://d.web2.qq.com/channel/op_group_join_req?" + "group_uin="
+        final String pollUrl = "http://d.web2.qq.com/channel/op_group_join_req?"
+                               + "group_uin="
                                + group.getUin()
                                + "&req_uin="
                                + user.getUin()
@@ -137,7 +123,7 @@ public class QQGroupManager extends QQAccountManager {
     }
 
     public void quitGroup(final QQGroup group) throws JSONException,
-            UnsupportedEncodingException {
+                                              UnsupportedEncodingException {
         final QQContext context = this.getContext();
         final String url = "http://s.web2.qq.com/api/quit_group2";
 

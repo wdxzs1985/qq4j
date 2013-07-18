@@ -1,18 +1,19 @@
 package org.qq4j.domain;
 
-import java.util.Date;
 
 public class QQMessage {
+
+    private long id = 0L;
 
     private String message = null;
 
     private String answer = null;
 
-    private Long qq = null;
+    private long qq = 0L;
 
-    private Date addDate = null;
+    private long owner = 0L;
 
-    private Long owner = null;
+    private int publicFlg = 0;
 
     public String getMessage() {
         return this.message;
@@ -38,19 +39,27 @@ public class QQMessage {
         this.qq = qq;
     }
 
-    public Date getAddDate() {
-        return this.addDate;
-    }
-
-    public void setAddDate(final Date addDate) {
-        this.addDate = addDate;
-    }
-
     public Long getOwner() {
         return this.owner;
     }
 
     public void setOwner(final Long owner) {
         this.owner = owner;
+    }
+
+    public long getId() {
+        return this.id;
+    }
+
+    public void setId(final long id) {
+        this.id = id;
+    }
+
+    public int getPublicFlg() {
+        return this.publicFlg;
+    }
+
+    public void setPublicFlg(final int publicFlg) {
+        this.publicFlg = publicFlg;
     }
 }

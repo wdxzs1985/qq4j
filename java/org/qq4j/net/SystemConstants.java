@@ -11,4 +11,8 @@ public interface SystemConstants {
     public String DATETIME_FORMAT = "yyyy/MM/dd HH:mm:ss";
 
     public long REPLY_TIME_LIMIT = 1000 * 30;
+
+    public String REPLACE_PREFIX = "%{";
+
+    public String REPLACE_SUFFIX = "}";
 }

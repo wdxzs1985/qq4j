@@ -19,7 +19,7 @@
             <map>
                 <entry key="verify_required">
                     <bean class="org.qq4j.core.handler.message.QQFriendVerifyMessageHandler">
-                        <property name="password" value="请加好友"></property>
+                        <property name="password" value="⑨"></property>
                     </bean>
                 </entry>
             </map>
@@ -54,11 +54,10 @@
     <bean id="buddies_status_change_handler" class="org.qq4j.core.handler.message.QQBuddiesStatusChangeMessageHandler"></bean>
     <bean id="buddylist_change_handler" class="org.qq4j.core.handler.message.QQBuddyListChangeMessageHandler"></bean>
     <bean id="sess_message_handler" class="org.qq4j.core.handler.message.QQStrangerMessageHandler">
-        <property name="answer" value="你还不是我的好友，快加我吧。"></property>
+        <property name="replyHandler" ref="default_group_message_handler"></property>
     </bean>
     
     <bean id="default_message_handler" class="org.qq4j.core.handler.command.QQReplyOrStudyCommandHandler">
-        <property name="aiManager" ref="aiManager" />
 		<property name="command1" value="不对"></property>
 		<property name="command3" value="放弃"></property>
 		<property name="answer1" value="主人你好～很高兴能和你一起聊天。如果我有不懂的，主人要教我回答哦。回答错误的时候，回复【不对】：可以纠正回答。还有，聊天时记得关闭自动回复哦。"></property>
@@ -71,14 +70,13 @@
 		<property name="faith" value="1"></property>
 	</bean>
     <bean id="default_group_message_handler" class="org.qq4j.core.handler.command.QQReplyCommandHandler">
+        <property name="echoProbability" value="10"></property>
+        <property name="maxEcho" value="10"></property>
     </bean>
     
     <bean id="shake_command_handler" class="org.qq4j.core.handler.command.QQShakeCommandHandler"></bean>
-    <bean id="echo_command_handler" class="org.qq4j.core.handler.command.QQEchoCommandHandler">
-        <property name="answer" value="你想让我说什么呢?"></property>
-    </bean>
     <bean id="faith_command_handler" class="org.qq4j.core.handler.command.QQFaithCommandHandler">
-	    <property name="answer1" value="你是谁？"></property>
+	    <property name="answer1" value="%{nick}的好感：%{faith}。现在排名：第%{rank}位"></property>
 	    <property name="answer2" value="你是谁？"></property>
     </bean>
     <bean id="time_command_handler" class="org.qq4j.core.handler.command.QQTimeCommandHandler">

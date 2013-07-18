@@ -25,7 +25,7 @@ public abstract class BaseMessageHandler {
 
     protected String selectRepeatAnswer(final QQUser user) {
         String answer = null;
-        if (user.getRepeatTimes() < this.repeatAnswer.size()) {
+        if (user.getRepeatTimes() <= this.repeatAnswer.size()) {
             Collections.shuffle(this.repeatAnswer);
             answer = this.repeatAnswer.get(0);
         } else {

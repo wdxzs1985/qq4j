@@ -19,7 +19,8 @@ public abstract class QQAccountManager {
 
     protected QQUser fetchUserAccount(final QQUser user) {
         final QQContext context = this.getContext();
-        final String url = "http://s.web2.qq.com/api/get_friend_uin2?" + "tuin="
+        final String url = "http://s.web2.qq.com/api/get_friend_uin2?"
+                           + "tuin="
                            + user.getUin()
                            + "&type=1&verifysession=&code="
                            + "&vfwebqq="
@@ -30,6 +31,7 @@ public abstract class QQAccountManager {
         final long account = this.parseUserAccount(result);
         if (account != QQAccountManager.ERROR_USER) {
             user.setAccount(account);
+            user.setQq(context.getSelf().getAccount());
             return user;
         }
         return null;
@@ -37,7 +39,8 @@ public abstract class QQAccountManager {
 
     protected QQGroup fetchGroupAccount(final QQGroup group) {
         final QQContext context = this.getContext();
-        final String url = "http://s.web2.qq.com/api/get_friend_uin2?" + "tuin="
+        final String url = "http://s.web2.qq.com/api/get_friend_uin2?"
+                           + "tuin="
                            + group.getCode()
                            + "&type=4&verifysession=&code="
                            + "&vfwebqq="
@@ -62,10 +65,12 @@ public abstract class QQAccountManager {
                     final JSONObject value = retJson.getJSONObject("result");
                     return value.getLong("account");
                 } else {
-                    QQAccountManager.LOG.error("QQ号码获得失败：" + result);
+                    QQAccountManager.LOG.error("QQ号码获得失败："
+                                               + result);
                 }
             } catch (final JSONException e) {
-                QQAccountManager.LOG.error("QQ号码解析失败：" + result, e);
+                QQAccountManager.LOG.error("QQ号码解析失败："
+                                           + result, e);
             }
         }
         return -1;

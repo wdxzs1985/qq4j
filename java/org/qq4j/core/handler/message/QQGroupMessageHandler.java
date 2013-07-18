@@ -16,8 +16,7 @@ import org.qq4j.domain.QQUser;
 import org.qq4j.helper.QQMessageParser;
 import org.qq4j.net.SystemConstants;
 
-public class QQGroupMessageHandler extends BaseMessageHandler implements
-        QQMessageHandler {
+public class QQGroupMessageHandler extends BaseMessageHandler implements QQMessageHandler {
 
     private final Log log = LogFactory.getLog(QQGroupMessageHandler.class);
 
@@ -46,6 +45,7 @@ public class QQGroupMessageHandler extends BaseMessageHandler implements
                         if (user == null) {
                             return;
                         }
+                        member.setQq(user.getQq());
                         member.setAccount(user.getAccount());
                     }
                     this.log.info(String.format("[%s-%d]%s >> %s%s发送消息：%s",
@@ -57,7 +57,9 @@ public class QQGroupMessageHandler extends BaseMessageHandler implements
                                                 member,
                                                 message));
                     synchronized (member) {
-                        if (msgId != member.getLastMsgId() && System.currentTimeMillis() - time < this.getReplyTimeLimit()) {
+                        if (msgId != member.getLastMsgId()
+                            && System.currentTimeMillis()
+                               - time < this.getReplyTimeLimit()) {
                             if (this.isRepeat(member, message)) {
                                 this.handleRepeat(context, group, member);
                             } else {
