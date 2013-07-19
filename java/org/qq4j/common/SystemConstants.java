@@ -15,4 +15,6 @@ public interface SystemConstants {
     public String REPLACE_PREFIX = "%{";
 
     public String REPLACE_SUFFIX = "}";
+
+    public String LINE_SEPARATOR = "\n";
 }

@@ -1,8 +1,8 @@
 package org.qq4j.core.handler.command;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
 import org.apache.commons.lang.math.RandomUtils;
+import org.qq4j.common.SystemConstants;
 import org.qq4j.core.QQAiManager;
 import org.qq4j.core.QQContext;
 import org.qq4j.core.handler.QQCommandHandler;
@@ -58,7 +58,7 @@ public class QQReplyCommandHandler implements QQCommandHandler {
         if (StringUtils.isNotBlank(message)) {
             source.append(message);
             while (source.length() > 1) {
-                echo.append(source).append(SystemUtils.LINE_SEPARATOR);
+                echo.append(source).append(SystemConstants.LINE_SEPARATOR);
                 source.deleteCharAt(0);
             }
             echo.append(source);
