@@ -1,4 +1,4 @@
-package org.qq4j.helper;
+package org.qq4j.common;
 
 import java.util.ArrayList;
 import java.util.List;

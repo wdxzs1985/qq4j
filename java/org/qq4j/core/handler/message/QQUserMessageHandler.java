@@ -7,13 +7,13 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.qq4j.common.QQMessageParser;
+import org.qq4j.common.SystemConstants;
 import org.qq4j.core.QQConstants;
 import org.qq4j.core.QQContext;
 import org.qq4j.core.QQUserManager;
 import org.qq4j.core.handler.QQMessageHandler;
 import org.qq4j.domain.QQUser;
-import org.qq4j.helper.QQMessageParser;
-import org.qq4j.net.SystemConstants;
 
 public class QQUserMessageHandler extends BaseMessageHandler implements
         QQMessageHandler {

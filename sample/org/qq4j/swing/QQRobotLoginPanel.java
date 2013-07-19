@@ -21,8 +21,6 @@ import org.qq4j.core.exception.NeedVerifyCodeException;
 
 public class QQRobotLoginPanel extends JPanel {
 
-    private boolean isNeedVerify = false;
-
     private JTextField mIdInput = null;
     private JPasswordField mPasswordInput = null;
     private JLabel mVerifyCodeLabel = null;
@@ -48,7 +46,7 @@ public class QQRobotLoginPanel extends JPanel {
         this.add(this.mVerifyCodeLabel);
 
         this.mVerifyCodeInput = new JTextField(4);
-        this.mVerifyCodeInput.setVisible(this.isNeedVerify);
+        this.mVerifyCodeInput.setVisible(robot.isNeedVerify());
         this.add(this.mVerifyCodeInput);
 
         this.mLoginButton = new JButton("Login");
@@ -60,7 +58,7 @@ public class QQRobotLoginPanel extends JPanel {
                 final String password = new String(QQRobotLoginPanel.this.mPasswordInput.getPassword());
                 final String verifyCode = QQRobotLoginPanel.this.mVerifyCodeInput.getText();
                 try {
-                    if (!QQRobotLoginPanel.this.isNeedVerify) {
+                    if (robot.isNeedVerify()) {
                         robot.login(account, password);
                     } else {
                         robot.login(account, password, verifyCode);
@@ -68,7 +66,7 @@ public class QQRobotLoginPanel extends JPanel {
                     if (robot.isRun()) {
                         robot.startup();
                     } else {
-                        QQRobotLoginPanel.this.showLogin();
+                        QQRobotLoginPanel.this.showLogin(robot);
                     }
                 } catch (final NumberFormatException ex) {
                     ex.printStackTrace();
@@ -79,32 +77,29 @@ public class QQRobotLoginPanel extends JPanel {
         });
         this.add(this.mLoginButton);
 
-        this.showLogin();
+        this.showLogin(robot);
     }
 
-    private void showLogin() {
-        this.isNeedVerify = false;
-
+    private void showLogin(final QQRobot robot) {
         this.mIdInput.setText("");
         this.mPasswordInput.setText("");
         this.mVerifyCodeInput.setText("");
 
-        this.mVerifyCodeLabel.setVisible(this.isNeedVerify);
-        this.mVerifyCodeInput.setVisible(this.isNeedVerify);
+        this.mVerifyCodeLabel.setVisible(robot.isNeedVerify());
+        this.mVerifyCodeInput.setVisible(robot.isNeedVerify());
         this.invalidate();
     }
 
     private void showVerifyCode(final QQRobot robot, final long account) {
         try {
-            this.isNeedVerify = true;
             final byte[] verifyImageData = robot.downloadVerifyImage(account);
             final File verifyImageFile = new File("temp/verify.jpg");
             FileUtils.writeByteArrayToFile(verifyImageFile, verifyImageData);
             final BufferedImage myPicture = ImageIO.read(verifyImageFile);
             this.mVerifyCodeLabel.setIcon(new ImageIcon(myPicture));
             this.mVerifyCodeInput.setText("");
-            this.mVerifyCodeLabel.setVisible(this.isNeedVerify);
-            this.mVerifyCodeInput.setVisible(this.isNeedVerify);
+            this.mVerifyCodeLabel.setVisible(robot.isNeedVerify());
+            this.mVerifyCodeInput.setVisible(robot.isNeedVerify());
         } catch (final IOException ioe) {
             ioe.printStackTrace();
         }

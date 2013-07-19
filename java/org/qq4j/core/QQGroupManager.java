@@ -66,8 +66,9 @@ public class QQGroupManager extends QQAccountManager {
                 final int retcode = retJson.getInt("retcode");
                 if (retcode == 0) {
                     final JSONObject groupJson = retJson.getJSONObject("result");
+                    final Map<Long, QQUser> members = new HashMap<Long, QQUser>();
                     group = new QQGroup();
-                    group.setMembers(new HashMap<Long, QQUser>());
+                    group.setMembers(members);
                     // ginfo
                     final JSONObject ginfo = groupJson.getJSONObject("ginfo");
                     group.setUin(ginfo.getLong("gid"));
@@ -84,7 +85,7 @@ public class QQGroupManager extends QQAccountManager {
                         final QQUser member = new QQUser();
                         member.setUin(uin);
                         member.setNick(nick);
-                        group.getMembers().put(uin, member);
+                        members.put(uin, member);
                     }
                     // cards
                     if (groupJson.has("cards")) {
@@ -93,7 +94,7 @@ public class QQGroupManager extends QQAccountManager {
                             final JSONObject cardJson = cards.getJSONObject(i);
                             final long uin = cardJson.getLong("muin");
                             final String card = cardJson.getString("card");
-                            final QQUser user = group.getMembers().get(uin);
+                            final QQUser user = members.get(uin);
                             user.setNick(card);
                         }
                     }

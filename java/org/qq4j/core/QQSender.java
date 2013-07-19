@@ -9,10 +9,10 @@ import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.qq4j.common.QQMessageParser;
 import org.qq4j.domain.QQFont;
 import org.qq4j.domain.QQGroup;
 import org.qq4j.domain.QQUser;
-import org.qq4j.helper.QQMessageParser;
 
 public class QQSender {
 

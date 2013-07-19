@@ -5,11 +5,11 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.qq4j.common.QQMessageParser;
 import org.qq4j.core.QQContext;
 import org.qq4j.core.handler.QQCommandHandler;
 import org.qq4j.core.handler.QQMessageHandler;
 import org.qq4j.domain.QQUser;
-import org.qq4j.helper.QQMessageParser;
 
 public class QQStrangerMessageHandler implements QQMessageHandler {
 

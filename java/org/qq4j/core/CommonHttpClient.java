@@ -1,4 +1,4 @@
-package org.qq4j.net;
+package org.qq4j.core;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -33,6 +33,7 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
+import org.qq4j.common.SystemConstants;
 
 public class CommonHttpClient {
 

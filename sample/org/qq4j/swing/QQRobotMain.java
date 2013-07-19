@@ -6,7 +6,7 @@ import javax.swing.JPanel;
 import org.qq4j.core.QQRobot;
 import org.qq4j.core.exception.NeedVerifyCodeException;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
  * 
@@ -14,7 +14,7 @@ import org.springframework.context.support.FileSystemXmlApplicationContext;
 public class QQRobotMain implements QQRobot {
 
     public static void main(final String[] args) {
-        final ConfigurableApplicationContext context = new FileSystemXmlApplicationContext(new String[] { "/spring/application-context.xml" });
+        final ConfigurableApplicationContext context = new ClassPathXmlApplicationContext("META-INF/spring/application-context.xml");
         final QQRobot original = (QQRobot) context.getBean("default");
         context.close();
 
@@ -51,7 +51,7 @@ public class QQRobotMain implements QQRobot {
     @Override
     public void login(final long account,
                       final String password,
-                      final String verifyCode) throws NeedVerifyCodeException {
+                      final String verifyCode) {
         this.mRobot.login(account, password, verifyCode);
     }
 
@@ -79,5 +79,10 @@ public class QQRobotMain implements QQRobot {
     @Override
     public byte[] downloadVerifyImage(final long account) {
         return this.mRobot.downloadVerifyImage(account);
+    }
+
+    @Override
+    public boolean isNeedVerify() {
+        return this.mRobot.isNeedVerify();
     }
 }

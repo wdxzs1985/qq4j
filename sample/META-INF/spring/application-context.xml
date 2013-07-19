@@ -12,6 +12,7 @@
 
     <!-- enable autowire -->
     <context:annotation-config />
+    <context:property-placeholder location="META-INF/spring/jdbc.properties"/>
     
     <import resource="robot-common-context.xml"></import>
     <import resource="robot-default-context.xml"></import>
@@ -23,7 +24,6 @@
         <property name="password" value="${jdbc.password}"/>
     </bean>
 
-    <context:property-placeholder location="spring/jdbc.properties"/>
     
     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
         <property name="dataSource" ref="dataSource"></property>
@@ -32,7 +32,7 @@
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource" />
     </bean>
-        
+    
     <tx:annotation-driven />
     
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">

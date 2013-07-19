@@ -7,13 +7,13 @@ import java.util.Random;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.text.StrSubstitutor;
 import org.apache.commons.lang.time.DateFormatUtils;
+import org.qq4j.common.SystemConstants;
 import org.qq4j.core.QQAiManager;
 import org.qq4j.core.QQContext;
 import org.qq4j.core.handler.QQCommandHandler;
 import org.qq4j.domain.QQGroup;
 import org.qq4j.domain.QQSaisen;
 import org.qq4j.domain.QQUser;
-import org.qq4j.net.SystemConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class QQSaisenCommandHandler implements QQCommandHandler {

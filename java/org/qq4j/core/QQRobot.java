@@ -6,14 +6,15 @@ public interface QQRobot {
 
     void login(long account, String password) throws NeedVerifyCodeException;
 
-    void login(long account, String password, String verifyCode)
-                                                                throws NeedVerifyCodeException;
+    void login(long account, String password, String verifyCode);
 
     public void startup();
 
     public void shutdown();
 
     public boolean isRun();
+
+    public boolean isNeedVerify();
 
     public String getName();
 

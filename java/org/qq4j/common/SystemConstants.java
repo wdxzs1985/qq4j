@@ -1,4 +1,4 @@
-package org.qq4j.net;
+package org.qq4j.common;
 
 import java.util.TimeZone;
 

@@ -5,11 +5,11 @@ import java.util.Date;
 
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
+import org.qq4j.common.SystemConstants;
 import org.qq4j.core.QQContext;
 import org.qq4j.core.handler.QQCommandHandler;
 import org.qq4j.domain.QQGroup;
 import org.qq4j.domain.QQUser;
-import org.qq4j.net.SystemConstants;
 
 public class QQTimeCommandHandler implements QQCommandHandler {
 

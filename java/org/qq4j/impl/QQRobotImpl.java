@@ -42,7 +42,7 @@ public class QQRobotImpl implements QQRobot {
     @Override
     public void login(final long account,
                       final String password,
-                      final String verifyCode) throws NeedVerifyCodeException {
+                      final String verifyCode) {
         QQUser self = null;
         try {
             self = this.login.login(account, password, verifyCode);
@@ -134,6 +134,11 @@ public class QQRobotImpl implements QQRobot {
     @Override
     public byte[] downloadVerifyImage(final long account) {
         return this.login.downloadVerifyImage(account);
+    }
+
+    @Override
+    public boolean isNeedVerify() {
+        return this.login.isNeedVerify();
     }
 
 }

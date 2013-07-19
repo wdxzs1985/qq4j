@@ -1,8 +1,9 @@
 package org.qq4j.core;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -12,6 +13,7 @@ import javax.script.ScriptException;
 
 import net.sf.json.JSONObject;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -29,8 +31,15 @@ public class QQLogin {
 
     private String uin = null;
 
+    private boolean needVerify = false;
+
+    private void reset() {
+        this.uin = null;
+        this.needVerify = false;
+    }
+
     public QQUser login(final long account, final String pasword)
-            throws NeedVerifyCodeException {
+                                                                 throws NeedVerifyCodeException {
         final String verifyCode = this.getVerifyCode(account);
         if (verifyCode != null) {
             this.log.info(String.format("获得验证码：%s", verifyCode));
@@ -41,8 +50,9 @@ public class QQLogin {
     }
 
     private String getVerifyCode(final long account)
-            throws NeedVerifyCodeException {
-        final String checkQQUrl = "http://check.ptlogin2.qq.com/check?appid=" + QQLogin.APPID
+                                                    throws NeedVerifyCodeException {
+        final String checkQQUrl = "http://check.ptlogin2.qq.com/check?appid="
+                                  + QQLogin.APPID
                                   + "&uin="
                                   + account;
         final String result = this.httpClient.getJSON(checkQQUrl);
@@ -53,6 +63,7 @@ public class QQLogin {
             if (group[0].equals("0")) {
                 return (String) group[1];
             } else {
+                this.needVerify = true;
                 // TODO 生成图片验证码
                 throw new NeedVerifyCodeException();
             }
@@ -61,7 +72,8 @@ public class QQLogin {
     }
 
     public byte[] downloadVerifyImage(final long account) {
-        final String url = "http://captcha.qq.com/getimage?aid=" + QQLogin.APPID
+        final String url = "http://captcha.qq.com/getimage?aid="
+                           + QQLogin.APPID
                            + "&uin="
                            + account;
         return this.httpClient.getByte(url);
@@ -70,7 +82,8 @@ public class QQLogin {
     public QQUser login(final long account,
                         final String password,
                         final String verifyCode) {
-        final String loginUrl = "http://ptlogin2.qq.com/login?u=" + account
+        final String loginUrl = "http://ptlogin2.qq.com/login?u="
+                                + account
                                 + "&p="
                                 + this.encodePass(password,
                                                   verifyCode,
@@ -100,6 +113,7 @@ public class QQLogin {
     }
 
     public void online(final QQContext context) {
+        this.reset();
         this.getDataFromCookie(context);
         this.fetchChannelInfo(context);
     }
@@ -127,7 +141,8 @@ public class QQLogin {
     }
 
     public void offline(final QQContext context) {
-        final String statusUrl = "http://d.web2.qq.com/channel/change_status2?newstatus=offline&clientid=" + context.getClientid()
+        final String statusUrl = "http://d.web2.qq.com/channel/change_status2?newstatus=offline&clientid="
+                                 + context.getClientid()
                                  + "&psessionid="
                                  + context.getPsessionid()
                                  + "&t="
@@ -158,22 +173,30 @@ public class QQLogin {
 
         final ScriptEngineManager m = new ScriptEngineManager();
         final ScriptEngine se = m.getEngineByName("javascript");
+        InputStream input = null;
+        Reader reader = null;
         try {
-            se.eval(new FileReader(new File(this.getClass()
-                                                .getClassLoader()
-                                                .getResource("org/qq4j/core/encode.js")
-                                                .getPath())));
-            final Object t = se.eval("md5(md5(hexchar2bin(md5('" + pass
+            input = this.getClass()
+                        .getClassLoader()
+                        .getResource("org/qq4j/core/encode.js")
+                        .openStream();
+            reader = new InputStreamReader(input);
+            se.eval(reader);
+            final Object t = se.eval("md5(md5(hexchar2bin(md5('"
+                                     + pass
                                      + "'))+'"
                                      + uin
                                      + "')+'"
                                      + code.toUpperCase()
                                      + "')");
             return t.toString();
-        } catch (final FileNotFoundException e) {
-            throw new RuntimeException(e);
         } catch (final ScriptException e) {
             throw new RuntimeException(e);
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            IOUtils.closeQuietly(input);
+            IOUtils.closeQuietly(reader);
         }
     }
 
@@ -190,5 +213,13 @@ public class QQLogin {
 
     public void setHttpClient(final QQHttpClient httpClient) {
         this.httpClient = httpClient;
+    }
+
+    public boolean isNeedVerify() {
+        return this.needVerify;
+    }
+
+    public void setNeedVerify(final boolean needVerify) {
+        this.needVerify = needVerify;
     }
 }

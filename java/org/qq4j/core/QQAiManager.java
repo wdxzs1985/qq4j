@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.qq4j.common.QQStringAnalyst;
 import org.qq4j.domain.QQIndex;
 import org.qq4j.domain.QQMessage;
 import org.qq4j.domain.QQUser;
-import org.qq4j.helper.QQStringAnalyst;
 import org.qq4j.mapper.QQMessagesMapper;
 import org.qq4j.mapper.QQUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;

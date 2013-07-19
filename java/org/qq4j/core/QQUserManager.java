@@ -12,9 +12,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.qq4j.common.SystemConstants;
 import org.qq4j.domain.QQUser;
 import org.qq4j.mapper.QQUserMapper;
-import org.qq4j.net.SystemConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class QQUserManager extends QQAccountManager {
