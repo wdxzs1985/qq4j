@@ -16,8 +16,9 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import org.apache.commons.io.FileUtils;
+import org.qq4j.core.QQLogin;
 import org.qq4j.core.QQRobot;
-import org.qq4j.core.exception.NeedVerifyCodeException;
+import org.qq4j.domain.QQUser;
 
 public class QQRobotLoginPanel extends JPanel {
 
@@ -27,6 +28,8 @@ public class QQRobotLoginPanel extends JPanel {
     private JTextField mVerifyCodeInput = null;
     private JButton mLoginButton = null;
 
+    private boolean needVerify = false;
+    private QQLogin mLogin = null;
     /**
      * 
      */
@@ -46,7 +49,7 @@ public class QQRobotLoginPanel extends JPanel {
         this.add(this.mVerifyCodeLabel);
 
         this.mVerifyCodeInput = new JTextField(4);
-        this.mVerifyCodeInput.setVisible(robot.isNeedVerify());
+        this.mVerifyCodeInput.setVisible(this.needVerify);
         this.add(this.mVerifyCodeInput);
 
         this.mLoginButton = new JButton("Login");
@@ -56,50 +59,58 @@ public class QQRobotLoginPanel extends JPanel {
             public void actionPerformed(final ActionEvent ae) {
                 final long account = Long.parseLong(QQRobotLoginPanel.this.mIdInput.getText());
                 final String password = new String(QQRobotLoginPanel.this.mPasswordInput.getPassword());
-                final String verifyCode = QQRobotLoginPanel.this.mVerifyCodeInput.getText();
+                String verifyCode = null;
                 try {
-                    if (robot.isNeedVerify()) {
-                        robot.login(account, password);
+                    if (!QQRobotLoginPanel.this.needVerify) {
+                        // initail login
+                        QQRobotLoginPanel.this.mLogin = robot.getLogin();
+                        QQRobotLoginPanel.this.mLogin.setAccount(account);
+                        verifyCode = QQRobotLoginPanel.this.mLogin.getVerifyCode();
                     } else {
-                        robot.login(account, password, verifyCode);
+                        verifyCode = QQRobotLoginPanel.this.mVerifyCodeInput.getText();
                     }
-                    if (robot.isRun()) {
-                        robot.startup();
+                    if (verifyCode == null) {
+                        QQRobotLoginPanel.this.needVerify = true;
+                        QQRobotLoginPanel.this.showVerifyCode();
                     } else {
-                        QQRobotLoginPanel.this.showLogin(robot);
+                        QQRobotLoginPanel.this.needVerify = false;
+                        final QQUser user = QQRobotLoginPanel.this.mLogin.login(password,
+                                                                                verifyCode);
+                        if (user == null) {
+                            QQRobotLoginPanel.this.showLogin();
+                        } else {
+                            robot.startup(user);
+                        }
                     }
                 } catch (final NumberFormatException ex) {
                     ex.printStackTrace();
-                } catch (final NeedVerifyCodeException ex) {
-                    QQRobotLoginPanel.this.showVerifyCode(robot, account);
                 }
             }
         });
         this.add(this.mLoginButton);
-
-        this.showLogin(robot);
+        this.showLogin();
     }
 
-    private void showLogin(final QQRobot robot) {
+    private void showLogin() {
         this.mIdInput.setText("");
         this.mPasswordInput.setText("");
         this.mVerifyCodeInput.setText("");
 
-        this.mVerifyCodeLabel.setVisible(robot.isNeedVerify());
-        this.mVerifyCodeInput.setVisible(robot.isNeedVerify());
+        this.mVerifyCodeLabel.setVisible(this.needVerify);
+        this.mVerifyCodeInput.setVisible(this.needVerify);
         this.invalidate();
     }
 
-    private void showVerifyCode(final QQRobot robot, final long account) {
+    private void showVerifyCode() {
         try {
-            final byte[] verifyImageData = robot.downloadVerifyImage(account);
+            final byte[] verifyImageData = this.mLogin.downloadVerifyImage();
             final File verifyImageFile = new File("temp/verify.jpg");
             FileUtils.writeByteArrayToFile(verifyImageFile, verifyImageData);
             final BufferedImage myPicture = ImageIO.read(verifyImageFile);
             this.mVerifyCodeLabel.setIcon(new ImageIcon(myPicture));
             this.mVerifyCodeInput.setText("");
-            this.mVerifyCodeLabel.setVisible(robot.isNeedVerify());
-            this.mVerifyCodeInput.setVisible(robot.isNeedVerify());
+            this.mVerifyCodeLabel.setVisible(true);
+            this.mVerifyCodeInput.setVisible(true);
         } catch (final IOException ioe) {
             ioe.printStackTrace();
         }

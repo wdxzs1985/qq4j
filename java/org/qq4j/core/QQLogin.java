@@ -18,9 +18,12 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.qq4j.core.exception.NeedVerifyCodeException;
 import org.qq4j.domain.QQUser;
 
+/**
+ * 
+ * 
+ */
 public class QQLogin {
 
     public static final int APPID = 1003903;
@@ -29,65 +32,46 @@ public class QQLogin {
 
     private QQHttpClient httpClient = null;
 
-    private String uin = null;
+    private long account = 0L;
 
-    private boolean needVerify = false;
+    private String hexUin = null;
 
-    private void reset() {
-        this.uin = null;
-        this.needVerify = false;
-    }
+    private String verifyCode = null;
 
-    public QQUser login(final long account, final String pasword)
-                                                                 throws NeedVerifyCodeException {
-        final String verifyCode = this.getVerifyCode(account);
-        if (verifyCode != null) {
-            this.log.info(String.format("获得验证码：%s", verifyCode));
-            this.log.info(String.format("获得UIN：%s", this.uin));
-            return this.login(account, pasword, verifyCode);
-        }
-        return null;
-    }
-
-    private String getVerifyCode(final long account)
-                                                    throws NeedVerifyCodeException {
+    public String getVerifyCode() {
+        this.hexUin = null;
+        this.verifyCode = null;
         final String checkQQUrl = "http://check.ptlogin2.qq.com/check?appid="
                                   + QQLogin.APPID
                                   + "&uin="
-                                  + account;
+                                  + this.account;
         final String result = this.httpClient.getJSON(checkQQUrl);
         Object[] group = null;
         if (StringUtils.isNotBlank(result)) {
             group = this.findString("'(.*?)'", result);
-            this.uin = (String) group[2];
             if (group[0].equals("0")) {
-                return (String) group[1];
-            } else {
-                this.needVerify = true;
-                // TODO 生成图片验证码
-                throw new NeedVerifyCodeException();
+                this.verifyCode = (String) group[1];
             }
+            this.hexUin = (String) group[2];
         }
-        return null;
+        return this.verifyCode;
     }
 
-    public byte[] downloadVerifyImage(final long account) {
+    public byte[] downloadVerifyImage() {
         final String url = "http://captcha.qq.com/getimage?aid="
                            + QQLogin.APPID
                            + "&uin="
-                           + account;
+                           + this.account;
         return this.httpClient.getByte(url);
     }
 
-    public QQUser login(final long account,
-                        final String password,
-                        final String verifyCode) {
+    public QQUser login(final String password, final String verifyCode) {
         final String loginUrl = "http://ptlogin2.qq.com/login?u="
-                                + account
+                                + this.account
                                 + "&p="
                                 + this.encodePass(password,
                                                   verifyCode,
-                                                  this.uin)
+                                                  this.hexUin)
                                 + "&verifycode="
 
                                 + verifyCode
@@ -103,7 +87,7 @@ public class QQLogin {
         if (StringUtils.equals("0", errorCode)) {
             final String nick = (String) ptuiCB[5];
             self = new QQUser();
-            self.setAccount(account);
+            self.setAccount(this.account);
             self.setNick(nick);
             this.log.info(String.format("%s%s", self, errorMessage));
         } else {
@@ -113,7 +97,6 @@ public class QQLogin {
     }
 
     public void online(final QQContext context) {
-        this.reset();
         this.getDataFromCookie(context);
         this.fetchChannelInfo(context);
     }
@@ -215,11 +198,11 @@ public class QQLogin {
         this.httpClient = httpClient;
     }
 
-    public boolean isNeedVerify() {
-        return this.needVerify;
+    public long getAccount() {
+        return this.account;
     }
 
-    public void setNeedVerify(final boolean needVerify) {
-        this.needVerify = needVerify;
+    public void setAccount(final long account) {
+        this.account = account;
     }
 }

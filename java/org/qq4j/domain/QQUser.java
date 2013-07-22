@@ -11,6 +11,8 @@ public class QQUser implements Serializable, QQAccount {
      */
     private static final long serialVersionUID = -4977525002155724113L;
 
+    private String hexUin = null;
+
     private long uin = 0;
 
     private long account = 0L;
@@ -161,6 +163,14 @@ public class QQUser implements Serializable, QQAccount {
 
     public void setRank(final int rank) {
         this.rank = rank;
+    }
+
+    public String getHexUin() {
+        return this.hexUin;
+    }
+
+    public void setHexUin(final String hexUin) {
+        this.hexUin = hexUin;
     }
 
 }

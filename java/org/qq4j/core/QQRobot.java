@@ -1,22 +1,17 @@
 package org.qq4j.core;
 
-import org.qq4j.core.exception.NeedVerifyCodeException;
+import org.qq4j.domain.QQUser;
 
 public interface QQRobot {
 
-    void login(long account, String password) throws NeedVerifyCodeException;
+    QQLogin getLogin();
 
-    void login(long account, String password, String verifyCode);
+    void startup(QQUser self);
 
-    public void startup();
+    void shutdown();
 
-    public void shutdown();
+    boolean isRun();
 
-    public boolean isRun();
+    String getName();
 
-    public boolean isNeedVerify();
-
-    public String getName();
-
-    public byte[] downloadVerifyImage(long account);
 }

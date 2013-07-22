@@ -3,8 +3,9 @@ package org.qq4j.swing;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import org.qq4j.core.QQLogin;
 import org.qq4j.core.QQRobot;
-import org.qq4j.core.exception.NeedVerifyCodeException;
+import org.qq4j.domain.QQUser;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -43,21 +44,8 @@ public class QQRobotMain implements QQRobot {
     }
 
     @Override
-    public void login(final long account, final String password)
-                                                                throws NeedVerifyCodeException {
-        this.mRobot.login(account, password);
-    }
-
-    @Override
-    public void login(final long account,
-                      final String password,
-                      final String verifyCode) {
-        this.mRobot.login(account, password, verifyCode);
-    }
-
-    @Override
-    public void startup() {
-        this.mRobot.startup();
+    public void startup(final QQUser user) {
+        this.mRobot.startup(user);
         this.vFrame.setVisible(false);
     }
 
@@ -77,12 +65,8 @@ public class QQRobotMain implements QQRobot {
     }
 
     @Override
-    public byte[] downloadVerifyImage(final long account) {
-        return this.mRobot.downloadVerifyImage(account);
+    public QQLogin getLogin() {
+        return this.mRobot.getLogin();
     }
 
-    @Override
-    public boolean isNeedVerify() {
-        return this.mRobot.isNeedVerify();
-    }
 }

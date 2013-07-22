@@ -2,5 +2,6 @@
     <wb-module deploy-name="qq4j">
         <wb-resource deploy-path="/" source-path="/java"/>
         <wb-resource deploy-path="/" source-path="/test"/>
+        <wb-resource deploy-path="/" source-path="/sample"/>
     </wb-module>
 </project-modules>

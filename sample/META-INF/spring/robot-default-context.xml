@@ -10,12 +10,11 @@
         <property name="login" ref="default_login" />
         <property name="context" ref="default_context" />
         <property name="messagePoller" ref="default_poller"></property>
-        
     </bean>
     
     <bean id="default_client" class="org.qq4j.core.QQHttpClient" />
     
-    <bean id="default_login" class="org.qq4j.core.QQLogin">
+    <bean id="default_login" class="org.qq4j.core.QQLogin" >
         <property name="httpClient" ref="default_client" />
     </bean>
     
