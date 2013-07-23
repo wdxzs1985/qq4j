@@ -22,7 +22,6 @@ import org.qq4j.domain.QQUser;
 
 public class QQRobotLoginPanel extends JPanel {
 
-    private JTextField mIdInput = null;
     private JPasswordField mPasswordInput = null;
     private JLabel mVerifyCodeLabel = null;
     private JTextField mVerifyCodeInput = null;
@@ -37,9 +36,6 @@ public class QQRobotLoginPanel extends JPanel {
     public QQRobotLoginPanel(final QQRobot robot) {
         final FlowLayout layout = new FlowLayout(FlowLayout.LEFT);
         this.setLayout(layout);
-
-        this.mIdInput = new JTextField(16);
-        this.add(this.mIdInput);
 
         this.mPasswordInput = new JPasswordField(16);
         this.add(this.mPasswordInput);
@@ -56,30 +52,18 @@ public class QQRobotLoginPanel extends JPanel {
 
             @Override
             public void actionPerformed(final ActionEvent ae) {
-                final long account = Long.parseLong(QQRobotLoginPanel.this.mIdInput.getText());
                 final String password = new String(QQRobotLoginPanel.this.mPasswordInput.getPassword());
-                String verifyCode = null;
+                final String verifyCode = QQRobotLoginPanel.this.mVerifyCodeInput.getText();
                 try {
                     // initail login
                     final QQUserManager userManager = robot.getContext()
                                                            .getUserManager();
-                    if (!QQRobotLoginPanel.this.needVerify) {
-                        verifyCode = userManager.getVerifyCode();
+                    QQRobotLoginPanel.this.needVerify = false;
+                    final QQUser user = userManager.login(password, verifyCode);
+                    if (user == null) {
+                        QQRobotLoginPanel.this.showLogin(robot);
                     } else {
-                        verifyCode = QQRobotLoginPanel.this.mVerifyCodeInput.getText();
-                    }
-                    if (verifyCode == null) {
-                        QQRobotLoginPanel.this.needVerify = true;
-                        QQRobotLoginPanel.this.showVerifyCode(userManager);
-                    } else {
-                        QQRobotLoginPanel.this.needVerify = false;
-                        final QQUser user = userManager.login(password,
-                                                              verifyCode);
-                        if (user == null) {
-                            QQRobotLoginPanel.this.showLogin();
-                        } else {
-                            robot.startup(user);
-                        }
+                        robot.startup(user);
                     }
                 } catch (final NumberFormatException ex) {
                     ex.printStackTrace();
@@ -87,16 +71,22 @@ public class QQRobotLoginPanel extends JPanel {
             }
         });
         this.add(this.mLoginButton);
-        this.showLogin();
+        this.showLogin(robot);
     }
 
-    private void showLogin() {
-        this.mIdInput.setText("");
+    private void showLogin(final QQRobot robot) {
+        final QQUserManager userManager = robot.getContext().getUserManager();
+        final String verifyCode = userManager.getVerifyCode();
+        if (verifyCode == null) {
+            this.needVerify = true;
+            this.showVerifyCode(userManager);
+        } else {
+            this.needVerify = false;
+            this.mVerifyCodeLabel.setVisible(this.needVerify);
+            this.mVerifyCodeInput.setVisible(this.needVerify);
+        }
         this.mPasswordInput.setText("");
-        this.mVerifyCodeInput.setText("");
-
-        this.mVerifyCodeLabel.setVisible(this.needVerify);
-        this.mVerifyCodeInput.setVisible(this.needVerify);
+        this.mVerifyCodeInput.setText(verifyCode);
         this.invalidate();
     }
 

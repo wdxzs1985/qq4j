@@ -70,7 +70,7 @@
 		<property name="faith" value="1"></property>
 	</bean>
     <bean id="default_group_message_handler" class="org.qq4j.core.handler.command.QQReplyCommandHandler">
-        <property name="echoProbability" value="10"></property>
+        <property name="echoProbability" value="1"></property>
         <property name="maxEcho" value="10"></property>
     </bean>
     

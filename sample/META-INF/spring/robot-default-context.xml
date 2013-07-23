@@ -11,10 +11,10 @@
         <property name="messagePoller" ref="default_poller"></property>
     </bean>
     
-    <bean id="default_client" class="org.qq4j.core.QQHttpClient" />
-    
     <bean id="default_context" class="org.qq4j.core.QQContext">
-        <property name="httpClient" ref="default_client" />
+        <property name="httpClient" >
+            <bean class="org.qq4j.core.QQHttpClient" />
+        </property>
         <!-- font -->
         <property name="font">
             <bean class="org.qq4j.domain.QQFont">
@@ -34,6 +34,11 @@
         <property name="userManager" >
             <bean class="org.qq4j.core.QQUserManager">
                 <property name="context" ref="default_context"></property>
+                <property name="self">
+                    <bean class="org.qq4j.domain.QQUser">
+                        <property name="account" value="1840596989"></property>
+                    </bean>
+                </property>
             </bean>
         </property>
         <!-- FriendManager -->
@@ -64,13 +69,11 @@
         <property name="timeLimitFormat" value="yyyyMMddHH"></property>
     </bean>
     
-    <bean id="default_poller" class="org.qq4j.core.QQMessagePoller">
+    <bean id="default_poller" class="org.qq4j.core.QQMessagePoller" scope="prototype">
         <property name="context" ref="default_context"></property>
         <property name="handlers">
             <bean class="org.qq4j.core.handler.QQMessageHandlerMapping">
-                <property name="defaultHandler">
-                    <bean class="org.qq4j.core.handler.message.QQUnknowMessageHandler"></bean>
-                </property>
+                <property name="defaultHandler" ref="unknow_message_handler"></property>
                 <property name="handlers">
                     <map>
                         <entry key="system_message" value-ref="system_message_handler"></entry>
