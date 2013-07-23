@@ -3,7 +3,7 @@ package org.qq4j.swing;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import org.qq4j.core.QQLogin;
+import org.qq4j.core.QQContext;
 import org.qq4j.core.QQRobot;
 import org.qq4j.domain.QQUser;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -55,18 +55,8 @@ public class QQRobotMain implements QQRobot {
     }
 
     @Override
-    public boolean isRun() {
-        return this.mRobot.isRun();
-    }
-
-    @Override
-    public String getName() {
-        return this.mRobot.getName();
-    }
-
-    @Override
-    public QQLogin getLogin() {
-        return this.mRobot.getLogin();
+    public QQContext getContext() {
+        return this.mRobot.getContext();
     }
 
 }

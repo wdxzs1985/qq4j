@@ -18,10 +18,11 @@ public class QQShakeMessageHandler implements QQMessageHandler {
         // 发送人
         final long uin = value.getLong("from_uin");
         final QQUser user = context.getFriendManager().getQQUser(uin);
+        final QQUser self = context.getUserManager().getSelf();
         if (user != null) {
             if (QQShakeMessageHandler.LOG.isDebugEnabled()) {
                 final String message = String.format("%s >> %s发了一个窗口抖动。",
-                                                     context.getSelf(),
+                                                     self,
                                                      user);
                 QQShakeMessageHandler.LOG.debug(message);
             }

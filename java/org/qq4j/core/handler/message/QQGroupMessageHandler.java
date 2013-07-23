@@ -10,10 +10,11 @@ import org.apache.commons.logging.LogFactory;
 import org.qq4j.common.QQMessageParser;
 import org.qq4j.common.SystemConstants;
 import org.qq4j.core.QQContext;
+import org.qq4j.core.QQFriendManager;
 import org.qq4j.core.QQGroupManager;
-import org.qq4j.core.QQUserManager;
 import org.qq4j.core.handler.QQMessageHandler;
 import org.qq4j.domain.QQGroup;
+import org.qq4j.domain.QQGroupMember;
 import org.qq4j.domain.QQUser;
 
 public class QQGroupMessageHandler extends BaseMessageHandler implements QQMessageHandler {
@@ -35,33 +36,34 @@ public class QQGroupMessageHandler extends BaseMessageHandler implements QQMessa
             final long time = value.getLong("time") * 1000;
 
             final QQGroupManager groupManager = context.getGroupManager();
-            final QQUserManager friendManager = context.getFriendManager();
+            final QQFriendManager friendManager = context.getFriendManager();
             final QQGroup group = groupManager.getQQGroup(gCode);
+            final QQUser self = context.getUserManager().getSelf();
             if (group != null) {
-                final QQUser member = group.getMembers().get(uin);
+                final QQGroupMember member = group.getMembers().get(uin);
                 if (member != null) {
-                    if (member.getAccount() == 0) {
+                    if (member.getUser() == null) {
                         final QQUser user = friendManager.getQQUser(uin);
                         if (user == null) {
                             return;
                         }
-                        member.setQq(user.getQq());
-                        member.setAccount(user.getAccount());
+                        member.setUser(user);
                     }
                     this.log.info(String.format("[%s-%d]%s >> %s%s发送消息：%s",
                                                 DateFormatUtils.format(time,
                                                                        SystemConstants.DATETIME_FORMAT),
                                                 msgId,
-                                                context.getSelf(),
+                                                self,
                                                 group,
                                                 member,
                                                 message));
                     synchronized (member) {
-                        if (msgId != member.getLastMsgId()
+                        final QQUser user = member.getUser();
+                        if (msgId != member.getUser().getLastMsgId()
                             && System.currentTimeMillis()
                                - time < this.getReplyTimeLimit()) {
-                            if (this.isRepeat(member, message)) {
-                                this.handleRepeat(context, group, member);
+                            if (this.isRepeat(user, message)) {
+                                this.handleRepeat(context, group, user);
                             } else {
                                 this.getHandlers().handleGroup(context,
                                                                group,
@@ -69,8 +71,8 @@ public class QQGroupMessageHandler extends BaseMessageHandler implements QQMessa
                                                                message);
                             }
                         }
-                        member.setLastMsgId(msgId);
-                        member.setLastMsg(message);
+                        user.setLastMsgId(msgId);
+                        user.setLastMsg(message);
                     }
                 }
             }
@@ -79,8 +81,8 @@ public class QQGroupMessageHandler extends BaseMessageHandler implements QQMessa
 
     protected void handleRepeat(final QQContext context,
                                 final QQGroup group,
-                                final QQUser member) {
-        final String answer = this.selectRepeatAnswer(member);
+                                final QQUser user) {
+        final String answer = this.selectRepeatAnswer(user);
         context.getSender().sendToGroup(group, answer);
     }
 

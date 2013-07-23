@@ -6,7 +6,7 @@ import net.sf.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.qq4j.core.QQContext;
-import org.qq4j.core.QQUserManager;
+import org.qq4j.core.QQFriendManager;
 import org.qq4j.core.handler.QQMessageHandler;
 import org.qq4j.domain.QQUser;
 
@@ -20,7 +20,7 @@ public class QQBuddyListChangeMessageHandler implements QQMessageHandler {
             final JSONObject value = json.getJSONObject("value");
             final JSONArray addedFriends = value.getJSONArray("added_friends");
 
-            final QQUserManager friendManager = context.getFriendManager();
+            final QQFriendManager friendManager = context.getFriendManager();
 
             for (int i = 0; i < addedFriends.size(); i++) {
                 final JSONObject jUser = addedFriends.getJSONObject(i);

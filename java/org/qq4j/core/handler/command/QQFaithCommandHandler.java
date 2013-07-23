@@ -9,6 +9,7 @@ import org.qq4j.core.QQAiManager;
 import org.qq4j.core.QQContext;
 import org.qq4j.core.handler.QQCommandHandler;
 import org.qq4j.domain.QQGroup;
+import org.qq4j.domain.QQGroupMember;
 import org.qq4j.domain.QQUser;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -24,23 +25,29 @@ public class QQFaithCommandHandler implements QQCommandHandler {
     public void handle(final QQContext context,
                        final QQUser user,
                        final String message) {
-        final String messageToSend = this.getAnswer(context, user);
+        final String messageToSend = this.getAnswer(context,
+                                                    user,
+                                                    user.getNick());
         context.getSender().sendToUser(user, messageToSend);
     }
 
     @Override
     public void handleGroup(final QQContext context,
                             final QQGroup group,
-                            final QQUser user,
+                            final QQGroupMember member,
                             final String message) {
-        final String messageToSend = this.getAnswer(context, user);
+        final String messageToSend = this.getAnswer(context,
+                                                    member.getUser(),
+                                                    member.getNick());
         context.getSender().sendToGroup(group, messageToSend);
     }
 
-    private String getAnswer(final QQContext context, final QQUser user) {
+    private String getAnswer(final QQContext context,
+                             final QQUser user,
+                             final String nick) {
         final QQUser result = this.aiManager.queryRank(user);
         final Map<String, Object> valueMap = new HashMap<String, Object>();
-        valueMap.put("nick", user.getNick());
+        valueMap.put("nick", nick);
         if (result == null) {
             return StrSubstitutor.replace(this.getAnswer2(),
                                           valueMap,

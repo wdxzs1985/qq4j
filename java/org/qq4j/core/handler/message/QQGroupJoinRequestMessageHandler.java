@@ -24,17 +24,13 @@ public class QQGroupJoinRequestMessageHandler implements QQMessageHandler {
         final String msg = value.getString("msg");
         final QQGroup group = context.getGroupManager().getQQGroup(gcode);
         final QQUser user = context.getFriendManager().getQQUser(uin);
-        if (group != null && user != null) {
-            this.log.info(String.format("%s >> %s请求入群：%s",
-                                        context.getSelf(),
-                                        user,
-                                        group));
-            if (StringUtils.isBlank(this.getPassword()) || StringUtils.equals(msg,
-                                                                              this.getPassword())) {
-                this.log.info(String.format("%s >> 同意%s入群%s",
-                                            context.getSelf(),
-                                            user,
-                                            group));
+        final QQUser self = context.getUserManager().getSelf();
+        if (group != null
+            && user != null) {
+            this.log.info(String.format("%s >> %s请求入群：%s", self, user, group));
+            if (StringUtils.isBlank(this.getPassword())
+                || StringUtils.equals(msg, this.getPassword())) {
+                this.log.info(String.format("%s >> 同意%s入群%s", self, user, group));
                 context.getGroupManager().allowJoinGroup(group, user);
             }
         }

@@ -7,16 +7,11 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
     
     <bean id="default" class="org.qq4j.impl.QQRobotImpl">
-        <property name="login" ref="default_login" />
         <property name="context" ref="default_context" />
         <property name="messagePoller" ref="default_poller"></property>
     </bean>
     
     <bean id="default_client" class="org.qq4j.core.QQHttpClient" />
-    
-    <bean id="default_login" class="org.qq4j.core.QQLogin" >
-        <property name="httpClient" ref="default_client" />
-    </bean>
     
     <bean id="default_context" class="org.qq4j.core.QQContext">
         <property name="httpClient" ref="default_client" />
@@ -35,9 +30,15 @@
         <property name="sessionManager" >
             <bean class="org.qq4j.core.QQSessionManager" />
         </property>
+        <!-- UserManager -->
+        <property name="userManager" >
+            <bean class="org.qq4j.core.QQUserManager">
+                <property name="context" ref="default_context"></property>
+            </bean>
+        </property>
         <!-- FriendManager -->
         <property name="friendManager" >
-            <bean class="org.qq4j.core.QQUserManager">
+            <bean class="org.qq4j.core.QQFriendManager">
                 <property name="context" ref="default_context"></property>
             </bean>
         </property>

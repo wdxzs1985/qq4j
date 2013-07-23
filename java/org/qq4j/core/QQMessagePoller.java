@@ -14,6 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.qq4j.common.SystemConstants;
 import org.qq4j.core.handler.QQMessageHandlerMapping;
+import org.qq4j.domain.QQUser;
 
 public class QQMessagePoller implements Runnable {
 
@@ -33,7 +34,8 @@ public class QQMessagePoller implements Runnable {
     @Override
     public void run() {
         final QQContext context = this.getContext();
-        final String pollUrl = "http://d.web2.qq.com/channel/poll2?clientid=" + context.getClientid()
+        final String pollUrl = "http://d.web2.qq.com/channel/poll2?clientid="
+                               + context.getClientid()
                                + "&psessionid="
                                + context.getPsessionid();
         while (context.isRun()) {
@@ -42,6 +44,7 @@ public class QQMessagePoller implements Runnable {
                 if (StringUtils.isNotBlank(ret)) {
                     final JSONObject retJson = JSONObject.fromObject(ret);
                     final int retcode = retJson.getInt("retcode");
+                    final QQUser self = context.getUserManager().getSelf();
                     switch (retcode) {
                     case 0: // LoginSuccess
                         final JSONArray result = retJson.getJSONArray("result");
@@ -56,7 +59,7 @@ public class QQMessagePoller implements Runnable {
                             final String message = String.format("[%s]%s >> 没有收到消息，重试。。。",
                                                                  DateFormatUtils.format(System.currentTimeMillis(),
                                                                                         SystemConstants.DATETIME_FORMAT),
-                                                                 context.getSelf());
+                                                                 self);
                             QQMessagePoller.LOG.debug(message);
                         }
                         break;
@@ -66,11 +69,15 @@ public class QQMessagePoller implements Runnable {
                             final String message = String.format("[%s]%s >> 更新Ptwebqq：%s",
                                                                  DateFormatUtils.format(System.currentTimeMillis(),
                                                                                         SystemConstants.DATETIME_FORMAT),
-                                                                 context.getSelf(),
+                                                                 self,
                                                                  p);
                             QQMessagePoller.LOG.debug(message);
                         }
                         context.setPtwebqq(p);
+                        break;
+                    case 110: // Offline
+                        context.setRun(false);
+                        QQMessagePoller.LOG.info("Offline！");
                         break;
                     case 103: // NotLogin
                     case 106: // UinNotInWhitelist
@@ -84,7 +91,7 @@ public class QQMessagePoller implements Runnable {
                         final String message = String.format("[%s]%s >> QQ出现未知错误：%s",
                                                              DateFormatUtils.format(System.currentTimeMillis(),
                                                                                     SystemConstants.DATETIME_FORMAT),
-                                                             context.getSelf(),
+                                                             self,
                                                              ret);
                         throw new RuntimeException(message);
                         // context.setRun(false);
@@ -126,8 +133,7 @@ public class QQMessagePoller implements Runnable {
         private final QQMessageHandlerMapping handlers;
         private final JSONObject obj;
 
-        HandleMessageWorker(final QQContext context,
-                final QQMessageHandlerMapping handlers, final JSONObject obj) {
+        HandleMessageWorker(final QQContext context, final QQMessageHandlerMapping handlers, final JSONObject obj) {
             this.context = context;
             this.handlers = handlers;
             this.obj = obj;

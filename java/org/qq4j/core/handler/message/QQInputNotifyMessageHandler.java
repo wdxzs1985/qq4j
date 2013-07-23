@@ -18,8 +18,9 @@ public class QQInputNotifyMessageHandler implements QQMessageHandler {
             final JSONObject value = json.getJSONObject("value");
             final long uin = value.getLong("from_uin");
             final QQUser user = context.getFriendManager().getQQUser(uin);
+            final QQUser self = context.getUserManager().getSelf();
             QQInputNotifyMessageHandler.LOG.debug(String.format("%s >> %s正在输入。。。",
-                                                                context.getSelf(),
+                                                                self,
                                                                 user));
         }
     }

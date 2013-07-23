@@ -3,6 +3,7 @@ package org.qq4j.core.handler;
 import org.qq4j.core.QQContext;
 import org.qq4j.core.QQSession;
 import org.qq4j.domain.QQGroup;
+import org.qq4j.domain.QQGroupMember;
 import org.qq4j.domain.QQUser;
 
 public class QQSessionHandler implements QQCommandHandler {
@@ -27,15 +28,16 @@ public class QQSessionHandler implements QQCommandHandler {
     @Override
     public void handleGroup(final QQContext context,
                             final QQGroup group,
-                            final QQUser user,
+                            final QQGroupMember member,
                             final String message) {
-        final QQSession session = context.getSessionManager().getSession(user);
+        final QQSession session = context.getSessionManager()
+                                         .getSession(member.getUser());
         QQCommandHandler handler = null;
         if (session != null) {
             handler = (QQCommandHandler) session.get(QQSessionHandler.SESSION_HANDLER);
         }
         handler = handler == null ? this.getDefaultHandler() : handler;
-        handler.handleGroup(context, group, user, message);
+        handler.handleGroup(context, group, member, message);
     }
 
     public QQCommandHandler getDefaultHandler() {

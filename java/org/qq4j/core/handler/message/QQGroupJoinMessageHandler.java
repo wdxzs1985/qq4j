@@ -16,10 +16,11 @@ public class QQGroupJoinMessageHandler implements QQMessageHandler {
         final long newMember = value.getLong("new_member");
         final QQGroup group = context.getGroupManager().forceGetQQGroup(gcode);
         final QQUser user = context.getFriendManager().getQQUser(newMember);
+        final QQUser self = context.getUserManager().getSelf();
         String answer = null;
         if (group != null
             && user != null) {
-            if (user.equals(context.getSelf())) {
+            if (user.equals(self)) {
                 answer = "大家好，我是新人！请多多关照～～";
             } else {
                 answer = String.format("欢迎%s入裙！", user.getNick());

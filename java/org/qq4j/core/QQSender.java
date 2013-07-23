@@ -39,7 +39,8 @@ public class QQSender {
 
         if (this.log.isDebugEnabled()) {
             this.log.debug(String.format("%s >> 回复%s：%s",
-                                         this.context.getSelf(),
+                                         this.context.getUserManager()
+                                                     .getSelf(),
                                          user,
                                          content));
         }
@@ -48,7 +49,9 @@ public class QQSender {
         final JSONObject json = new JSONObject();
         json.put("to", user.getUin());// 要发送的人
         json.put("face", 600); // 迷之参数
-        json.put("content", "\"" + content + "\"");
+        json.put("content", "\""
+                            + content
+                            + "\"");
         this.sendMessage(json, sendMsgUrl);
     }
 
@@ -66,7 +69,8 @@ public class QQSender {
 
         if (this.log.isDebugEnabled()) {
             this.log.debug(String.format("%s >> 回复%s：%s",
-                                         this.context.getSelf(),
+                                         this.context.getUserManager()
+                                                     .getSelf(),
                                          group,
                                          content));
         }
@@ -77,7 +81,9 @@ public class QQSender {
             json.put("sig", this.gfaceSig);
         }
 
-        json.put("content", "\"" + content + "\"");
+        json.put("content", "\""
+                            + content
+                            + "\"");
         this.sendMessage(json, sendMsgUrl);
     }
 
@@ -121,7 +127,8 @@ public class QQSender {
 
     public void sendShakeMessage(final QQUser user) {
         final QQContext context = this.getContext();
-        final String url = "http://d.web2.qq.com/channel/shake2" + "?to_uin="
+        final String url = "http://d.web2.qq.com/channel/shake2"
+                           + "?to_uin="
                            + user.getUin()
                            + "&clientid="
                            + context.getClientid()
@@ -134,7 +141,8 @@ public class QQSender {
 
     private void initGfaceSig() {
         final QQContext context = this.getContext();
-        final String url = "http://d.web2.qq.com/channel/get_gface_sig2" + "?clientid="
+        final String url = "http://d.web2.qq.com/channel/get_gface_sig2"
+                           + "?clientid="
                            + context.getClientid()
                            + "&psessionid="
                            + context.getPsessionid()

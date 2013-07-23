@@ -23,13 +23,14 @@ public class QQStrangerMessageHandler implements QQMessageHandler {
         final long uin = value.getLong("from_uin");
         final long msgId = value.getLong("msg_id");
         final QQUser user = context.getFriendManager().getQQUser(uin);
+        final QQUser self = context.getUserManager().getSelf();
         if (user != null
             && msgId != user.getLastMsgId()) {
             // 内容
             final JSONArray content = value.getJSONArray("content");
             final String message = QQMessageParser.parseMessage(content);
             this.log.info(String.format("%s >> %s(陌生人)发送消息：%s",
-                                        context.getSelf(),
+                                        self,
                                         user,
                                         message));
             this.replyHandler.handle(context, user, message);

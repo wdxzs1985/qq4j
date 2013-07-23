@@ -16,8 +16,8 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import org.apache.commons.io.FileUtils;
-import org.qq4j.core.QQLogin;
 import org.qq4j.core.QQRobot;
+import org.qq4j.core.QQUserManager;
 import org.qq4j.domain.QQUser;
 
 public class QQRobotLoginPanel extends JPanel {
@@ -29,7 +29,6 @@ public class QQRobotLoginPanel extends JPanel {
     private JButton mLoginButton = null;
 
     private boolean needVerify = false;
-    private QQLogin mLogin = null;
     /**
      * 
      */
@@ -61,21 +60,21 @@ public class QQRobotLoginPanel extends JPanel {
                 final String password = new String(QQRobotLoginPanel.this.mPasswordInput.getPassword());
                 String verifyCode = null;
                 try {
+                    // initail login
+                    final QQUserManager userManager = robot.getContext()
+                                                           .getUserManager();
                     if (!QQRobotLoginPanel.this.needVerify) {
-                        // initail login
-                        QQRobotLoginPanel.this.mLogin = robot.getLogin();
-                        QQRobotLoginPanel.this.mLogin.setAccount(account);
-                        verifyCode = QQRobotLoginPanel.this.mLogin.getVerifyCode();
+                        verifyCode = userManager.getVerifyCode();
                     } else {
                         verifyCode = QQRobotLoginPanel.this.mVerifyCodeInput.getText();
                     }
                     if (verifyCode == null) {
                         QQRobotLoginPanel.this.needVerify = true;
-                        QQRobotLoginPanel.this.showVerifyCode();
+                        QQRobotLoginPanel.this.showVerifyCode(userManager);
                     } else {
                         QQRobotLoginPanel.this.needVerify = false;
-                        final QQUser user = QQRobotLoginPanel.this.mLogin.login(password,
-                                                                                verifyCode);
+                        final QQUser user = userManager.login(password,
+                                                              verifyCode);
                         if (user == null) {
                             QQRobotLoginPanel.this.showLogin();
                         } else {
@@ -101,9 +100,9 @@ public class QQRobotLoginPanel extends JPanel {
         this.invalidate();
     }
 
-    private void showVerifyCode() {
+    private void showVerifyCode(final QQUserManager userManager) {
         try {
-            final byte[] verifyImageData = this.mLogin.downloadVerifyImage();
+            final byte[] verifyImageData = userManager.downloadVerifyImage();
             final File verifyImageFile = new File("temp/verify.jpg");
             FileUtils.writeByteArrayToFile(verifyImageFile, verifyImageData);
             final BufferedImage myPicture = ImageIO.read(verifyImageFile);

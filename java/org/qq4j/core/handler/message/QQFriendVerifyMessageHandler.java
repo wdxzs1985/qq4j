@@ -7,6 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.qq4j.core.QQContext;
 import org.qq4j.core.handler.QQMessageHandler;
+import org.qq4j.domain.QQUser;
 
 public class QQFriendVerifyMessageHandler implements QQMessageHandler {
 
@@ -19,16 +20,12 @@ public class QQFriendVerifyMessageHandler implements QQMessageHandler {
         final JSONObject value = json.getJSONObject("value");
         final long account = value.getLong("account");
         final String msg = value.getString("msg");
-        this.log.info(String.format("%s >> %d请求加好友:%s",
-                                    context.getSelf(),
-                                    account,
-                                    msg));
-        if (StringUtils.isBlank(this.password) || StringUtils.equals(msg,
-                                                                     this.password)) {
-            this.log.info(String.format("%s >> 同意并加好友：%s",
-                                        context.getSelf(),
-                                        account));
-            context.getFriendManager().allowAddFriend(account);
+        final QQUser self = context.getUserManager().getSelf();
+        this.log.info(String.format("%s >> %d请求加好友:%s", self, account, msg));
+        if (StringUtils.isBlank(this.password)
+            || StringUtils.equals(msg, this.password)) {
+            this.log.info(String.format("%s >> 同意并加好友：%s", self, account));
+            context.getUserManager().allowAddFriend(account);
         }
     }
 

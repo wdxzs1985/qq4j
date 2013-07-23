@@ -1,6 +1,6 @@
 package org.qq4j.app;
 
-import org.qq4j.core.QQLogin;
+import org.qq4j.core.QQUserManager;
 
 public class PasswordTest {
 
@@ -8,7 +8,7 @@ public class PasswordTest {
      * @param args
      */
     public static void main(final String[] args) {
-        final QQLogin loginObject = new QQLogin();
+        final QQUserManager loginObject = new QQUserManager();
 
         final String uin = "\\x00\\x00\\x00\\x00\\x6d\\xb5\\x47\\xfd";
         final String uin2 = Long.toHexString(1840596989);

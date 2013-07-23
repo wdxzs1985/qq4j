@@ -7,6 +7,7 @@ import org.qq4j.core.QQAiManager;
 import org.qq4j.core.QQContext;
 import org.qq4j.core.handler.QQCommandHandler;
 import org.qq4j.domain.QQGroup;
+import org.qq4j.domain.QQGroupMember;
 import org.qq4j.domain.QQUser;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -30,9 +31,9 @@ public class QQReplyCommandHandler implements QQCommandHandler {
     @Override
     public void handleGroup(final QQContext context,
                             final QQGroup group,
-                            final QQUser user,
+                            final QQGroupMember member,
                             final String message) {
-        final String answer = this.getReplyAnswer(message, user);
+        final String answer = this.getReplyAnswer(message, member.getUser());
         context.getSender().sendToGroup(group, answer);
     }
 

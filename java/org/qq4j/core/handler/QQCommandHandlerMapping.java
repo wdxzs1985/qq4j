@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.qq4j.core.QQContext;
 import org.qq4j.domain.QQGroup;
+import org.qq4j.domain.QQGroupMember;
 import org.qq4j.domain.QQUser;
 
 public class QQCommandHandlerMapping implements QQCommandHandler {
@@ -27,15 +28,15 @@ public class QQCommandHandlerMapping implements QQCommandHandler {
     @Override
     public void handleGroup(final QQContext context,
                             final QQGroup group,
-                            final QQUser user,
+                            final QQGroupMember member,
                             final String message) {
         final String command = message;
         if (this.getHandlers().containsKey(command)) {
             this.getHandlers()
                 .get(command)
-                .handleGroup(context, group, user, null);
+                .handleGroup(context, group, member, null);
         } else if (this.defaultHandler != null) {
-            this.defaultHandler.handleGroup(context, group, user, message);
+            this.defaultHandler.handleGroup(context, group, member, message);
         }
     }
 

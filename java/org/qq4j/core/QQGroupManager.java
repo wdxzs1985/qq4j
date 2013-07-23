@@ -13,6 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.qq4j.domain.QQGroup;
+import org.qq4j.domain.QQGroupMember;
 import org.qq4j.domain.QQUser;
 
 public class QQGroupManager extends QQAccountManager {
@@ -66,7 +67,7 @@ public class QQGroupManager extends QQAccountManager {
                 final int retcode = retJson.getInt("retcode");
                 if (retcode == 0) {
                     final JSONObject groupJson = retJson.getJSONObject("result");
-                    final Map<Long, QQUser> members = new HashMap<Long, QQUser>();
+                    final Map<Long, QQGroupMember> members = new HashMap<Long, QQGroupMember>();
                     group = new QQGroup();
                     group.setMembers(members);
                     // ginfo
@@ -82,8 +83,7 @@ public class QQGroupManager extends QQAccountManager {
                         final long uin = userJson.getLong("uin");
                         final String nick = userJson.getString("nick");
 
-                        final QQUser member = new QQUser();
-                        member.setUin(uin);
+                        final QQGroupMember member = new QQGroupMember();
                         member.setNick(nick);
                         members.put(uin, member);
                     }
@@ -94,8 +94,8 @@ public class QQGroupManager extends QQAccountManager {
                             final JSONObject cardJson = cards.getJSONObject(i);
                             final long uin = cardJson.getLong("muin");
                             final String card = cardJson.getString("card");
-                            final QQUser user = members.get(uin);
-                            user.setNick(card);
+                            final QQGroupMember member = members.get(uin);
+                            member.setNick(card);
                         }
                     }
                 } else {

@@ -20,36 +20,36 @@ public class QQBuddiesStatusChangeMessageHandler implements QQMessageHandler {
             final long uin = value.getLong("uin");
             final String status = value.getString("status");
             final QQUser user = context.getFriendManager().getQQUser(uin);
-
+            final QQUser self = context.getUserManager().getSelf();
             if (user != null) {
                 user.setStatus(status);
                 if (QQConstants.STATUS_ONLINE.equals(status)) {
                     QQBuddiesStatusChangeMessageHandler.LOG.debug(String.format("%s >> %s上线了。",
-                                                                                context.getSelf(),
+                                                                                self,
                                                                                 user));
                 } else if (QQConstants.STATUS_AWAY.equals(status)) {
                     QQBuddiesStatusChangeMessageHandler.LOG.debug(String.format("%s >> %s离开一会。",
-                                                                                context.getSelf(),
+                                                                                self,
                                                                                 user));
                 } else if (QQConstants.STATUS_OFFLINE.equals(status)) {
                     QQBuddiesStatusChangeMessageHandler.LOG.debug(String.format("%s >> %s下线了。",
-                                                                                context.getSelf(),
+                                                                                self,
                                                                                 user));
                 } else if (QQConstants.STATUS_CALLME.equals(status)) {
                     QQBuddiesStatusChangeMessageHandler.LOG.debug(String.format("%s >> %sQ我吧。",
-                                                                                context.getSelf(),
+                                                                                self,
                                                                                 user));
                 } else if (QQConstants.STATUS_BUSY.equals(status)) {
                     QQBuddiesStatusChangeMessageHandler.LOG.debug(String.format("%s >> %s忙碌中。",
-                                                                                context.getSelf(),
+                                                                                self,
                                                                                 user));
                 } else if (QQConstants.STATUS_SILENT.equals(status)) {
                     QQBuddiesStatusChangeMessageHandler.LOG.debug(String.format("%s >> %s请勿打扰。",
-                                                                                context.getSelf(),
+                                                                                self,
                                                                                 user));
                 } else {
                     QQBuddiesStatusChangeMessageHandler.LOG.debug(String.format("%s >> %s未知状态：%s",
-                                                                                context.getSelf(),
+                                                                                self,
                                                                                 user,
                                                                                 status));
                 }

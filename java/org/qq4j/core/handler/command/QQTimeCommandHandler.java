@@ -1,7 +1,6 @@
 package org.qq4j.core.handler.command;
 
 import java.util.Calendar;
-import java.util.Date;
 
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
@@ -9,6 +8,7 @@ import org.qq4j.common.SystemConstants;
 import org.qq4j.core.QQContext;
 import org.qq4j.core.handler.QQCommandHandler;
 import org.qq4j.domain.QQGroup;
+import org.qq4j.domain.QQGroupMember;
 import org.qq4j.domain.QQUser;
 
 public class QQTimeCommandHandler implements QQCommandHandler {
@@ -30,13 +30,13 @@ public class QQTimeCommandHandler implements QQCommandHandler {
     @Override
     public void handleGroup(final QQContext context,
                             final QQGroup group,
-                            final QQUser user,
+                            final QQGroupMember member,
                             final String message) {
         context.getSender().sendToGroup(group, this.getAnswer());
     }
 
     private String getAnswer() {
-        final Date now = new Date();
+        final Calendar now = Calendar.getInstance(SystemConstants.DEFAULT_LOCALE);
         final int hours = (int) DateUtils.getFragmentInHours(now, Calendar.DATE);
         String hello = null;
         switch (hours) {
@@ -48,9 +48,9 @@ public class QQTimeCommandHandler implements QQCommandHandler {
             break;
         case 9:
         case 10:
+        case 11:
             hello = this.hello2;
             break;
-        case 11:
         case 12:
             hello = this.hello3;
             break;
@@ -76,9 +76,10 @@ public class QQTimeCommandHandler implements QQCommandHandler {
             break;
         }
 
-        return hello + DateFormatUtils.format(System.currentTimeMillis(),
-                                              this.format,
-                                              SystemConstants.DEFAULT_LOCALE);
+        return hello
+               + DateFormatUtils.format(System.currentTimeMillis(),
+                                        this.format,
+                                        SystemConstants.DEFAULT_LOCALE);
     }
 
     public String getFormat() {

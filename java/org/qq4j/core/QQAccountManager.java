@@ -31,7 +31,7 @@ public abstract class QQAccountManager {
         final long account = this.parseUserAccount(result);
         if (account != QQAccountManager.ERROR_USER) {
             user.setAccount(account);
-            user.setQq(context.getSelf().getAccount());
+            user.setQq(context.getUserManager().getSelf().getAccount());
             return user;
         }
         return null;

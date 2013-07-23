@@ -11,12 +11,11 @@ import org.qq4j.common.QQMessageParser;
 import org.qq4j.common.SystemConstants;
 import org.qq4j.core.QQConstants;
 import org.qq4j.core.QQContext;
-import org.qq4j.core.QQUserManager;
+import org.qq4j.core.QQFriendManager;
 import org.qq4j.core.handler.QQMessageHandler;
 import org.qq4j.domain.QQUser;
 
-public class QQUserMessageHandler extends BaseMessageHandler implements
-        QQMessageHandler {
+public class QQUserMessageHandler extends BaseMessageHandler implements QQMessageHandler {
 
     private final Log log = LogFactory.getLog(QQUserMessageHandler.class);
 
@@ -31,23 +30,28 @@ public class QQUserMessageHandler extends BaseMessageHandler implements
         final long msgId = value.getLong("msg_id");
         final long time = value.getLong("time") * 1000;
 
-        final QQUserManager friendManager = context.getFriendManager();
+        final QQFriendManager friendManager = context.getFriendManager();
         final QQUser user = friendManager.getQQUser(uin);
+        final QQUser self = context.getUserManager().getSelf();
         if (user != null) {
             synchronized (user) {
                 this.log.info(String.format("[%s-%d]%s >> %s发送消息：%s",
                                             DateFormatUtils.format(time,
                                                                    SystemConstants.DATETIME_FORMAT),
                                             msgId,
-                                            context.getSelf(),
+                                            self,
                                             user,
                                             message));
                 final boolean isNew = msgId > user.getLastMsgId();
-                final boolean isTooOld = System.currentTimeMillis() - time > this.getReplyTimeLimit();
+                final boolean isTooOld = System.currentTimeMillis()
+                                         - time > this.getReplyTimeLimit();
                 final boolean isBlack = friendManager.isBlackList(user);
                 final boolean isBusy = this.isBuzy(user);
 
-                if (isNew && !isTooOld && !isBlack && !isBusy) {
+                if (isNew
+                    && !isTooOld
+                    && !isBlack
+                    && !isBusy) {
                     if (this.isRepeat(user, message)) {
                         this.handleRepeat(context, user);
                     } else {
@@ -73,7 +77,9 @@ public class QQUserMessageHandler extends BaseMessageHandler implements
                                                   status);
         final boolean isAway = StringUtils.equals(QQConstants.STATUS_AWAY,
                                                   status);
-        if (isSilent || isBusy || isAway) {
+        if (isSilent
+            || isBusy
+            || isAway) {
             return true;
         }
         return false;

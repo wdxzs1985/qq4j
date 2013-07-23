@@ -9,6 +9,7 @@ import org.qq4j.core.QQSession;
 import org.qq4j.core.handler.QQCommandHandler;
 import org.qq4j.core.handler.QQSessionHandler;
 import org.qq4j.domain.QQGroup;
+import org.qq4j.domain.QQGroupMember;
 import org.qq4j.domain.QQUser;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -129,7 +130,9 @@ public class QQReplyOrStudyCommandHandler implements QQCommandHandler {
                 answer = this.getAnswer7();
             } else {
                 final String question = (String) session.get(QQReplyOrStudyCommandHandler.STUDY_QUESTION);
-                final long account = context.getSelf().getAccount();
+                final long account = context.getUserManager()
+                                            .getSelf()
+                                            .getAccount();
                 this.aiManager.addAnswer(question,
                                          message,
                                          account,
@@ -148,7 +151,7 @@ public class QQReplyOrStudyCommandHandler implements QQCommandHandler {
     @Override
     public void handleGroup(final QQContext context,
                             final QQGroup group,
-                            final QQUser user,
+                            final QQGroupMember member,
                             final String message) {
     }
 

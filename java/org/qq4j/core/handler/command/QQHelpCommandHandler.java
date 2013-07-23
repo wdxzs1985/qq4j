@@ -3,10 +3,11 @@ package org.qq4j.core.handler.command;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang.SystemUtils;
+import org.qq4j.common.SystemConstants;
 import org.qq4j.core.QQContext;
 import org.qq4j.core.handler.QQCommandHandler;
 import org.qq4j.domain.QQGroup;
+import org.qq4j.domain.QQGroupMember;
 import org.qq4j.domain.QQUser;
 
 public class QQHelpCommandHandler implements QQCommandHandler {
@@ -17,16 +18,16 @@ public class QQHelpCommandHandler implements QQCommandHandler {
     public void handle(final QQContext context,
                        final QQUser user,
                        final String message) {
-        final String answer = this.getAnswer(context.getSelf());
+        final String answer = this.getAnswer(context.getUserManager().getSelf());
         context.getSender().sendToUser(user, answer);
     }
 
     @Override
     public void handleGroup(final QQContext context,
                             final QQGroup group,
-                            final QQUser user,
+                            final QQGroupMember member,
                             final String message) {
-        final String answer = this.getAnswer(context.getSelf());
+        final String answer = this.getAnswer(context.getUserManager().getSelf());
         context.getSender().sendToGroup(group, answer);
     }
 
@@ -34,7 +35,7 @@ public class QQHelpCommandHandler implements QQCommandHandler {
         final StringBuilder answer = new StringBuilder();
         answer.append(self.getNick()).append("现在会做以下几件事：");
         for (final Entry<String, String> next : this.getMapping().entrySet()) {
-            answer.append(SystemUtils.LINE_SEPARATOR)
+            answer.append(SystemConstants.LINE_SEPARATOR)
                   .append(next.getKey())
                   .append("  :  ")
                   .append(next.getValue());

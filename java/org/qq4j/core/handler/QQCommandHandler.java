@@ -2,6 +2,7 @@ package org.qq4j.core.handler;
 
 import org.qq4j.core.QQContext;
 import org.qq4j.domain.QQGroup;
+import org.qq4j.domain.QQGroupMember;
 import org.qq4j.domain.QQUser;
 
 public interface QQCommandHandler {
@@ -10,7 +11,7 @@ public interface QQCommandHandler {
 
     public void handleGroup(QQContext context,
                             QQGroup group,
-                            QQUser user,
+                            QQGroupMember member,
                             final String message);
 
 }

@@ -3,7 +3,6 @@ package org.qq4j.core;
 import java.util.Random;
 
 import org.qq4j.domain.QQFont;
-import org.qq4j.domain.QQUser;
 
 public class QQContext {
 
@@ -11,9 +10,9 @@ public class QQContext {
 
     private QQHttpClient httpClient = null;
 
-    private QQUser self = null;
+    private QQUserManager userManager = null;
 
-    private QQUserManager friendManager = null;
+    private QQFriendManager friendManager = null;
 
     private QQGroupManager groupManager = null;
 
@@ -77,7 +76,7 @@ public class QQContext {
         this.run = run;
     }
 
-    public QQUserManager getFriendManager() {
+    public QQFriendManager getFriendManager() {
         return this.friendManager;
     }
 
@@ -85,7 +84,7 @@ public class QQContext {
         return this.groupManager;
     }
 
-    public void setFriendManager(final QQUserManager friendManager) {
+    public void setFriendManager(final QQFriendManager friendManager) {
         this.friendManager = friendManager;
     }
 
@@ -105,20 +104,12 @@ public class QQContext {
         return this.httpClient;
     }
 
-    public QQUser getSelf() {
-        return this.self;
-    }
-
     public QQFont getFont() {
         return this.font;
     }
 
     public void setFont(final QQFont font) {
         this.font = font;
-    }
-
-    public void setSelf(final QQUser user) {
-        this.self = user;
     }
 
     public QQSessionManager getSessionManager() {
@@ -131,5 +122,13 @@ public class QQContext {
 
     public void setHttpClient(final QQHttpClient httpClient) {
         this.httpClient = httpClient;
+    }
+
+    public QQUserManager getUserManager() {
+        return this.userManager;
+    }
+
+    public void setUserManager(final QQUserManager userManager) {
+        this.userManager = userManager;
     }
 }

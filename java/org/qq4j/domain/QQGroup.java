@@ -30,7 +30,7 @@ public class QQGroup implements Serializable, QQAccount {
      */
     private long account;
 
-    private Map<Long, QQUser> members = null;
+    private Map<Long, QQGroupMember> members = null;
 
     public long getCode() {
         return this.code;
@@ -50,7 +50,11 @@ public class QQGroup implements Serializable, QQAccount {
 
     @Override
     public String toString() {
-        return "#" + this.name + "(" + this.account + ")";
+        return "#"
+               + this.name
+               + "("
+               + this.account
+               + ")";
     }
 
     @Override
@@ -71,11 +75,11 @@ public class QQGroup implements Serializable, QQAccount {
         this.account = account;
     }
 
-    public Map<Long, QQUser> getMembers() {
+    public Map<Long, QQGroupMember> getMembers() {
         return this.members;
     }
 
-    public void setMembers(final Map<Long, QQUser> members) {
+    public void setMembers(final Map<Long, QQGroupMember> members) {
         this.members = members;
     }
 
