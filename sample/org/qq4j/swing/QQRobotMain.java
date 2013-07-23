@@ -58,5 +58,4 @@ public class QQRobotMain implements QQRobot {
     public QQContext getContext() {
         return this.mRobot.getContext();
     }
-
 }
