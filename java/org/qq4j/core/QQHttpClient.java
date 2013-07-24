@@ -7,6 +7,7 @@ import net.sf.json.JSONObject;
 
 import org.apache.http.HttpMessage;
 import org.apache.http.message.BasicNameValuePair;
+import org.qq4j.common.CommonHttpClient;
 
 public class QQHttpClient extends CommonHttpClient {
 
