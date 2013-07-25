@@ -69,7 +69,7 @@ public class HomeController {
     public String login(@PathVariable final long account,
                         final String password,
                         final String verifyCode,
-                        final Model model) {
+                        final Model model) throws UnsupportedEncodingException {
         final QQRobot robot = this.robotService.getRobot(account);
         final QQUser user = robot.getContext()
                                  .getUserManager()
