@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -67,6 +68,8 @@ public class QQRobotLoginPanel extends JPanel {
                     }
                 } catch (final NumberFormatException ex) {
                     ex.printStackTrace();
+                } catch (final UnsupportedEncodingException e) {
+                    e.printStackTrace();
                 }
             }
         });
