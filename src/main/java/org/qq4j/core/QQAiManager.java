@@ -14,7 +14,6 @@ import org.qq4j.domain.QQUser;
 import org.qq4j.mapper.QQMessagesMapper;
 import org.qq4j.mapper.QQUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 public class QQAiManager {
@@ -22,8 +21,6 @@ public class QQAiManager {
     public static final String MESSAGE = "message";
     public static final String ANSWER = "answer";
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate = null;
     @Autowired
     private QQUserMapper userMapper = null;
     @Autowired
