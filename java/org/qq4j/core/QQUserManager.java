@@ -1,21 +1,13 @@
 package org.qq4j.core;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
-
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -65,7 +57,8 @@ public class QQUserManager {
         return this.context.getHttpClient().getByte(url);
     }
 
-    public QQUser login(final String password, final String verifyCode) {
+    public QQUser login(final String password, final String verifyCode)
+            throws UnsupportedEncodingException {
         final String loginUrl = "http://ptlogin2.qq.com/login?u=" + this.self.getAccount()
                                 + "&p="
                                 + this.encodePass(password,
@@ -144,39 +137,39 @@ public class QQUserManager {
     // 加密密码
     public String encodePass(final String pass,
                              final String code,
-                             final String uin) {
-        // byte[] bin = DigestUtils.md5(pass);
-        // bin = DigestUtils.md5(bin);
-        // final String md5Hex = DigestUtils.md5Hex(bin).toUpperCase();
-        // return DigestUtils.md5Hex(md5Hex + code).toUpperCase();
-        // final String uin = "\\x00\\x00\\x00\\x00\\x99\\xcc\\x39\\x2e";
+                             final String uin)
+            throws UnsupportedEncodingException {
+        String encode = this.md5Hex(pass);
+        encode = this.hexCharToBin(encode);
+        encode = encode + this.evalString(uin);
+        encode = this.md5Hex(encode);
+        encode = encode + code.toUpperCase();
+        encode = this.md5Hex(encode);
+        return encode;
+    }
 
-        final ScriptEngineManager m = new ScriptEngineManager();
-        final ScriptEngine se = m.getEngineByName("javascript");
-        InputStream input = null;
-        Reader reader = null;
-        try {
-            input = this.getClass()
-                        .getClassLoader()
-                        .getResource("org/qq4j/core/encode.js")
-                        .openStream();
-            reader = new InputStreamReader(input);
-            se.eval(reader);
-            final Object t = se.eval("md5(md5(hexchar2bin(md5('" + pass
-                                     + "'))+'"
-                                     + uin
-                                     + "')+'"
-                                     + code.toUpperCase()
-                                     + "')");
-            return t.toString();
-        } catch (final ScriptException e) {
-            throw new RuntimeException(e);
-        } catch (final IOException e) {
-            throw new RuntimeException(e);
-        } finally {
-            IOUtils.closeQuietly(input);
-            IOUtils.closeQuietly(reader);
+    private String md5Hex(final String str) throws UnsupportedEncodingException {
+        return DigestUtils.md5Hex(str.getBytes("ISO-8859-1")).toUpperCase();
+    }
+
+    private String hexCharToBin(final String hex) {
+        final StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < hex.length() / 2; i++) {
+            builder.append("\\x");
+            builder.append(StringUtils.substring(hex, i * 2, i * 2 + 2));
         }
+        return this.evalString(builder.toString());
+    }
+
+    private String evalString(final String hex) {
+        final String[] codeStrs = hex.split("\\\\x");
+        final StringBuilder builder = new StringBuilder();
+        for (final String code : codeStrs) {
+            if (StringUtils.isNotBlank(code)) {
+                builder.append((char) Integer.parseInt(code, 16));
+            }
+        }
+        return builder.toString();
     }
 
     private String getChannelInfo() {
