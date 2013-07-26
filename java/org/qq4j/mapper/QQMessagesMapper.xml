@@ -22,7 +22,7 @@
   </select>
   
   <select id="fetchAnswersByIndex" resultType="QQMessage">
-    select,
+    select
         qq_messages.answer
     ,   count(qq_messages.message_id) as resultCount
     from
