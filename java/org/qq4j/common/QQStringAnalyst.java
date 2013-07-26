@@ -15,13 +15,13 @@ public class QQStringAnalyst {
     static final int HANZI = 5;
     static final int OTHER = 99;
 
-    public static final int MAX_LENGTH = 20;
+    public static final int MAX_LENGTH = 8;
 
-    static Pattern PATTERN_ALPHABET = Pattern.compile("[a-zA-Z]");
-    static Pattern PATTERN_NUMBER = Pattern.compile("[0-9]");
-    static Pattern PATTERN_HANZI = Pattern.compile("[\u4E00-\u9FA5]");
+    static final Pattern PATTERN_ALPHABET = Pattern.compile("[a-zA-Z]");
+    static final Pattern PATTERN_NUMBER = Pattern.compile("[0-9]");
+    static final Pattern PATTERN_HANZI = Pattern.compile("[\u4E00-\u9FA5]");
     //
-    static Pattern PATTERN_FACE = Pattern.compile("(\\[\"face\",[\\d]+\\])");
+    static final Pattern PATTERN_FACE = Pattern.compile("(\\[\"face\",[\\d]+\\])");
 
     public static List<String> analystString(final String source,
                                              final int splitLength) {
@@ -51,18 +51,6 @@ public class QQStringAnalyst {
             if (StringUtils.isBlank(cs)) {
                 this.status = QQStringAnalyst.BLANK;
                 continue;
-                // } else if
-                // (QQStringAnalyst.PATTERN_ALPHABET.matcher(cs).matches()) {
-                // this.flushIfStatusChanged(QQStringAnalyst.OTHER);
-                // this.flushIfTooLong(QQStringAnalyst.MAX_LENGTH);
-                // this.appendIfNoRepeat(c);
-                // continue;
-                // } else if
-                // (QQStringAnalyst.PATTERN_NUMBER.matcher(cs).matches()) {
-                // this.flushIfStatusChanged(QQStringAnalyst.OTHER);
-                // this.flushIfTooLong(QQStringAnalyst.MAX_LENGTH);
-                // this.buffer.append(cs);
-                // continue;
             } else if (QQStringAnalyst.PATTERN_HANZI.matcher(cs).matches()) {
                 this.flushIfStatusChanged(QQStringAnalyst.HANZI);
                 if (this.buffer.length() == this.splitLength) {
