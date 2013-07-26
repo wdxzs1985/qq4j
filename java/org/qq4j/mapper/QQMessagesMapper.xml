@@ -4,9 +4,10 @@
 
 <mapper namespace="org.qq4j.mapper.QQMessagesMapper">
 
-  <select id="fetchAnswersByMessage" resultType="string">
+  <select id="fetchAnswersByMessage" resultType="QQMessage">
     select
         qq_messages.answer
+    ,   count(qq_messages.message_id) as resultCount
     from
         QQ_MESSAGES
     where
@@ -16,11 +17,14 @@
             qq_messages.owner = #{owner}
         or  qq_messages.PRIVATABLE = 0
     )
+    group by qq_messages.answer
+    order by resultCount desc
   </select>
   
-  <select id="fetchAnswersByIndex" resultType="string">
+  <select id="fetchAnswersByIndex" resultType="QQMessage">
     select
         qq_messages.answer
+    ,   count(qq_messages.message_id) as resultCount
     from
         qq_messages
     ,   qq_index
@@ -37,6 +41,7 @@
         or qq_messages.PRIVATABLE = 0
     )
     group by qq_messages.answer
+    order by resultCount desc
   </select>
   
   <select id="getNewMessageId" resultType="string">

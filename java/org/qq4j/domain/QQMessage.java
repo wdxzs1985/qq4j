@@ -14,6 +14,8 @@ public class QQMessage {
 
     private int privatable = 0;
 
+    private int resultCount = 0;
+
     public String getMessage() {
         return this.message;
     }
@@ -55,11 +57,19 @@ public class QQMessage {
     }
 
     public String getMessageId() {
-        return messageId;
+        return this.messageId;
     }
 
-    public void setMessageId(String messageId) {
+    public void setMessageId(final String messageId) {
         this.messageId = messageId;
+    }
+
+    public int getResultCount() {
+        return this.resultCount;
+    }
+
+    public void setResultCount(final int resultCount) {
+        this.resultCount = resultCount;
     }
 
 }

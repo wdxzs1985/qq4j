@@ -3,6 +3,7 @@ package org.qq4j.core;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -28,13 +29,13 @@ public class QQAiManager {
 
     public String getReplyAnswer(final String message, final QQUser user) {
         final String question = message.toLowerCase();
-        final List<String> aiList = this.queryAnswer(question, user);
+        final List<QQMessage> aiList = this.queryAnswer(question, user);
         return this.getAnswer(aiList);
     }
 
     public String getReplyAnswerSmart(final String message, final QQUser user) {
         final String question = message.toLowerCase();
-        List<String> aiList = this.queryAnswer(question, user);
+        List<QQMessage> aiList = this.queryAnswer(question, user);
         if (CollectionUtils.isEmpty(aiList)) {
             final List<String> wordList = this.analystString(question);
             aiList = this.searchAnswersByIndex(wordList, user);
@@ -42,8 +43,8 @@ public class QQAiManager {
         return this.getAnswer(aiList);
     }
 
-    private List<String> searchAnswersByIndex(final List<String> wordList,
-                                              final QQUser user) {
+    private List<QQMessage> searchAnswersByIndex(final List<String> wordList,
+                                                 final QQUser user) {
         final Map<String, Object> params = new HashMap<String, Object>();
         params.put("words", wordList);
         params.put("owner", user.getAccount());
@@ -52,7 +53,7 @@ public class QQAiManager {
         return this.messagesMapper.fetchAnswersByIndex(params);
     }
 
-    private List<String> queryAnswer(final String message, final QQUser user) {
+    private List<QQMessage> queryAnswer(final String message, final QQUser user) {
         final Map<String, Object> params = new HashMap<String, Object>();
         params.put("message", message);
         params.put("qq", user.getQq());
@@ -60,10 +61,21 @@ public class QQAiManager {
         return this.messagesMapper.fetchAnswersByMessage(params);
     }
 
-    private String getAnswer(final List<String> aiList) {
-        if (CollectionUtils.isNotEmpty(aiList)) {
-            Collections.shuffle(aiList);
-            return aiList.get(0);
+    private String getAnswer(final List<QQMessage> aiList) {
+        final List<String> answerList = new LinkedList<String>();
+        int maxCnt = 0;
+        for (final QQMessage message : aiList) {
+            final int resultCount = message.getResultCount();
+            if (resultCount > maxCnt) {
+                maxCnt = resultCount;
+            }
+            if (resultCount >= maxCnt / 2) {
+                answerList.add(message.getAnswer());
+            }
+        }
+        if (CollectionUtils.isNotEmpty(answerList)) {
+            Collections.shuffle(answerList);
+            return answerList.get(0);
         }
         return null;
     }
