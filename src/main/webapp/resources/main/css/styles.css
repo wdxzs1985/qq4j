@@ -1,0 +1,38 @@
+body {
+}
+
+.page-header {
+	margin-top: 0;
+    margin-bottom: 20px;
+	padding-top: 10px;
+    border-bottom: 1px solid #efefef;
+}
+
+.page-section {
+    margin: 20px 0 31.5px;
+}
+
+.page-sidebar {
+	float: left;
+	width: 225px;
+}
+
+.page-sidebar-menu li > a {
+    color: #888;
+    padding: 10px;
+    display: block;
+    text-decoration: none;
+    text-shadow: none;
+}
+.page-sidebar-menu > li > a:hover, .page-sidebar-menu > li.active > a {
+    background: none;
+}
+.page-sidebar-menu li > a:hover, .page-sidebar-menu li.active > a {
+    color: #ffffff;
+}
+
+.page-content {
+    margin-left: 225px;
+    background: #ffffff;
+    min-height: 670px;
+}

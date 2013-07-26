@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context.xsd">
+        
+    <bean id="aiManager" class="org.qq4j.core.QQAiManager">
+    </bean>
+    
+    <!-- Message Handler -->
+    <bean id="unknow_message_handler" class="org.qq4j.core.handler.message.QQUnknowMessageHandler"></bean>
+    <bean id="system_message_handler" class="org.qq4j.core.handler.message.QQSystemMessageHandlerMapping">
+        <property name="defaultHandler" ref="unknow_message_handler"></property>
+        <property name="handlers">
+            <map>
+                <entry key="verify_required">
+                    <bean class="org.qq4j.core.handler.message.QQFriendVerifyMessageHandler">
+                        <property name="password" value="⑨"></property>
+                    </bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+    
+    <bean id="group_system_message_handler" class="org.qq4j.core.handler.message.QQSystemMessageHandlerMapping">
+        <property name="defaultHandler" ref="unknow_message_handler"></property>
+        <property name="handlers">
+            <map>
+                <entry key="group_join">
+                    <bean class="org.qq4j.core.handler.message.QQGroupJoinMessageHandler"></bean>
+                </entry>
+                <entry key="group_request_join">
+                    <bean class="org.qq4j.core.handler.message.QQGroupJoinRequestMessageHandler">
+                        <property name="password" value="请求入群"></property>
+                    </bean>
+                </entry>
+                <entry key="group_leave">
+                    <bean class="org.qq4j.core.handler.message.QQGroupLeaveMessageHandler"></bean>
+                </entry>
+                <entry key="group_admin_op">
+                    <bean class="org.qq4j.core.handler.message.QQGroupAdminopMessageHandler"></bean>
+                </entry>
+            </map>
+        </property>
+    </bean>
+    
+    <bean id="input_notify_handler" class="org.qq4j.core.handler.message.QQInputNotifyMessageHandler"></bean>
+    <bean id="shake_message_handler" class="org.qq4j.core.handler.message.QQShakeMessageHandler"></bean>
+    <bean id="kick_message_handler" class="org.qq4j.core.handler.message.QQKickMessageHandler"></bean>
+    <bean id="buddies_status_change_handler" class="org.qq4j.core.handler.message.QQBuddiesStatusChangeMessageHandler"></bean>
+    <bean id="buddylist_change_handler" class="org.qq4j.core.handler.message.QQBuddyListChangeMessageHandler"></bean>
+    <bean id="sess_message_handler" class="org.qq4j.core.handler.message.QQStrangerMessageHandler">
+        <property name="replyHandler" ref="default_group_message_handler"></property>
+    </bean>
+    
+    <bean id="default_message_handler" class="org.qq4j.core.handler.command.QQReplyOrStudyCommandHandler">
+		<property name="command1" value="不对"></property>
+		<property name="command3" value="放弃"></property>
+		<property name="answer1" value="主人你好～很高兴能和你一起聊天。如果我有不懂的，主人要教我回答哦。回答错误的时候，回复【不对】：可以纠正回答。还有，聊天时记得关闭自动回复哦。"></property>
+		<property name="answer2" value="主人你说什么了吗？"></property>
+		<property name="answer3" value="那我应该怎么回答呢？"></property>
+		<property name="answer4" value="你说的太长了，我记不住额。。@_@"></property>
+		<property name="answer6" value="我不知道你在说神马。教教我吧。回复【放弃】：放弃本次学习。"></property>
+		<property name="answer7" value="好吧，说点别的吧。"></property>
+		<property name="answer8" value="恩，我记住了～"></property>
+		<property name="faith" value="1"></property>
+	</bean>
+    <bean id="default_group_message_handler" class="org.qq4j.core.handler.command.QQReplyCommandHandler">
+        <property name="echoProbability" value="0"></property>
+        <property name="maxEcho" value="10"></property>
+    </bean>
+    
+    <bean id="shake_command_handler" class="org.qq4j.core.handler.command.QQShakeCommandHandler">
+        <property name="message" >
+            <value><![CDATA[o(>﹏<)o]]></value>
+        </property>
+    </bean>
+    <bean id="faith_command_handler" class="org.qq4j.core.handler.command.QQFaithCommandHandler">
+	    <property name="answer1" value="%{nick}的好感：%{faith}。现在排名：第%{rank}位"></property>
+	    <property name="answer2" value="你是谁？"></property>
+    </bean>
+    <bean id="time_command_handler" class="org.qq4j.core.handler.command.QQTimeCommandHandler">
+        <property name="format" value="hh:mm:ss"></property>
+        <property name="hello1" value="早上好！"></property>
+        <property name="hello2" value="上午好！"></property>
+        <property name="hello3" value="中午好！"></property>
+        <property name="hello4" value="下午好！"></property>
+        <property name="hello5" value="晚上好！"></property>
+    </bean>
+    
+</beans>
