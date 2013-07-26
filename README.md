@@ -1,4 +1,2 @@
-qq4jweb
-=======
-
-qq4j web console
+qq4j
+====
