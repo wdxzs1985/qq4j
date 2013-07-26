@@ -18,8 +18,8 @@ public class QQShakeCommandHandler implements QQCommandHandler {
     public void handle(final QQContext context,
                        final QQUser user,
                        final String message) {
-        this.sendShake(context, user);
         context.getSender().sendToUser(user, message);
+        this.sendShake(context, user);
     }
 
     @Override
@@ -27,8 +27,8 @@ public class QQShakeCommandHandler implements QQCommandHandler {
                             final QQGroup group,
                             final QQGroupMember member,
                             final String message) {
-        this.sendShake(context, member.getUser());
         context.getSender().sendToGroup(group, message);
+        this.sendShake(context, member.getUser());
     }
 
     private void sendShake(final QQContext context, final QQUser user) {
