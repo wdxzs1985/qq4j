@@ -1,7 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+<<<<<<< HEAD
     <wb-module deploy-name="qq4j">
+=======
+	<wb-module deploy-name="qq4jweb">
+        <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
+		<wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
+>>>>>>> refs/heads/master
         <wb-resource deploy-path="/" source-path="/java"/>
         <wb-resource deploy-path="/" source-path="/test"/>
+<<<<<<< HEAD
         <wb-resource deploy-path="/" source-path="/swing"/>
     </wb-module>
+=======
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/java"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/test"/>
+		<property name="java-output-path" value="target/classes"/>
+        <property name="context-root" value="web"/>
+	</wb-module>
+>>>>>>> refs/heads/master
 </project-modules>

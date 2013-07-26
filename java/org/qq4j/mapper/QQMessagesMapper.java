@@ -12,9 +12,9 @@ public interface QQMessagesMapper {
 
     void insertIndex(QQIndex index);
 
-    List<String> fetchAnswersByMessage(Map<String, Object> params);
+    List<QQMessage> fetchAnswersByMessage(Map<String, Object> params);
 
-    List<String> fetchAnswersByIndex(Map<String, Object> params);
+    List<QQMessage> fetchAnswersByIndex(Map<String, Object> params);
 
     String getNewMessageId();
 }
