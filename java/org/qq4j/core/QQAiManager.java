@@ -14,7 +14,6 @@ import org.qq4j.domain.QQUser;
 import org.qq4j.mapper.QQMessagesMapper;
 import org.qq4j.mapper.QQUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
 
 public class QQAiManager {
@@ -22,8 +21,6 @@ public class QQAiManager {
     public static final String MESSAGE = "message";
     public static final String ANSWER = "answer";
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate = null;
     @Autowired
     private QQUserMapper userMapper = null;
     @Autowired
@@ -76,7 +73,9 @@ public class QQAiManager {
                           final String answer,
                           final long qq,
                           final long owner) {
+        final String messageId = this.messagesMapper.getNewMessageId();
         final QQMessage message = new QQMessage();
+        message.setMessageId(messageId);
         message.setMessage(source.toLowerCase());
         message.setAnswer(answer);
         message.setOwner(owner);
@@ -84,7 +83,6 @@ public class QQAiManager {
         this.messagesMapper.insertMessage(message);
         final List<String> wordList = this.analystString(source);
         for (final String word : wordList) {
-            final long messageId = message.getId();
             final QQIndex index = new QQIndex();
             index.setWord(word);
             index.setMessageId(messageId);
@@ -95,7 +93,8 @@ public class QQAiManager {
     private List<String> analystString(final String source) {
         final List<String> indexs = new ArrayList<String>();
         int splitLength = source.length();
-        splitLength = splitLength > QQStringAnalyst.MAX_LENGTH ? QQStringAnalyst.MAX_LENGTH : splitLength;
+        splitLength = splitLength > QQStringAnalyst.MAX_LENGTH ? QQStringAnalyst.MAX_LENGTH
+                                                              : splitLength;
         while (splitLength > 1) {
             final List<String> analyst = QQStringAnalyst.analystString(source,
                                                                        splitLength);
@@ -109,9 +108,9 @@ public class QQAiManager {
         return indexs;
     }
 
+    @Transactional
     public void increaseFaith(final QQUser user, final int faith) {
-        user.setFaith(faith
-                      + user.getFaith());
+        user.setFaith(faith + user.getFaith());
         final Map<String, Object> params = new HashMap<String, Object>();
         params.put("account", user.getAccount());
         params.put("qq", user.getQq());
@@ -125,5 +124,11 @@ public class QQAiManager {
         params.put("qq", user.getQq());
         final QQUser userRank = this.userMapper.fetchRanking(params);
         return userRank;
+    }
+
+    public int countUser(final QQUser user) {
+        final Map<String, Object> params = new HashMap<String, Object>();
+        params.put("qq", user.getQq());
+        return this.userMapper.fetchUserCount(params);
     }
 }

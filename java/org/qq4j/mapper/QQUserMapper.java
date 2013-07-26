@@ -14,4 +14,6 @@ public interface QQUserMapper {
 
     QQUser fetchRanking(Map<String, Object> params);
 
+    int fetchUserCount(Map<String, Object> params);
+
 }

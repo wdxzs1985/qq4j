@@ -107,14 +107,15 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     	<classifier>jdk15</classifier>
     </dependency>
     <dependency>
-    	<groupId>mysql</groupId>
-    	<artifactId>mysql-connector-java</artifactId>
-    	<version>5.1.25</version>
-    </dependency>
-    <dependency>
     	<groupId>log4j</groupId>
     	<artifactId>log4j</artifactId>
     	<version>1.2.17</version>
     </dependency>
   </dependencies>
+  <repositories>
+    <repository>
+      <id>codelds</id>
+      <url>https://code.lds.org/nexus/content/groups/main-repo</url>
+    </repository>
+  </repositories>
 </project>

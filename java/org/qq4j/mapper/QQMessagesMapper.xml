@@ -6,53 +6,60 @@
 
   <select id="fetchAnswersByMessage" resultType="string">
     select
-        answer
+        qq_messages.answer
     from
         QQ_MESSAGES
     where
-        message = #{message}
-    and qq = #{qq}
+        qq_messages.message = #{message}
+    and qq_messages.qq = #{qq}
     and (
-            (owner = #{owner} and public_flg = 0)
-        or public_flg = 1
+            qq_messages.owner = #{owner}
+        or  qq_messages.PRIVATABLE = 0
     )
   </select>
   
   <select id="fetchAnswersByIndex" resultType="string">
     select
-        answer
+        qq_messages.answer
     from
         qq_messages
-            join
-        qq_index ON qq_index.message_id = qq_messages.id
+    ,   qq_index
     where
-        word in 
+        qq_messages.message_id = qq_index.message_id(+)
+    and qq_index.word in 
         <foreach item="item" index="index" collection="words"
             open="(" separator="," close=")">
                 #{item}
         </foreach>
+    and qq_messages.qq = #{qq}
     and (
-            (owner = #{owner} and public_flg = 0)
-        or public_flg = 1
+           qq_messages.owner = #{owner}
+        or qq_messages.PRIVATABLE = 0
     )
-    order by count(message_id) desc
+    group by qq_messages.answer
+  </select>
+  
+  <select id="getNewMessageId" resultType="string">
+      SELECT 
+        TO_CHAR(SYSDATE, 'YYYYMMDD') || LPAD(QQ_MESSAGES_SEQUENCE.NEXTVAL, 12, '0') 
+      FROM 
+        DUAL
   </select>
 
-  <insert id="insertMessage" useGeneratedKeys="true">
+  <insert id="insertMessage" >
     insert into qq_messages (
         qq
     ,   owner
     ,   message
     ,   answer
+    ,   message_id
     ) values (
         #{qq}
     ,   #{owner}
     ,   #{message}
     ,   #{answer}
+    ,   #{messageId}
     )
-    <selectKey resultType="int" keyProperty="id" order="AFTER">
-        SELECT @@IDENTITY
-    </selectKey>
   </insert>
 
   <insert id="insertIndex" useGeneratedKeys="true">

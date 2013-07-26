@@ -16,4 +16,5 @@ public interface QQMessagesMapper {
 
     List<String> fetchAnswersByIndex(Map<String, Object> params);
 
+    String getNewMessageId();
 }
