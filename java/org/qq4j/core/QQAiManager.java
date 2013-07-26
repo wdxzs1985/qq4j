@@ -73,8 +73,8 @@ public class QQAiManager {
                 answerList.add(message.getAnswer());
             }
         }
-        if (CollectionUtils.isNotEmpty(aiList)) {
-            Collections.shuffle(aiList);
+        if (CollectionUtils.isNotEmpty(answerList)) {
+            Collections.shuffle(answerList);
             return answerList.get(0);
         }
         return null;
