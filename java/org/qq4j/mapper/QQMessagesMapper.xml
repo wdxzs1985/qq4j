@@ -50,7 +50,7 @@
     ,   #{message}
     ,   #{answer}
     )
-    <selectKey resultType="int" keyProperty="id" order="AFTER">
+    <selectKey resultType="string" keyProperty="message_id" order="AFTER">
         SELECT @@IDENTITY
     </selectKey>
   </insert>
@@ -61,7 +61,7 @@
     ,   message_id
     ) values (
         #{word}
-    ,   #{messageId}
+    ,   #{message.message_id}
     )
   </insert>
 

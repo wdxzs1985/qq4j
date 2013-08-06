@@ -80,7 +80,7 @@
         </property>
     </bean>
     <bean id="faith_command_handler" class="org.qq4j.core.handler.command.QQFaithCommandHandler">
-	    <property name="answer1" value="%{nick}的好感：%{faith}。现在排名：第%{rank}位"></property>
+	    <property name="answer1" value="%{nick}的好感：%{faith}。击败了%{before}人，排名第%{rank}位"></property>
 	    <property name="answer2" value="你是谁？"></property>
     </bean>
     <bean id="time_command_handler" class="org.qq4j.core.handler.command.QQTimeCommandHandler">

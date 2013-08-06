@@ -35,8 +35,7 @@ public class QQUserManager {
     public String getVerifyCode() {
         this.hexUin = null;
         this.verifyCode = null;
-        final String checkQQUrl = "http://check.ptlogin2.qq.com/check?appid="
-                                  + QQUserManager.APPID
+        final String checkQQUrl = "http://check.ptlogin2.qq.com/check?appid=" + QQUserManager.APPID
                                   + "&uin="
                                   + this.self.getAccount();
         final String result = this.context.getHttpClient().getJSON(checkQQUrl);
@@ -52,17 +51,15 @@ public class QQUserManager {
     }
 
     public byte[] downloadVerifyImage() {
-        final String url = "http://captcha.qq.com/getimage?aid="
-                           + QQUserManager.APPID
+        final String url = "http://captcha.qq.com/getimage?aid=" + QQUserManager.APPID
                            + "&uin="
                            + this.self.getAccount();
         return this.context.getHttpClient().getByte(url);
     }
 
     public QQUser login(final String password, final String verifyCode)
-                                                                       throws UnsupportedEncodingException {
-        final String loginUrl = "http://ptlogin2.qq.com/login?u="
-                                + this.self.getAccount()
+            throws UnsupportedEncodingException {
+        final String loginUrl = "http://ptlogin2.qq.com/login?u=" + this.self.getAccount()
                                 + "&p="
                                 + this.encodePass(password,
                                                   verifyCode,
@@ -118,8 +115,7 @@ public class QQUserManager {
     }
 
     public void offline() {
-        final String statusUrl = "http://d.web2.qq.com/channel/change_status2?newstatus=offline&clientid="
-                                 + this.context.getClientid()
+        final String statusUrl = "http://d.web2.qq.com/channel/change_status2?newstatus=offline&clientid=" + this.context.getClientid()
                                  + "&psessionid="
                                  + this.context.getPsessionid()
                                  + "&t="
@@ -142,14 +138,12 @@ public class QQUserManager {
     public String encodePass(final String pass,
                              final String code,
                              final String uin)
-                                              throws UnsupportedEncodingException {
+            throws UnsupportedEncodingException {
         String encode = this.md5Hex(pass);
         encode = this.hexCharToBin(encode);
-        encode = encode
-                 + this.evalString(uin);
+        encode = encode + this.evalString(uin);
         encode = this.md5Hex(encode);
-        encode = encode
-                 + code.toUpperCase();
+        encode = encode + code.toUpperCase();
         encode = this.md5Hex(encode);
         return encode;
     }
@@ -201,8 +195,25 @@ public class QQUserManager {
         context.getHttpClient().postJsonData(url, content);
     }
 
+    public String getLongNick(final QQUser user) {
+        String lnick = null;
+        final QQContext context = this.getContext();
+        final String url = "http://s.web2.qq.com/api/set_long_nick2";
+        final JSONObject content = new JSONObject();
+        content.put("tuin", user.getUin());
+        content.put("vfwebqq", context.getVfwebqq());
+        final String result = context.getHttpClient().getJSON(url);
+        final JSONObject retJson = JSONObject.fromObject(result);
+        final int retcode = retJson.getInt("retcode");
+        if (retcode == 0) {
+            final JSONObject resultJson = retJson.getJSONObject("result");
+            lnick = resultJson.getString("lnick");
+        }
+        return lnick;
+    }
+
     public void setLongNick(final String nlk) throws JSONException,
-                                             UnsupportedEncodingException {
+            UnsupportedEncodingException {
         final QQContext context = this.getContext();
         final String url = "http://s.web2.qq.com/api/set_long_nick2";
         final JSONObject content = new JSONObject();

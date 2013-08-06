@@ -1,9 +1,8 @@
 package org.qq4j.domain;
 
-
 public class QQMessage {
 
-    private long id = 0L;
+    private String messageId = null;
 
     private String message = null;
 
@@ -13,7 +12,9 @@ public class QQMessage {
 
     private long owner = 0L;
 
-    private int publicFlg = 0;
+    private int privatable = 0;
+
+    private int resultCount = 0;
 
     public String getMessage() {
         return this.message;
@@ -47,19 +48,28 @@ public class QQMessage {
         this.owner = owner;
     }
 
-    public long getId() {
-        return this.id;
+    public int getPrivatable() {
+        return this.privatable;
     }
 
-    public void setId(final long id) {
-        this.id = id;
+    public void setPrivatable(final int privatable) {
+        this.privatable = privatable;
     }
 
-    public int getPublicFlg() {
-        return this.publicFlg;
+    public String getMessageId() {
+        return this.messageId;
     }
 
-    public void setPublicFlg(final int publicFlg) {
-        this.publicFlg = publicFlg;
+    public void setMessageId(final String messageId) {
+        this.messageId = messageId;
     }
+
+    public int getResultCount() {
+        return this.resultCount;
+    }
+
+    public void setResultCount(final int resultCount) {
+        this.resultCount = resultCount;
+    }
+
 }

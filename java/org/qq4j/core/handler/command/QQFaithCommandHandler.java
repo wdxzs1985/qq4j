@@ -54,6 +54,8 @@ public class QQFaithCommandHandler implements QQCommandHandler {
                                           SystemConstants.REPLACE_PREFIX,
                                           SystemConstants.REPLACE_SUFFIX);
         } else {
+            final int userCount = this.aiManager.countUser(user);
+            valueMap.put("before", userCount - result.getRank());
             valueMap.put("faith", result.getFaith());
             valueMap.put("rank", result.getRank());
             return StrSubstitutor.replace(this.getAnswer1(),

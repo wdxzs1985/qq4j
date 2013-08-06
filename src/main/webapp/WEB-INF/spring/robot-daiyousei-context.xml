@@ -20,7 +20,7 @@
         <property name="font">
             <bean class="org.qq4j.domain.QQFont">
                 <property name="name" value="宋体"></property>
-                <property name="color" value="ff8f8f"></property>
+                <property name="color" value="2ecc71"></property>
                 <property name="size" value="10"></property>
                 <property name="bold" value="false"></property>
                 <property name="underline" value="false"></property>
