@@ -5,57 +5,78 @@
 <html>
 <head>
 <%@ include file="/WEB-INF/views/inc/page-meta.jsp" %>
+<link rel="stylesheet" media="screen" type="text/css" href="<c:url value="/resources/colorpicker/css/colorpicker.css"/>" />
 <title><c:out value="${ account }"/></title>
 </head>
 <body>
 <%@ include file="/WEB-INF/views/inc/page-nav.jsp" %>
-<div class="container-fluid">
-<div class="page-header">
-<h1>Hello <c:out value="${ account }"/>!  </h1>
-</div>
-<form id="nlk-form" action="<c:url value="/${ account }/nlk"/>" class="form-inline">
-    <input type="text" name="nlk" class="input-xlarge" placeholder="long nick">
-    <button type="submit" class="btn">Set long nick</button>
-</form>
-<div class="btn-group">
-    <a href="<c:url value="/${ account }/offline"/>" class="btn btn-danger">Offline</a>
-</div>
-<h3>Users</h3>
-<ul class="media-list">
-    <c:forEach items="${qqRobot.context.friendManager.users }" var="entry">
-        <li class="media">
-            <a><c:out value="${ entry.value }"/></a>
-            faith: [<c:out value="${ entry.value.faith }"/>]
-            <c:if test="${ !empty entry.value.lastMsg }" >
-                <blockquote><c:out value="${ entry.value.lastMsg }"/></blockquote>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="page-header">
+                <h1><c:out value="${ account }"/></h1>
+                <small></small>
+            </div>
+            <c:if test="${ qqRobot.context.run }">
+                <a href="<c:url value="/${ account }/offline"/>" class="btn btn-danger">Offline</a>
             </c:if>
-        </li>
-    </c:forEach>
-</ul>
-<hr>
-<h3>Groups</h3>
-<ul class="media-list">
-    <c:forEach items="${qqRobot.context.groupManager.groups }" var="entry">
-        <li class="media">
-            <a><c:out value="${ entry.value }"/></a>
-        </li>
-    </c:forEach>
-</ul>
+            <c:if test="${ !qqRobot.context.run }">
+                <a href="<c:url value="/${ account }/login"/>" class="btn btn-success">Login</a>
+            </c:if>
+            <hr>
+            <form id="nlk-form" action="<c:url value="/${ account }/nlk"/>" method="post">
+                <div class="input-group">
+                    <input type="text" name="nlk" class="form-control" placeholder="long nick">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit">Set long nick</button>
+                    </span>
+                </div><!-- /input-group -->
+            </form>
+        </div>
+        <div class="col-lg-4">
+            <div class="page-header">
+                <h1>Friends <small></small></h1>
+            </div>
+            <ul class="media-list">
+                <c:forEach items="${qqRobot.context.friendManager.users }" var="entry" begin="1" end="5">
+                    <li class="media">
+                        <a><c:out value="${ entry.value }"/></a>
+                        faith: [<c:out value="${ entry.value.faith }"/>]
+                    </li>
+                </c:forEach>
+            </ul>
+        </div>
+        <div class="col-lg-4">
+            <div class="page-header">
+                <h1>Groups</h1>
+                <ul class="media-list">
+                    <c:forEach items="${qqRobot.context.groupManager.groups }" var="entry" begin="1" end="5">
+                        <li class="media">
+                            <a><c:out value="${ entry.value }"/></a>
+                        </li>
+                    </c:forEach>
+                </ul>
+            </div>
+        </div>
+    </div>
 </div>
 <%@ include file="/WEB-INF/views/inc/scripts.jsp" %>
+<script type="text/javascript" src="<c:url value="/resources/colorpicker/js/colorpicker.js"/>"></script>
 <script>
 $(function(){
-	$('#nlk-form').submit(function(){
-		var $this = $(this);
-		var url = $this.prop('action');
-		$.post(url, $this.serialize(), function(response){
-			if(response.result) {
-				
-			} else {
-				alert(response.error);
-			}
-		});
-		return false;
+	$('#font_color').ColorPicker({
+	    onShow: function (colpkr) {
+	        $(colpkr).fadeIn(500);
+	        return false;
+	    },
+	    onHide: function (colpkr) {
+	        $(colpkr).fadeOut(500);
+	        return false;
+	    },
+	    onChange: function (hsb, hex, rgb) {
+	        $('#colorSelector div').css('backgroundColor', '#' + hex);
+	        $('#font_color').val(hex);
+	    }
 	});
 });
 </script>

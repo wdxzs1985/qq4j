@@ -10,35 +10,39 @@
 </head>
 <body>
 <%@ include file="/WEB-INF/views/inc/page-nav.jsp" %>
-<div class="container-fluid">
+<div class="container">
     <div class="">
         <c:if test="${ empty qqRobotList }">
-        <div class="alert">
-            no data!
+        <div class="alert alert-block">
+            <strong>no data!</strong>
         </div>
         </c:if>
         <c:if test="${ !empty qqRobotList }">
-        <table class="table table-striped">
-            <tr>
-                <th>qq</th>
-                <th>running</th>
-            </tr>
-            <c:forEach var="qqRobot" items="${qqRobotList}" varStatus="stat">
-                <tr>
-                    <td>
-                        <a href="<c:url value="/${qqRobot.context.userManager.self.account}"/>">
-                            <c:out value="${qqRobot.context.userManager.self.account}"/>
-                        </a>
-                    </td>
-                    <td>
-                        <c:choose>
-                            <c:when test="${qqRobot.context.run}">○</c:when>
-                            <c:otherwise>×</c:otherwise>
-                        </c:choose>
-                    </td>
-                </tr>
-            </c:forEach>
-        </table>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>qq</th>
+                        <th>running</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <c:forEach var="qqRobot" items="${qqRobotList}" varStatus="stat">
+                        <tr>
+                            <td>
+                                <a href="<c:url value="/${qqRobot.context.userManager.self.account}"/>">
+                                    <c:out value="${qqRobot.context.userManager.self.account}"/>
+                                </a>
+                            </td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${qqRobot.context.run}">○</c:when>
+                                    <c:otherwise>×</c:otherwise>
+                                </c:choose>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </tbody>
+            </table>
         </c:if>
     </div>
 </div>

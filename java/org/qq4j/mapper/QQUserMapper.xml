@@ -39,6 +39,15 @@
     where
         account = #{account}
   </select>
+  
+  <select id="fetchUserCount" resultType="int">
+    select
+        count(account)
+    from 
+        qq_user
+    where
+        qq = #{qq}
+  </select>
 
   <insert id="insert">
     insert into qq_user (
@@ -56,6 +65,9 @@
     <set>
         <if test="faith != null">
             faith = #{faith}
+        </if>
+        <if test="black != null">
+            black = #{black}
         </if>
     </set>
     where

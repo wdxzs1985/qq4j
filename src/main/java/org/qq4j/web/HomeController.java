@@ -2,12 +2,10 @@ package org.qq4j.web;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
-import java.util.Map;
 
-import net.sf.json.JSONException;
-
+import org.apache.commons.lang.StringUtils;
 import org.qq4j.core.QQRobot;
+import org.qq4j.domain.QQFont;
 import org.qq4j.domain.QQUser;
 import org.qq4j.service.RobotService;
 import org.slf4j.Logger;
@@ -43,33 +41,32 @@ public class HomeController {
      */
     @RequestMapping(value = "/{account}", method = RequestMethod.GET)
     public String account(@PathVariable final long account, final Model model) {
-        model.addAttribute("account", account);
         final QQRobot robot = this.robotService.getRobot(account);
-        if (!robot.getContext().isRun()) {
-            final String verifyCode = robot.getContext()
-                                           .getUserManager()
-                                           .getVerifyCode();
-            model.addAttribute("verifyCode", verifyCode);
-            return "login";
-        } else {
-            model.addAttribute("qqRobot", robot);
-            return "account";
-        }
+        model.addAttribute("account", account);
+        model.addAttribute("qqRobot", robot);
+        return "account";
     }
 
-    @RequestMapping(value = "/{account}/verify.jpg", method = RequestMethod.GET)
-    @ResponseBody
-    public byte[] verify(@PathVariable final long account, final Model model)
-                                                                             throws IOException {
+    /**
+     */
+    @RequestMapping(value = "/{account}/login", method = RequestMethod.GET)
+    public String doGetlogin(@PathVariable final long account, final Model model) {
+        model.addAttribute("account", account);
         final QQRobot robot = this.robotService.getRobot(account);
-        return robot.getContext().getUserManager().downloadVerifyImage();
+        if (robot.getContext().isRun()) {
+            return "redirect:/";
+        }
+        robot.getContext().getUserManager().getVerifyCode();
+        model.addAttribute("qqRobot", robot);
+        return "login";
     }
 
     @RequestMapping(value = "/{account}/login", method = RequestMethod.POST)
-    public String login(@PathVariable final long account,
-                        final String password,
-                        final String verifyCode,
-                        final Model model) throws UnsupportedEncodingException {
+    public String doPostlogin(@PathVariable final long account,
+                              final String password,
+                              final String verifyCode,
+                              final Model model)
+                                                throws UnsupportedEncodingException {
         final QQRobot robot = this.robotService.getRobot(account);
         final QQUser user = robot.getContext()
                                  .getUserManager()
@@ -81,6 +78,14 @@ public class HomeController {
                + account;
     }
 
+    @RequestMapping(value = "/{account}/verify.jpg", method = RequestMethod.GET)
+    @ResponseBody
+    public byte[] verify(@PathVariable final long account, final Model model)
+                                                                             throws IOException {
+        final QQRobot robot = this.robotService.getRobot(account);
+        return robot.getContext().getUserManager().downloadVerifyImage();
+    }
+
     @RequestMapping(value = "/{account}/offline", method = RequestMethod.GET)
     public String login(@PathVariable final long account, final Model model) {
         final QQRobot robot = this.robotService.getRobot(account);
@@ -90,22 +95,31 @@ public class HomeController {
     }
 
     @RequestMapping(value = "/{account}/nlk", method = RequestMethod.POST)
-    @ResponseBody
-    public Map<String, Object> setLongNick(@PathVariable final long account,
-                                           final String nlk) {
-        final Map<String, Object> model = new HashMap<String, Object>();
+    public String setLongNick(@PathVariable final long account, final String nlk) {
         final QQRobot robot = this.robotService.getRobot(account);
-        try {
+        if (StringUtils.isNotBlank(nlk)) {
             robot.getContext().getUserManager().setLongNick(nlk);
-            model.put("result", true);
-        } catch (final JSONException e) {
-            model.put("result", false);
-            model.put("error", e.getMessage());
-        } catch (final UnsupportedEncodingException e) {
-            model.put("result", false);
-            model.put("error", e.getMessage());
         }
-        return model;
+        return "redirect:/"
+               + account;
+    }
+
+    @RequestMapping(value = "/{account}/font", method = RequestMethod.POST)
+    public String setFont(@PathVariable final long account,
+                          final String name,
+                          final int size,
+                          final String color,
+                          final String bold,
+                          final String italic) {
+        final QQRobot robot = this.robotService.getRobot(account);
+        final QQFont font = robot.getContext().getFont();
+        font.setName(name);
+        font.setSize(size);
+        font.setColor(color);
+        font.setBold(StringUtils.isNotBlank(bold));
+        font.setItalic(StringUtils.isNotBlank(italic));
+        return "redirect:/"
+               + account;
     }
 
     /**
