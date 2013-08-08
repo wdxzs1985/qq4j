@@ -5,7 +5,6 @@
 <html>
 <head>
 <%@ include file="/WEB-INF/views/inc/page-meta.jsp" %>
-<link rel="stylesheet" media="screen" type="text/css" href="<c:url value="/resources/colorpicker/css/colorpicker.css"/>" />
 <title><c:out value="${ account }"/></title>
 </head>
 <body>
@@ -40,6 +39,18 @@
                 </form>
             </c:if>
             <c:if test="${ qqRobot.context.run }">
+                <form id="status-form" action="<c:url value="/${ account }/status"/>" method="post">
+                        <select id="status" name="status" class="form-control">
+                            <option value="online" <c:if test="${ qqRobot.context.userManager.self.status eq 'online' }"></c:if>>online</option>
+                            <option value="callme" <c:if test="${ qqRobot.context.userManager.self.status eq 'callme' }"></c:if>>callme</option>
+                            <option value="away" <c:if test="${ qqRobot.context.userManager.self.status eq 'away' }"></c:if>>away</option>
+                            <option value="busy" <c:if test="${ qqRobot.context.userManager.self.status eq 'busy' }"></c:if>>busy</option>
+                            <option value="silent" <c:if test="${ qqRobot.context.userManager.self.status eq 'silent' }"></c:if>>silent</option>
+                            <option value="hidden" <c:if test="${ qqRobot.context.userManager.self.status eq 'hidden' }"></c:if>>hidden</option>
+                            <option value="offline" <c:if test="${ qqRobot.context.userManager.self.status eq 'offline' }"></c:if>>offline</option>
+                        </select>
+                </form>
+                <hr>
                 <form id="nlk-form" action="<c:url value="/${ account }/nlk"/>" method="post">
                     <div class="input-group">
                         <input type="text" name="nlk" class="form-control" placeholder="long nick">
@@ -48,29 +59,15 @@
                         </span>
                     </div><!-- /input-group -->
                 </form>
-                <hr>
-                <a href="<c:url value="/${ account }/offline"/>" class="btn btn-danger">Offline</a>
             </c:if>
         </div>
     </div>
 </div>
 <%@ include file="/WEB-INF/views/inc/scripts.jsp" %>
-<script type="text/javascript" src="<c:url value="/resources/colorpicker/js/colorpicker.js"/>"></script>
 <script>
 $(function(){
-	$('#font_color').ColorPicker({
-	    onShow: function (colpkr) {
-	        $(colpkr).fadeIn(500);
-	        return false;
-	    },
-	    onHide: function (colpkr) {
-	        $(colpkr).fadeOut(500);
-	        return false;
-	    },
-	    onChange: function (hsb, hex, rgb) {
-	        $('#colorSelector div').css('backgroundColor', '#' + hex);
-	        $('#font_color').val(hex);
-	    }
+	$('#status').change(function(){
+		$('#status-form').submit();
 	});
 });
 </script>

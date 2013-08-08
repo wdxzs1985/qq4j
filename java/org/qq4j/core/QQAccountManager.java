@@ -27,7 +27,7 @@ public abstract class QQAccountManager {
                            + context.getVfwebqq()
                            + "&t="
                            + System.currentTimeMillis();
-        final String result = context.getHttpClient().getJSON(url);
+        final String result = context.getHttpClient().get(url);
         final long account = this.parseUserAccount(result);
         if (account != QQAccountManager.ERROR_USER) {
             user.setAccount(account);
@@ -47,7 +47,7 @@ public abstract class QQAccountManager {
                            + context.getVfwebqq()
                            + "&t="
                            + System.currentTimeMillis();
-        final String result = context.getHttpClient().getJSON(url);
+        final String result = context.getHttpClient().get(url);
         final long account = this.parseUserAccount(result);
         if (account != QQAccountManager.ERROR_USER) {
             group.setAccount(account);

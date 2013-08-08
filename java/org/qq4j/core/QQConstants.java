@@ -14,6 +14,8 @@ public interface QQConstants {
 
     public String STATUS_SILENT = "silent";
 
+    public String STATUS_HIDDEN = "hidden";
+
     public String DEFAULT_FONT_NAME = "宋体";
 
     public String DEFAULT_FONT_COLOR = "000000";

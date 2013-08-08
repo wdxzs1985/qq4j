@@ -24,7 +24,6 @@ public class QQRobotImpl implements QQRobot {
     @Override
     public void startup(final QQUser self) {
         this.context.setRun(true);
-        this.context.getUserManager().online();
         // sender
         final QQSender sender = this.context.getSender();
         sender.initSender();

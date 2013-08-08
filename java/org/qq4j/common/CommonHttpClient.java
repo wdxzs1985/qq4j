@@ -39,7 +39,6 @@ public class CommonHttpClient {
     private final Log log = LogFactory.getLog(CommonHttpClient.class);
     private final HttpClient client;
     private final CookieStore cookieStore;
-    private final HttpContext localContext;
 
     public CommonHttpClient() {
         final PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager();
@@ -72,15 +71,9 @@ public class CommonHttpClient {
         clientBuilder.setDefaultHeaders(defaultHeaders);
         this.client = clientBuilder.build();
 
-        // this.client = new DefaultHttpClient(cm);
-        this.localContext = new BasicHttpContext();
-        // Bind custom cookie store to the local context
-        this.localContext.setAttribute(ClientContext.COOKIE_STORE,
-                                       this.cookieStore);
-
     }
 
-    public String getJSON(final String url) {
+    public String get(final String url) {
         if (this.log.isDebugEnabled()) {
             this.log.debug("method : GET");
             this.log.debug("   url : "
@@ -90,10 +83,13 @@ public class CommonHttpClient {
         this.initHttpHeader(httpget);
 
         String result = null;
+        final HttpContext localContext = new BasicHttpContext();
+        // Bind custom cookie store to the local context
+        localContext.setAttribute(ClientContext.COOKIE_STORE, this.cookieStore);
         try {
             // Pass local context as a parameter
             final HttpResponse response = this.client.execute(httpget,
-                                                              this.localContext);
+                                                              localContext);
             final HttpEntity entity = response.getEntity();
             result = this.entityToString(entity);
             // Consume response content
@@ -110,8 +106,8 @@ public class CommonHttpClient {
         return result;
     }
 
-    public String postJSON(final String url,
-                           final List<? extends NameValuePair> nvps) {
+    public String post(final String url,
+                       final List<? extends NameValuePair> nvps) {
         if (this.log.isDebugEnabled()) {
             this.log.debug("method : POST");
             this.log.debug("   url : "
@@ -127,6 +123,9 @@ public class CommonHttpClient {
         this.initHttpHeader(httppost);
 
         String result = null;
+        final HttpContext localContext = new BasicHttpContext();
+        // Bind custom cookie store to the local context
+        localContext.setAttribute(ClientContext.COOKIE_STORE, this.cookieStore);
         try {
             final UrlEncodedFormEntity postEntity = new UrlEncodedFormEntity(nvps,
                                                                              SystemConstants.ENCODING);
@@ -136,7 +135,7 @@ public class CommonHttpClient {
                                + this.entityToString(postEntity));
             }
             final HttpResponse response = this.client.execute(httppost,
-                                                              this.localContext);
+                                                              localContext);
             final HttpEntity entity = response.getEntity();
             result = this.entityToString(entity);
 
@@ -164,10 +163,13 @@ public class CommonHttpClient {
         this.initHttpHeader(httpget);
 
         byte[] result = null;
+        final HttpContext localContext = new BasicHttpContext();
+        // Bind custom cookie store to the local context
+        localContext.setAttribute(ClientContext.COOKIE_STORE, this.cookieStore);
         try {
             // Pass local context as a parameter
             final HttpResponse response = this.client.execute(httpget,
-                                                              this.localContext);
+                                                              localContext);
             final HttpEntity entity = response.getEntity();
             result = EntityUtils.toByteArray(entity);
             // Consume response content

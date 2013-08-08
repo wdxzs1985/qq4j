@@ -40,7 +40,7 @@ public class QQMessagePoller implements Runnable {
                                + context.getPsessionid();
         while (context.isRun()) {
             try {
-                final String ret = context.getHttpClient().getJSON(pollUrl);
+                final String ret = context.getHttpClient().get(pollUrl);
                 if (StringUtils.isNotBlank(ret)) {
                     final JSONObject retJson = JSONObject.fromObject(ret);
                     final int retcode = retJson.getInt("retcode");

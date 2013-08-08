@@ -136,7 +136,7 @@ public class QQSender {
                            + context.getPsessionid()
                            + "&t="
                            + System.currentTimeMillis();
-        context.getHttpClient().getJSON(url);
+        context.getHttpClient().get(url);
     }
 
     private void initGfaceSig() {
@@ -148,7 +148,7 @@ public class QQSender {
                            + context.getPsessionid()
                            + "&t="
                            + System.currentTimeMillis();
-        final String result = context.getHttpClient().getJSON(url);
+        final String result = context.getHttpClient().get(url);
         if (StringUtils.isNotBlank(result)) {
             final JSONObject json = JSONObject.fromObject(result);
             final int retcode = json.getInt("retcode");

@@ -35,6 +35,22 @@ public class QQUser implements Serializable, QQAccount {
 
     private String status = QQConstants.STATUS_ONLINE;
 
+    private String lnick = null;
+
+    private int face = 0;
+
+    private int blood = 0;
+
+    private int shengxiao = 6;
+
+    private String gender = null;
+
+    private String country = null;
+
+    private String province = null;
+
+    private String city = null;
+
     @Override
     public long getUin() {
         return this.uin;
@@ -161,6 +177,70 @@ public class QQUser implements Serializable, QQAccount {
 
     public void setRank(final int rank) {
         this.rank = rank;
+    }
+
+    public String getLnick() {
+        return this.lnick;
+    }
+
+    public void setLnick(final String lnick) {
+        this.lnick = lnick;
+    }
+
+    public int getFace() {
+        return this.face;
+    }
+
+    public void setFace(final int face) {
+        this.face = face;
+    }
+
+    public int getBlood() {
+        return this.blood;
+    }
+
+    public void setBlood(final int blood) {
+        this.blood = blood;
+    }
+
+    public int getShengxiao() {
+        return this.shengxiao;
+    }
+
+    public void setShengxiao(final int shengxiao) {
+        this.shengxiao = shengxiao;
+    }
+
+    public String getGender() {
+        return this.gender;
+    }
+
+    public void setGender(final String gender) {
+        this.gender = gender;
+    }
+
+    public String getCountry() {
+        return this.country;
+    }
+
+    public void setCountry(final String country) {
+        this.country = country;
+    }
+
+    public String getProvince() {
+        return this.province;
+    }
+
+    public void setProvince(final String province) {
+        this.province = province;
+    }
+
+    public String getCity() {
+        return this.city;
+    }
+
+    public void setCity(final String city) {
+        this.city = city;
     }
 
 }

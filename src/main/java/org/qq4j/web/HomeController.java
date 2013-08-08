@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.qq4j.core.QQRobot;
+import org.qq4j.core.QQUserManager;
 import org.qq4j.domain.QQUser;
 import org.qq4j.service.RobotService;
 import org.slf4j.Logger;
@@ -38,16 +39,19 @@ public class HomeController {
     }
 
     /**
+     * @throws UnsupportedEncodingException
      */
     @RequestMapping(value = "/{account}", method = RequestMethod.GET)
-    public String account(@PathVariable final long account, final Model model) {
+    public String account(@PathVariable final long account, final Model model)
+                                                                              throws UnsupportedEncodingException {
         final QQRobot robot = this.robotService.getRobot(account);
         model.addAttribute("account", account);
         model.addAttribute("qqRobot", robot);
         if (!robot.getContext().isRun()) {
-            final String verifyCode = robot.getContext()
-                                           .getUserManager()
-                                           .getVerifyCode();
+            final QQUserManager userManager = robot.getContext()
+                                                   .getUserManager();
+            userManager.initLogin();
+            final String verifyCode = userManager.getVerifyCode();
             model.addAttribute("verifyCode", verifyCode);
         }
         return "account";
@@ -78,10 +82,12 @@ public class HomeController {
         return robot.getContext().getUserManager().downloadVerifyImage();
     }
 
-    @RequestMapping(value = "/{account}/offline", method = RequestMethod.GET)
-    public String login(@PathVariable final long account, final Model model) {
+    @RequestMapping(value = "/{account}/status", method = RequestMethod.POST)
+    public String login(@PathVariable final long account,
+                        final String status,
+                        final Model model) {
         final QQRobot robot = this.robotService.getRobot(account);
-        robot.shutdown();
+        robot.getContext().getUserManager().changeStatus(status);
         return "redirect:/"
                + account;
     }

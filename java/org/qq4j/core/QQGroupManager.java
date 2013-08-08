@@ -54,7 +54,7 @@ public class QQGroupManager extends QQAccountManager {
                            + this.getContext().getVfwebqq()
                            + "&t="
                            + System.currentTimeMillis();
-        final String result = this.getContext().getHttpClient().getJSON(url);
+        final String result = this.getContext().getHttpClient().get(url);
         return this.parseGroupInfo(result);
     }
 
@@ -120,7 +120,7 @@ public class QQGroupManager extends QQAccountManager {
                                + this.getContext().getClientid()
                                + "&psessionid="
                                + this.getContext().getPsessionid();
-        this.getContext().getHttpClient().getJSON(pollUrl);
+        this.getContext().getHttpClient().get(pollUrl);
     }
 
     public void quitGroup(final QQGroup group) throws JSONException,

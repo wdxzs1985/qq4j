@@ -37,6 +37,7 @@
                 <property name="self">
                     <bean class="org.qq4j.domain.QQUser">
                         <property name="account" value="1840596989"></property>
+                        <property name="status" value="callme"></property>
                     </bean>
                 </property>
             </bean>
