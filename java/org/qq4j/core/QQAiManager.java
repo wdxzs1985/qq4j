@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.qq4j.common.QQStringAnalyst;
 import org.qq4j.domain.QQIndex;
 import org.qq4j.domain.QQMessage;
@@ -102,9 +103,9 @@ public class QQAiManager {
         }
     }
 
-    private List<String> analystString(final String source) {
+    public List<String> analystString(final String source) {
         final List<String> indexs = new ArrayList<String>();
-        int splitLength = source.length();
+        int splitLength = StringUtils.length(source);
         splitLength = splitLength > QQStringAnalyst.MAX_LENGTH ? QQStringAnalyst.MAX_LENGTH : splitLength;
         while (splitLength > 1) {
             final List<String> analyst = QQStringAnalyst.analystString(source,

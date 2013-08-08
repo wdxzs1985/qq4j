@@ -2,10 +2,10 @@ package org.qq4j.web;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.qq4j.core.QQRobot;
-import org.qq4j.domain.QQFont;
 import org.qq4j.domain.QQUser;
 import org.qq4j.service.RobotService;
 import org.slf4j.Logger;
@@ -44,21 +44,13 @@ public class HomeController {
         final QQRobot robot = this.robotService.getRobot(account);
         model.addAttribute("account", account);
         model.addAttribute("qqRobot", robot);
-        return "account";
-    }
-
-    /**
-     */
-    @RequestMapping(value = "/{account}/login", method = RequestMethod.GET)
-    public String doGetlogin(@PathVariable final long account, final Model model) {
-        model.addAttribute("account", account);
-        final QQRobot robot = this.robotService.getRobot(account);
-        if (robot.getContext().isRun()) {
-            return "redirect:/";
+        if (!robot.getContext().isRun()) {
+            final String verifyCode = robot.getContext()
+                                           .getUserManager()
+                                           .getVerifyCode();
+            model.addAttribute("verifyCode", verifyCode);
         }
-        robot.getContext().getUserManager().getVerifyCode();
-        model.addAttribute("qqRobot", robot);
-        return "login";
+        return "account";
     }
 
     @RequestMapping(value = "/{account}/login", method = RequestMethod.POST)
@@ -104,30 +96,28 @@ public class HomeController {
                + account;
     }
 
-    @RequestMapping(value = "/{account}/font", method = RequestMethod.POST)
-    public String setFont(@PathVariable final long account,
-                          final String name,
-                          final int size,
-                          final String color,
-                          final String bold,
-                          final String italic) {
+    /**
+     */
+    @RequestMapping(value = "/{account}/study", method = RequestMethod.GET)
+    public String study(@PathVariable final long account, final Model model) {
         final QQRobot robot = this.robotService.getRobot(account);
-        final QQFont font = robot.getContext().getFont();
-        font.setName(name);
-        font.setSize(size);
-        font.setColor(color);
-        font.setBold(StringUtils.isNotBlank(bold));
-        font.setItalic(StringUtils.isNotBlank(italic));
-        return "redirect:/"
-               + account;
+        model.addAttribute("account", account);
+        model.addAttribute("qqRobot", robot);
+        return "study";
     }
 
     /**
      */
-    @RequestMapping(value = "/study", method = RequestMethod.GET)
-    public String study(final Model model) {
-        model.addAttribute("qqRobotList", this.robotService.getRobotList());
+    @RequestMapping(value = "/{account}/study/analyze", method = RequestMethod.POST)
+    public String studyAnalyze(@PathVariable final long account,
+                               final String message,
+                               final Model model) {
+        final String source = StringUtils.lowerCase(message);
+        final List<String> wordList = this.robotService.getAiManager()
+                                                       .analystString(source);
+        model.addAttribute("account", account);
+        model.addAttribute("message", message);
+        model.addAttribute("wordList", wordList);
         return "study";
     }
-
 }

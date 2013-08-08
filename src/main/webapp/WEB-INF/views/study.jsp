@@ -10,40 +10,27 @@
 </head>
 <body>
 <%@ include file="/WEB-INF/views/inc/page-nav.jsp" %>
-<div class="container-fluid">
+<div class="container">
     <div class="">
-        <form id="study-form" class="form-inline">
-            <input type="text" name="q" class="input-xlarge" placeholder="query">
+        <form id="study-form" action="<c:url value="/${account }/study/analyze"/>" method="post">
+            <div class="form-group">
+                <input type="text" name="message" class="form-control" placeholder="query" value="<c:out value="${message }"/>">
+            </div>
             <button type="submit" class="btn">analyze</button>
         </form>
     </div>
+    <c:if test="${!empty wordList }">
+        <div>
+            <c:forEach var="word" items="${wordList }">
+                <span class="badge"><c:out value="${word }"/></span>
+            </c:forEach>
+        </div>
+    </c:if>
 </div>
 </body>
 <%@ include file="/WEB-INF/views/inc/scripts.jsp" %>
 <script>
 $(function(){
-	$('#study-form').submit(function(){
-		var $form = $(this);
-		var query = $form.find('input[name="q"]').val();
-		if(!query){
-			alert('query is empty');
-			return false;
-		}
-		var url = 'http://ajax.googleapis.com/ajax/services/search/web';
-		$.get(url, {
-			v: '1.0',
-	        q: query
-		}, function(response){
-			if(reponse.responseStatus == 200) {
-				$.foreach(response.responseData.results, function(index, element){
-					console.log(element.unescapedUrl);
-				});
-			} else {
-				alert(reponse.responseDetails);
-			}
-		});
-		return false;
-	});
 });
 </script>
 </html>

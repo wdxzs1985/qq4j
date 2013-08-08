@@ -9,46 +9,40 @@
 </head>
 <body>
 <%@ include file="/WEB-INF/views/inc/page-nav.jsp" %>
-<div class="container-fluid">
-<div class="page-header">
-<h1><c:out value="${ account }"/> login  </h1>
-</div>
-<form id="login-form" action="<c:url value="/${account}/login"/>" method="post" class="">
-    <div class="control-group">
-        <label class="control-label" for="inputAccount">
-            account
-        </label>
-        <div class="controls">
-            <input type="text" id="inputAccount" name="account" class="input-block-level" value="<c:out value="${account}"/>">
+<div class="container">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="page-header">
+                <h1>login</h1>
+            </div>
+            <form id="login-form" action="<c:url value="/${account}/login"/>" method="post" class="">
+                <div class="form-group">
+                    <label class="form-label" for="inputAccount">account</label>
+                    <input type="text" id="inputAccount" name="account" class="form-control" value="<c:out value="${account}"/>">
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="inputPassword">password</label>
+                    <input type="password" id="inputPassword" name="password" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label class="control-label" for="inputVerifyCode">verify</label>
+                    <div class="row">
+                        <div class="col-6">
+                            <input type="text" id="inputVerifyCode" name="verifyCode" class="form-control" value="<c:out value="${verifyCode}"/>">
+                        </div>
+                        <div class="col-6">
+                            <c:if test="${empty verifyCode}">
+                                <img src="<c:url value="/${account}/verify.jpg"/>"/>
+                            </c:if>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                <button type="submit" class="btn btn-success btn-block">login</button>
+                </div>
+            </form>
         </div>
     </div>
-    <div class="control-group">
-        <label class="control-label" for="inputPassword">
-            password
-        </label>
-        <div class="controls">
-            <input type="password" id="inputPassword" name="password" class="input-block-level">
-        </div>
-    </div>
-    <div class="control-group">
-        <label class="control-label" for="inputVerifyCode">
-            verify
-        </label>
-        <div class="controls">
-            <input type="text" id="inputVerifyCode" name="verifyCode" class="input-block-level" value="<c:out value="${verifyCode}"/>">
-            <c:if test="${empty verifyCode}">
-                <span class="help-block"><img src="<c:url value="/${account}/verify.jpg"/>"/></span>
-            </c:if>
-        </div>
-    </div>
-    <div class="control-group">
-        <div class="controls">
-            <button type="submit" class="btn btn-success btn-block">
-                login
-            </button>
-        </div>
-    </div>
-</form>
 </div>
 </body>
 </html>

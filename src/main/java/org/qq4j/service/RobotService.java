@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.qq4j.core.QQAiManager;
 import org.qq4j.core.QQRobot;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -20,6 +21,8 @@ public class RobotService implements ApplicationContextAware {
         return this.pool.values();
     }
 
+    private QQAiManager aiManager = null;
+
     @Override
     public void setApplicationContext(final ApplicationContext applicationContext)
                                                                                   throws BeansException {
@@ -32,6 +35,8 @@ public class RobotService implements ApplicationContextAware {
                                       .getAccount();
             this.pool.put(account, robot);
         }
+
+        this.aiManager = applicationContext.getBean(QQAiManager.class);
     }
 
     public QQRobot getRobot(final long account) {
@@ -39,4 +44,7 @@ public class RobotService implements ApplicationContextAware {
         return robot;
     }
 
+    public QQAiManager getAiManager() {
+        return this.aiManager;
+    }
 }
