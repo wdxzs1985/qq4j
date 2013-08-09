@@ -30,18 +30,28 @@ public class QQAiManager {
 
     public String getReplyAnswer(final String message, final QQUser user) {
         final String question = message.toLowerCase();
-        final List<QQMessage> aiList = this.queryAnswer(question, user);
+        final List<QQMessage> aiList = this.searchAnswer(question, user);
         return this.getAnswer(aiList);
     }
 
     public String getReplyAnswerSmart(final String message, final QQUser user) {
         final String question = message.toLowerCase();
-        List<QQMessage> aiList = this.queryAnswer(question, user);
+        List<QQMessage> aiList = this.searchAnswer(question, user);
         if (CollectionUtils.isEmpty(aiList)) {
             final List<String> wordList = this.analystString(question);
-            aiList = this.searchAnswersByIndex(wordList, user);
+            if (CollectionUtils.isNotEmpty(wordList)) {
+                aiList = this.searchAnswersByIndex(wordList, user);
+            }
         }
         return this.getAnswer(aiList);
+    }
+
+    private List<QQMessage> searchAnswer(final String message, final QQUser user) {
+        final Map<String, Object> params = new HashMap<String, Object>();
+        params.put("message", message);
+        params.put("qq", user.getQq());
+        params.put("owner", user.getAccount());
+        return this.messagesMapper.fetchAnswersByMessage(params);
     }
 
     private List<QQMessage> searchAnswersByIndex(final List<String> wordList,
@@ -52,14 +62,6 @@ public class QQAiManager {
         params.put("qq", user.getQq());
 
         return this.messagesMapper.fetchAnswersByIndex(params);
-    }
-
-    private List<QQMessage> queryAnswer(final String message, final QQUser user) {
-        final Map<String, Object> params = new HashMap<String, Object>();
-        params.put("message", message);
-        params.put("qq", user.getQq());
-        params.put("owner", user.getAccount());
-        return this.messagesMapper.fetchAnswersByMessage(params);
     }
 
     private String getAnswer(final List<QQMessage> aiList) {

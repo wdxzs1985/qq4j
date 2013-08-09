@@ -2,7 +2,6 @@ package org.qq4j.web;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.qq4j.core.QQRobot;
@@ -102,28 +101,4 @@ public class HomeController {
                + account;
     }
 
-    /**
-     */
-    @RequestMapping(value = "/{account}/study", method = RequestMethod.GET)
-    public String study(@PathVariable final long account, final Model model) {
-        final QQRobot robot = this.robotService.getRobot(account);
-        model.addAttribute("account", account);
-        model.addAttribute("qqRobot", robot);
-        return "study";
-    }
-
-    /**
-     */
-    @RequestMapping(value = "/{account}/study/analyze", method = RequestMethod.POST)
-    public String studyAnalyze(@PathVariable final long account,
-                               final String message,
-                               final Model model) {
-        final String source = StringUtils.lowerCase(message);
-        final List<String> wordList = this.robotService.getAiManager()
-                                                       .analystString(source);
-        model.addAttribute("account", account);
-        model.addAttribute("message", message);
-        model.addAttribute("wordList", wordList);
-        return "study";
-    }
 }

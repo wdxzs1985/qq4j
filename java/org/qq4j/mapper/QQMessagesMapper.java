@@ -17,4 +17,16 @@ public interface QQMessagesMapper {
     List<QQMessage> fetchAnswersByIndex(Map<String, Object> params);
 
     String getNewMessageId();
+
+    int countMessages(Map<String, Object> params);
+
+    List<QQMessage> fetchMessages(Map<String, Object> params);
+
+    QQMessage fetchMessage(Map<String, Object> params);
+
+    void updateMessage(QQMessage messageBean);
+
+    List<String> fetchIndexes(Map<String, Object> params);
+
+    void removeIndex(QQMessage messageBean);
 }

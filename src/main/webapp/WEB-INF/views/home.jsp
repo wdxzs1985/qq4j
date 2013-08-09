@@ -23,6 +23,8 @@
                     <tr>
                         <th>qq</th>
                         <th>running</th>
+                        <th>messages</th>
+                        <th>study</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -38,6 +40,16 @@
                                     <c:when test="${qqRobot.context.run}">○</c:when>
                                     <c:otherwise>×</c:otherwise>
                                 </c:choose>
+                            </td>
+                            <td>
+                                <a href="<c:url value="/${qqRobot.context.userManager.self.account}/messages"/>">
+                                    messages
+                                </a>
+                            </td>
+                            <td>
+                                <a href="<c:url value="/${qqRobot.context.userManager.self.account}/study"/>">
+                                    study
+                                </a>
                             </td>
                         </tr>
                     </c:forEach>

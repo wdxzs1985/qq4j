@@ -12,7 +12,9 @@ public class QQMessage {
 
     private long owner = 0L;
 
-    private int privatable = 0;
+    private int privatable = 1;
+
+    private int unknown = 1;
 
     private int resultCount = 0;
 
@@ -70,6 +72,14 @@ public class QQMessage {
 
     public void setResultCount(final int resultCount) {
         this.resultCount = resultCount;
+    }
+
+    public int getUnknown() {
+        return this.unknown;
+    }
+
+    public void setUnknown(final int unknown) {
+        this.unknown = unknown;
     }
 
 }

@@ -15,21 +15,11 @@ textarea { resize: none; }
 <body>
 <%@ include file="/WEB-INF/views/inc/page-nav.jsp" %>
 <div class="container">
-    <c:if test="${empty message }">
-        <form action="<c:url value="/${account }/study"/>" method="get">
-            <h3>Query:</h3>
-            <div class="form-group">
-                <textarea name="message" class="form-control" rows="3"><c:out value="${message }"/></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">analyze</button>
-        </form>
-    </c:if>
-    <c:if test="${!empty message }">
-        <a href="<c:url value="/${account }/study"/>" class="btn btn-default">back</a>
-        <form action="<c:url value="/${account }/answer"/>" method="post">
+        <a href="<c:url value="/${message.qq }/messages"/>" class="btn btn-default">back</a>
+        <form action="<c:url value="/message/${message.messageId }"/>" method="post">
             <hr>
-            <input type="hidden" name="message" value="<c:out value="${message}"/>">
-            <p class="lead"><c:out value="${message }"/></p>
+            <input type="hidden" name="message" value="<c:out value="${message.message}"/>">
+            <p class="lead"><c:out value="${message.message }"/></p>
             <c:if test="${!empty wordList }">
                 <hr>
                 <div>
@@ -44,7 +34,7 @@ textarea { resize: none; }
                 <hr>
             </c:if>
             <div class="form-group">
-                <textarea name="answer" class="form-control" rows="3"><c:out value="${answer }"/></textarea>
+                <textarea name="answer" class="form-control" rows="3"><c:out value="${answer}"/></textarea>
             </div>
             <button type="submit" class="btn btn-primary">answer</button>
             <c:if test="${!empty answerList }">
@@ -69,7 +59,6 @@ textarea { resize: none; }
                 </table>
             </c:if>
         </form>
-    </c:if>
 </div>
 </body>
 <%@ include file="/WEB-INF/views/inc/scripts.jsp" %>
