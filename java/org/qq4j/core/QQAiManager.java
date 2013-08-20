@@ -46,21 +46,20 @@ public class QQAiManager {
         return this.getAnswer(aiList);
     }
 
-    private List<QQMessage> searchAnswer(final String message, final QQUser user) {
+    public List<QQMessage> searchAnswer(final String message, final QQUser user) {
         final Map<String, Object> params = new HashMap<String, Object>();
         params.put("message", message);
-        params.put("qq", user.getQq());
         params.put("owner", user.getAccount());
+        params.put("qq", user.getQq());
         return this.messagesMapper.fetchAnswersByMessage(params);
     }
 
-    private List<QQMessage> searchAnswersByIndex(final List<String> wordList,
-                                                 final QQUser user) {
+    public List<QQMessage> searchAnswersByIndex(final List<String> wordList,
+                                                final QQUser user) {
         final Map<String, Object> params = new HashMap<String, Object>();
         params.put("words", wordList);
         params.put("owner", user.getAccount());
         params.put("qq", user.getQq());
-
         return this.messagesMapper.fetchAnswersByIndex(params);
     }
 
@@ -97,11 +96,13 @@ public class QQAiManager {
         message.setQq(qq);
         this.messagesMapper.insertMessage(message);
         final List<String> wordList = this.analystString(source);
-        for (final String word : wordList) {
-            final QQIndex index = new QQIndex();
-            index.setWord(word);
-            index.setMessage(message);
-            this.messagesMapper.insertIndex(index);
+        if (CollectionUtils.isNotEmpty(wordList)) {
+            for (final String word : wordList) {
+                final QQIndex index = new QQIndex();
+                index.setWord(word);
+                index.setMessage(message);
+                this.messagesMapper.insertIndex(index);
+            }
         }
     }
 
@@ -137,7 +138,7 @@ public class QQAiManager {
         final Map<String, Object> params = new HashMap<String, Object>();
         params.put("account", user.getAccount());
         params.put("qq", user.getQq());
-        final QQUser userRank = this.userMapper.fetchRanking(params);
+        final QQUser userRank = this.userMapper.fetchRanking(params).get(0);
         return userRank;
     }
 

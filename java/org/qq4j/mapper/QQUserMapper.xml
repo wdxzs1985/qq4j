@@ -21,12 +21,14 @@
     SELECT 
         account
     ,   faith
+    ,   black
     ,   rank 
     FROM
     (
         SELECT
             U.account
         ,   U.faith
+        ,   U.black
         ,   (@rnk := @rnk+1)
         ,   (@rank := IF(@curfaith=faith, @rank, @rnk)) rank
         ,   (@curfaith := faith)
@@ -36,8 +38,11 @@
         where
             qq = #{qq}
         order by faith desc) A
-    where
-        account = #{account}
+    <where>
+        <if test="account != null">
+        and account = #{account}
+        </if>
+    </where>
   </select>
   
   <select id="fetchUserCount" resultType="int">
@@ -64,10 +69,10 @@
     update qq_user
     <set>
         <if test="faith != null">
-            faith = #{faith}
+            faith = #{faith},
         </if>
         <if test="black != null">
-            black = #{black}
+            black = #{black},
         </if>
     </set>
     where

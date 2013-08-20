@@ -13,7 +13,6 @@
     where
         qq_messages.message = #{message}
     and qq_messages.qq = #{qq}
-    and qq_messages.UNKNOWN = 0
     and (
             qq_messages.owner = #{owner}
         or  qq_messages.PRIVATABLE = 0
@@ -36,7 +35,6 @@
             open="(" separator="," close=")">
                 #{item}
         </foreach>
-    and qq_messages.UNKNOWN = 0
     and (
            qq_messages.owner = #{owner}
         or qq_messages.PRIVATABLE = 0
@@ -129,12 +127,40 @@
     <update id="updateMessage" >
         update
             qq_messages
-        set
-            answer = #{answer}
-        ,   privatable = #{privatable}
-        ,   unknown = #{unknown}
+        <set>
+            <if test="answer != null">
+                answer = #{answer},
+            </if>
+            <if test="privatable != null">
+                privatable = #{privatable},
+            </if>
+            <if test="unknown != null">
+                unknown = #{unknown},
+            </if>
+        </set>
         where
             message_id = #{messageId}
+        and del_flg = 0
+    </update>
+    
+    <update id="deleteMessage">
+        update
+            qq_messages
+        set
+            del_flg = 1
+        where
+            message_id = #{messageId}
+        and del_flg = 0
+    </update>
+    
+    <update id="deleteUserMessage">
+        update
+            qq_messages
+        set
+            del_flg = 1
+        where
+            qq = #{qq}
+        and owner = #{account}
         and del_flg = 0
     </update>
 

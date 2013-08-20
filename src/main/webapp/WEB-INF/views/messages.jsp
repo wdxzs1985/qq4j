@@ -16,7 +16,6 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>status</th>
                 <th>message</th>
                 <th>answer</th>
                 <th>owner</th>
@@ -27,35 +26,30 @@
             <c:forEach var="message" items="${messageList}">
                 <tr>
                     <td>
-                         <c:if test="${message.unknown eq 0}">
-                             <span class="label label-success">known</span>
-                         </c:if>
-                         <c:if test="${message.unknown eq 1}">
-                             <span class="label label-warning">unknown</span>
-                         </c:if>
-                    </td>
-                    <td>
                         <a href="<c:url value="/message/${message.messageId}"/>">
                             <c:out value="${message.message }" />
                         </a>
                     </td>
                     <td><c:out value="${message.answer }" /></td>
-                    <td>
-                        <c:out value="${message.owner }" />
-                    </td>
+                    <td><c:out value="${message.owner }" /></td>
                     <td>
                         <div class="btn-toolbar">
                             <div class="btn-group">
+                                <a href="<c:url value="/message/${message.messageId}"/>" class="btn btn-primary">edit</a>
                                 <c:if test="${message.privatable eq 0}">
-                                    <button class="btn btn-success">public</button>
+                                    <a href="<c:url value="/message/${message.messageId}/private"/>" class="btn btn-success">public</a>
                                 </c:if>
                                 <c:if test="${message.privatable eq 1}">
-                                    <button class="btn btn-warning">private</button>
+                                    <a href="<c:url value="/message/${message.messageId}/public"/>" class="btn btn-warning">private</a>
                                 </c:if>
                             </div>
                             <div class="btn-group">
-                                <a href="<c:url value="/message/${message.messageId}"/>" class="btn btn-primary">edit</a>
-                                <a href="" class="btn btn-danger">delete</a>
+                                <a href="<c:url value="/message/${message.messageId}"/>/delete" class="btn btn-danger">delete</a>
+                                <c:if test="${message.owner ne 0 }">
+                                    <a href="<c:url value="/${account }/user/${message.owner }/black"/>" class="btn btn-warning">
+                                        <span>block user</span>
+                                    </a>
+                                </c:if>
                             </div>
                         </div>
                     </td>
@@ -63,6 +57,9 @@
             </c:forEach>
         </tbody>
     </table>
+    <a href="<c:url value="/${account}/study"/>" class="btn btn-default">
+        study
+    </a>
 </div>
 <%@ include file="/WEB-INF/views/inc/scripts.jsp" %>
 <script>

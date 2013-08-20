@@ -15,61 +15,25 @@ textarea { resize: none; }
 <body>
 <%@ include file="/WEB-INF/views/inc/page-nav.jsp" %>
 <div class="container">
-    <c:if test="${empty message }">
-        <form action="<c:url value="/${account }/study"/>" method="get">
-            <h3>Query:</h3>
-            <div class="form-group">
-                <textarea name="message" class="form-control" rows="3"><c:out value="${message }"/></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">analyze</button>
-        </form>
-    </c:if>
-    <c:if test="${!empty message }">
-        <a href="<c:url value="/${account }/study"/>" class="btn btn-default">back</a>
-        <form action="<c:url value="/${account }/answer"/>" method="post">
-            <hr>
-            <input type="hidden" name="message" value="<c:out value="${message}"/>">
-            <p class="lead"><c:out value="${message }"/></p>
-            <c:if test="${!empty wordList }">
-                <hr>
-                <div>
-                    <c:forEach var="word" items="${wordList }">
-                        <div class="btn-group">
-                            <input type="hidden" name="word[]" value="<c:out value="${word}"/>">
-                            <button class="btn btn-default btn-xs"><c:out value="${word}"/></button>
-                            <button class="btn btn-danger btn-xs"><i class="glyphicon glyphicon-remove"></i></button>
-                        </div>
-                    </c:forEach>
+    <form action="<c:url value="/${account}/study"/>" method="post">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label class="form-label">message</label>
+                    <textarea name="message" class="form-control" rows="3"><c:out value="${message}"/></textarea>
                 </div>
-                <hr>
-            </c:if>
-            <div class="form-group">
-                <textarea name="answer" class="form-control" rows="3"><c:out value="${answer }"/></textarea>
             </div>
-            <button type="submit" class="btn btn-primary">answer</button>
-            <c:if test="${!empty answerList }">
-                <hr>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>answer</th>
-                            <th>owner</th>
-                            <th>actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <c:forEach var="message" items="${answerList}">
-                            <tr>
-                               <td><c:out value="${message.answer }"/></td>
-                               <td><c:out value="${message.owner }"/></td>
-                               <td><c:out value="${message.privatable }"/></td>
-                            </tr>
-                        </c:forEach>
-                    </tbody>
-                </table>
-            </c:if>
-        </form>
-    </c:if>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <label class="form-label">answer</label>
+                    <textarea name="answer" class="form-control" rows="3"><c:out value="${answer}"/></textarea>
+                </div>
+            </div>
+        </div>
+        <hr>
+        <button type="submit" class="btn btn-primary">save</button>
+        <a href="<c:url value="/${account}/messages"/>" class="btn btn-default">back</a>
+    </form>
 </div>
 </body>
 <%@ include file="/WEB-INF/views/inc/scripts.jsp" %>

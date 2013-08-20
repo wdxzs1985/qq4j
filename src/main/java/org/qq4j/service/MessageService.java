@@ -67,7 +67,7 @@ public class MessageService {
     public void addAnswer(final long qq,
                           final String message,
                           final String answer,
-                          final String[] wordList) {
+                          final List<String> wordList) {
         final String messageId = this.messagesMapper.getNewMessageId();
         final String source = StringUtils.lowerCase(message);
         final QQMessage messageBean = new QQMessage();
@@ -75,7 +75,7 @@ public class MessageService {
         messageBean.setMessage(source);
         messageBean.setAnswer(answer);
         messageBean.setQq(qq);
-        messageBean.setPrivatable(0);
+        messageBean.setPrivatable(1);
         messageBean.setUnknown(0);
         this.messagesMapper.insertMessage(messageBean);
         for (final String word : wordList) {
@@ -87,21 +87,27 @@ public class MessageService {
     }
 
     @Transactional
-    public void updateAnswer(final String messageId,
-                             final String answer,
-                             final String[] wordList) {
-        final QQMessage messageBean = this.getMessage(messageId);
-        messageBean.setAnswer(answer);
-        messageBean.setPrivatable(0);
-        messageBean.setUnknown(0);
-        this.messagesMapper.updateMessage(messageBean);
-        this.messagesMapper.removeIndex(messageBean);
-        for (final String word : wordList) {
-            final QQIndex index = new QQIndex();
-            index.setWord(word);
-            index.setMessage(messageBean);
-            this.messagesMapper.insertIndex(index);
-        }
+    public void updateAnswer(final QQMessage messageBean) {
+        final Map<String, Object> params = new HashMap<String, Object>();
+        params.put("messageId", messageBean.getMessageId());
+        params.put("answer", messageBean.getAnswer());
+        this.messagesMapper.updateMessage(params);
+    }
+
+    @Transactional
+    public void updatePrivatable(final QQMessage messageBean) {
+        final Map<String, Object> params = new HashMap<String, Object>();
+        params.put("messageId", messageBean.getMessageId());
+        params.put("privatable", messageBean.getPrivatable());
+        this.messagesMapper.updateMessage(params);
+    }
+
+    @Transactional
+    public void deleteAnswer(final QQMessage messageBean) {
+        final Map<String, Object> params = new HashMap<String, Object>();
+        params.put("messageId", messageBean.getMessageId());
+        this.messagesMapper.deleteMessage(params);
+
     }
 
     public List<String> getIndexes(final String messageId) {
@@ -110,4 +116,5 @@ public class MessageService {
         final List<String> indexes = this.messagesMapper.fetchIndexes(params);
         return indexes;
     }
+
 }

@@ -24,9 +24,13 @@ public interface QQMessagesMapper {
 
     QQMessage fetchMessage(Map<String, Object> params);
 
-    void updateMessage(QQMessage messageBean);
+    void updateMessage(Map<String, Object> params);
 
     List<String> fetchIndexes(Map<String, Object> params);
 
     void removeIndex(QQMessage messageBean);
+
+    void deleteMessage(Map<String, Object> params);
+
+    void deleteUserMessage(Map<String, Object> params);
 }

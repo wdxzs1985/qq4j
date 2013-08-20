@@ -3,8 +3,6 @@ package org.qq4j.web;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.qq4j.core.QQAiManager;
 import org.qq4j.domain.QQMessage;
@@ -48,49 +46,97 @@ public class MessageController {
             return "redirect:/";
         }
         model.addAttribute("message", message);
-        final List<String> wordList = this.messageService.getIndexes(messageId);
-        model.addAttribute("wordList", wordList);
+
+        // this.robotService.getAiManager().getReplyAnswerSmart(message, user);
+
         return "message";
     }
 
-    @RequestMapping(value = "/{account}/study", method = RequestMethod.GET)
-    public String study(@PathVariable final long account,
-                        @RequestParam(required = false) final String message,
-                        final Model model) throws UnsupportedEncodingException {
-        model.addAttribute("account", account);
-        if (StringUtils.isNotBlank(message)) {
-            final String messageUtf8 = new String(message.getBytes("ISO-8859-1"));
-            model.addAttribute("message", messageUtf8);
-            final String source = StringUtils.lowerCase(messageUtf8);
-            final QQAiManager aiManager = this.robotService.getAiManager();
-            final List<String> wordList = aiManager.analystString(source);
-            model.addAttribute("wordList", wordList);
-            List<QQMessage> answerList = null;
-            if (CollectionUtils.isEmpty(wordList)) {
-                answerList = this.messageService.searchAnswer(source, account);
-            } else {
-                answerList = this.messageService.searchAnswersByIndex(wordList,
-                                                                      account);
-            }
-            model.addAttribute("answerList", answerList);
+    @RequestMapping(value = "/message/{messageId}", method = RequestMethod.POST)
+    public String doPostMessage(@PathVariable final String messageId,
+                                final String answer,
+                                final Model model) {
+        final QQMessage message = this.messageService.getMessage(messageId);
+        if (message == null) {
+            return "redirect:/";
         }
+        if (StringUtils.isBlank(answer)) {
+            model.addAttribute("message", message);
+            return "message";
+        }
+        message.setAnswer(answer);
+        message.setUnknown(0);
+        this.messageService.updateAnswer(message);
+
+        return "redirect:/"
+               + message.getQq()
+               + "/messages";
+    }
+
+    @RequestMapping(value = "/message/{messageId}/public", method = RequestMethod.GET)
+    public String doGetMessagePublic(@PathVariable final String messageId,
+                                     final Model model) {
+        final QQMessage message = this.messageService.getMessage(messageId);
+        if (message == null) {
+            return "redirect:/";
+        }
+        message.setPrivatable(0);
+        this.messageService.updatePrivatable(message);
+
+        return "redirect:/"
+               + message.getQq()
+               + "/messages";
+    }
+
+    @RequestMapping(value = "/message/{messageId}/private", method = RequestMethod.GET)
+    public String doGetMessagePrivate(@PathVariable final String messageId,
+                                      final Model model) {
+        final QQMessage message = this.messageService.getMessage(messageId);
+        if (message == null) {
+            return "redirect:/";
+        }
+        message.setPrivatable(1);
+        this.messageService.updatePrivatable(message);
+
+        return "redirect:/"
+               + message.getQq()
+               + "/messages";
+    }
+
+    @RequestMapping(value = "/message/{messageId}/delete", method = RequestMethod.GET)
+    public String doGetMessageDelete(@PathVariable final String messageId,
+                                     final Model model) {
+        final QQMessage message = this.messageService.getMessage(messageId);
+        if (message == null) {
+            return "redirect:/";
+        }
+        this.messageService.deleteAnswer(message);
+        return "redirect:/"
+               + message.getQq()
+               + "/messages";
+    }
+
+    @RequestMapping(value = "/{account}/study", method = RequestMethod.GET)
+    public String study(@PathVariable final long account, final Model model)
+                                                                            throws UnsupportedEncodingException {
+        model.addAttribute("account", account);
         return "study";
     }
 
-    @RequestMapping(value = "/{account}/answer", method = RequestMethod.POST)
-    public String answer(@PathVariable final long account,
-                         final String message,
-                         final String answer,
-                         @RequestParam(value = "word[]") final String[] word,
-                         final Model model) {
+    @RequestMapping(value = "/{account}/study", method = RequestMethod.POST)
+    public String doPostStudy(@PathVariable final long account,
+                              final String message,
+                              final String answer,
+                              final Model model) {
         if (StringUtils.isNotBlank(message)
-            && StringUtils.isNotBlank(answer)
-            && !ArrayUtils.isEmpty(word)) {
-            this.messageService.addAnswer(account, message, answer, word);
+            && StringUtils.isNotBlank(answer)) {
+            final QQAiManager aiManager = this.robotService.getAiManager();
+            final String source = StringUtils.lowerCase(message);
+            final List<String> wordList = aiManager.analystString(source);
+            this.messageService.addAnswer(account, message, answer, wordList);
         }
-        model.addAttribute("message", message);
         return "redirect:/"
                + account
-               + "/study";
+               + "/messages";
     }
 }

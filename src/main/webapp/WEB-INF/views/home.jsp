@@ -24,7 +24,7 @@
                         <th>qq</th>
                         <th>running</th>
                         <th>messages</th>
-                        <th>study</th>
+                        <th>users</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -47,8 +47,8 @@
                                 </a>
                             </td>
                             <td>
-                                <a href="<c:url value="/${qqRobot.context.userManager.self.account}/study"/>">
-                                    study
+                                <a href="<c:url value="/${qqRobot.context.userManager.self.account}/users"/>">
+                                    users
                                 </a>
                             </td>
                         </tr>
