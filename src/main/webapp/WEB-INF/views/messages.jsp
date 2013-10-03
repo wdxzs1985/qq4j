@@ -35,16 +35,20 @@
                     <td>
                         <div class="btn-toolbar">
                             <div class="btn-group">
-                                <a href="<c:url value="/message/${message.messageId}"/>" class="btn btn-primary">edit</a>
                                 <c:if test="${message.privatable eq 0}">
+                                    <a class="btn btn-warning disabled">private</a>
                                     <a href="<c:url value="/message/${message.messageId}/private"/>" class="btn btn-success">public</a>
                                 </c:if>
                                 <c:if test="${message.privatable eq 1}">
                                     <a href="<c:url value="/message/${message.messageId}/public"/>" class="btn btn-warning">private</a>
+                                    <a class="btn btn-success disabled">public</a>
                                 </c:if>
                             </div>
                             <div class="btn-group">
+                                <a href="<c:url value="/message/${message.messageId}"/>" class="btn btn-primary">edit</a>
                                 <a href="<c:url value="/message/${message.messageId}"/>/delete" class="btn btn-danger">delete</a>
+                            </div>
+                            <div class="btn-group">
                                 <c:if test="${message.owner ne 0 }">
                                     <a href="<c:url value="/${account }/user/${message.owner }/black"/>" class="btn btn-warning">
                                         <span>block user</span>

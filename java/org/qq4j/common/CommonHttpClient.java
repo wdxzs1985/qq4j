@@ -23,15 +23,13 @@ import org.apache.http.client.entity.GzipDecompressingEntity;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.message.BasicHeader;
-import org.apache.http.protocol.BasicHttpContext;
-import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
 public class CommonHttpClient {
@@ -83,9 +81,9 @@ public class CommonHttpClient {
         this.initHttpHeader(httpget);
 
         String result = null;
-        final HttpContext localContext = new BasicHttpContext();
+        final HttpClientContext localContext = new HttpClientContext();
         // Bind custom cookie store to the local context
-        localContext.setAttribute(ClientContext.COOKIE_STORE, this.cookieStore);
+        localContext.setCookieStore(this.cookieStore);
         try {
             // Pass local context as a parameter
             final HttpResponse response = this.client.execute(httpget,
@@ -123,9 +121,9 @@ public class CommonHttpClient {
         this.initHttpHeader(httppost);
 
         String result = null;
-        final HttpContext localContext = new BasicHttpContext();
+        final HttpClientContext localContext = new HttpClientContext();
         // Bind custom cookie store to the local context
-        localContext.setAttribute(ClientContext.COOKIE_STORE, this.cookieStore);
+        localContext.setCookieStore(this.cookieStore);
         try {
             final UrlEncodedFormEntity postEntity = new UrlEncodedFormEntity(nvps,
                                                                              SystemConstants.ENCODING);
@@ -163,9 +161,9 @@ public class CommonHttpClient {
         this.initHttpHeader(httpget);
 
         byte[] result = null;
-        final HttpContext localContext = new BasicHttpContext();
+        final HttpClientContext localContext = new HttpClientContext();
         // Bind custom cookie store to the local context
-        localContext.setAttribute(ClientContext.COOKIE_STORE, this.cookieStore);
+        localContext.setCookieStore(this.cookieStore);
         try {
             // Pass local context as a parameter
             final HttpResponse response = this.client.execute(httpget,

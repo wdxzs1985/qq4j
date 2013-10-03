@@ -1,10 +1,8 @@
 package org.qq4j.web;
 
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.qq4j.core.QQAiManager;
 import org.qq4j.domain.QQMessage;
 import org.qq4j.service.MessageService;
 import org.qq4j.service.RobotService;
@@ -46,9 +44,6 @@ public class MessageController {
             return "redirect:/";
         }
         model.addAttribute("message", message);
-
-        // this.robotService.getAiManager().getReplyAnswerSmart(message, user);
-
         return "message";
     }
 
@@ -65,8 +60,7 @@ public class MessageController {
             return "message";
         }
         message.setAnswer(answer);
-        message.setUnknown(0);
-        this.messageService.updateAnswer(message);
+        this.messageService.updateMessage(message);
 
         return "redirect:/"
                + message.getQq()
@@ -81,7 +75,7 @@ public class MessageController {
             return "redirect:/";
         }
         message.setPrivatable(0);
-        this.messageService.updatePrivatable(message);
+        this.messageService.updateMessage(message);
 
         return "redirect:/"
                + message.getQq()
@@ -96,7 +90,7 @@ public class MessageController {
             return "redirect:/";
         }
         message.setPrivatable(1);
-        this.messageService.updatePrivatable(message);
+        this.messageService.updateMessage(message);
 
         return "redirect:/"
                + message.getQq()
@@ -117,8 +111,7 @@ public class MessageController {
     }
 
     @RequestMapping(value = "/{account}/study", method = RequestMethod.GET)
-    public String study(@PathVariable final long account, final Model model)
-                                                                            throws UnsupportedEncodingException {
+    public String study(@PathVariable final long account, final Model model) {
         model.addAttribute("account", account);
         return "study";
     }
@@ -130,10 +123,7 @@ public class MessageController {
                               final Model model) {
         if (StringUtils.isNotBlank(message)
             && StringUtils.isNotBlank(answer)) {
-            final QQAiManager aiManager = this.robotService.getAiManager();
-            final String source = StringUtils.lowerCase(message);
-            final List<String> wordList = aiManager.analystString(source);
-            this.messageService.addAnswer(account, message, answer, wordList);
+            this.messageService.addAnswer(message, answer, account);
         }
         return "redirect:/"
                + account

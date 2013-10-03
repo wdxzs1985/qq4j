@@ -46,4 +46,10 @@
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="org.qq4j.mapper" />
     </bean>
+    
+    <bean class="org.apache.solr.client.solrj.impl.HttpSolrServer" >
+        <constructor-arg name="baseURL" value="http://localhost:8983/solr/collection2"></constructor-arg>
+        <property name="connectionTimeout" value="10000"></property>
+        <property name="maxRetries" value="3"></property>
+    </bean>
 </beans>
